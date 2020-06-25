@@ -1,0 +1,1 @@
+tar -cvzf ~/tar/seismic.tar.gz * --exclude=*.su --exclude=core* --exclude=*~ --exclude=*.bin --exclude=bfile

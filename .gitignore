@@ -2,5 +2,9 @@
 *.dat
 *~
 *nbproject
+*.su 
+*core* 
+*.bin 
+bfile
 *tar.gz
 
