@@ -1,0 +1,23 @@
+
+ RAYT2D parameters
+ ================
+ vfile=stdin 
+ tfile=tfile 
+ one-way time: dt=0.004 nt=501 
+ nz=51 fz=0 dz=50
+ nx=71 fx=0 dx=50
+ nzo=51 fzo=0 dzo=50
+ nxo=71 fxo=0 dxo=50
+ nxs=36 fxs=0 dxs=100
+ mx=71 aperx=2600 
+ na=76 fa=-75 da=2
+ amin=0 amax=75 
+ ek=1 ms=10 npv=0 restart=n
+ finish velocity input
+ begin traveltime calculation
+ traveltime computed at source xs=0
+ traveltime computed at source xs=1000
+ traveltime computed at source xs=2000
+ traveltime computed at source xs=3000
+ finish program rayt2d
+

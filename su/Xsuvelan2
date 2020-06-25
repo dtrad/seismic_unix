@@ -1,0 +1,49 @@
+#! /bin/sh
+# Xsuvelan.
+######################################################################
+# Velocity analisys
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+
+
+NV=50
+HBOX=400
+WBOX=250
+MIN=1000
+DV=50
+
+           
+
+FILE=data.cmp1.su
+
+FILEVEL=$FILE'vel'
+sushw key=cdp  < $FILE a=1 | suvelan nv=$NV dv=$DV fv=$MIN cmap=hsv'8' |
+#x2beg=$MIN x2end=$MAX  | 
+sushw key=ntr a=$NV |  
+suximage  legend=1 f2=$MIN d2=$DV d1=0.2 f1=0 title="Semblanza" mpicks=./vel &
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

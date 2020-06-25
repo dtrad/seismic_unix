@@ -1,0 +1,22 @@
+#! /bin/sh
+
+#FILE1=~/ps/cdps2b.ps
+#FILE2=~/ps/cdps2_enmo0.ps
+#FILEOUT=~/ps/FigENMO_real0.ps
+
+#psmerge in=$FILE1 in=$FILE2 scale=0.3,0.3  scale=0.8,0.8 translate=0,4 translate=2,1 > ${FILEOUT}
+
+
+FILE1=~/ps/surio1.ps
+FILE2=~/ps/fig10rioc.ps
+FILEOUT=~/ps/figparab_alias.ps
+scale1=0.3,0.3 
+scale2=0.6,0.6 
+translate1=0,6 
+translate2=2.5,3
+
+
+psmerge in=$FILE1 in=$FILE2 scale=$scale1 scale=$scale2 translate=$translate1 \
+    translate=$translate2 > $FILEOUT
+
+gv $FILEOUT &

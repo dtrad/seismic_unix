@@ -1,0 +1,65 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a ../bin/libdan.a
+
+LFLAGS= $(PRELFLAGS) -L$L -L../bin -lsu -lpar -lcwp -lm  -ldan $(POSTLFLAGS)
+
+PROG=suradoncgfft
+
+FLAG=-c -O3 -Wall -g
+
+OBJ=  $(PROG).o  Complex.o interpovv.o modelweight.o save_vector.o \
+		 radoncgfft.o nmo.o radoncg_levinson.o circ_mult.o  \
+		 fftgo.o fftback.o \
+		 radon_param.o interval.o radfinv.o  taper.o  \
+		 htmult.o getvelocities.o radon_matrix.o
+	
+		 
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Complex.o: $(LIBC)/Complex.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interpovv.o: $(LIBC)/interpovv.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_vector.o: $(LIBC)/save_vector.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nmo.o: $(LIBC)/nmo.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+ctoeplitz.o: $(LIBC)/ctoeplitz.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fftgo.o: $(LIBC)/fftgo.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fftback.o: $(LIBC)/fftback.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_matrix.o: $(LIBC)/radon_matrix.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interval.o: $(LIBC)/interval.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radfinv.o: $(LIBC)/radfinv.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+taper.o: $(LIBC)/taper.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+htmult.o: $(LIBC)/htmult.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoncg_levinson.o: $(LIBC)/radoncg_levinson.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoncgfft.o: $(LIBC)/radoncgfft.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+circ_mult.o: $(LIBC)/circ_mult.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+getvelocities.o: $(LIBC)/getvelocities.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)

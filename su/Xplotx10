@@ -1,0 +1,15 @@
+#! /bin/sh
+# PLOTS 
+# Plot for shot gathers.
+# Daniel Trad- UBC Nov 1999
+  
+FILE=fig18mig.ps
+LABELX="Some real shot gathers"
+LABELT="time(sec)" 
+
+FILEN=miss2.su
+
+suwind key=sx min=9187 max=9362  < $FILEN | susort sx cdp > pp
+supsimage d2=1  key=tracr label1=$LABELT label2=$LABELX perc=100 < pp \
+> ~/ps/$FILE
+

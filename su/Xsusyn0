@@ -1,0 +1,53 @@
+#! /bin/sh
+# Authors: Jack Cohen, John Stockwell--03/94
+WIDTH=600
+HEIGHT=450
+WIDTHOFF1=0
+WIDTHOFF2=640
+HEIGHTOFF1=50
+HEIGHTOFF2=530
+#Remark: Since synlv puts 10^3 in header fields internally,
+#        use kilo_units in distances and velocities
+
+######Common parameters for demo######
+v00=3.0     # P-wave velocity at surface
+dvdx=0.0    # velocity gradient (dv/dx)
+dvdz=1.5    # velocity gradient (dv/dz)
+nt=512 dt=0.004
+fpeak=20.0  # should be <= half nyquist to avoid spatial aliasing
+
+
+######Common Shot gathers (specify nxs, fxs, dxs)######
+# Hint: Keep shots well away from the boundaries to avoid edge contributions.
+#       Here, model goes from 0 to 12, first shot at fxs=4.0, last receiver
+#       roughly at fxs + nxs*dxs + nxo*dxo = 5.6
+
+#  ref="1:1,2;4,2"      reflector(s):  "amplitude:x1,z1;x2,z2;x3,z3;..."
+REF1="0.3:-15.0,0.8;15,2.0"
+REF2="0.4:-15.0,1.5;15,2.8"
+REF3="0.5:-15.0,2.2;15,3.6"
+REF4="0.5:-15.0,3.0;15,4.6"
+REF5="0.4:-15.0,3.3;15,5.2"
+REF6="0.5:-15.0,4.2;15.0,6.5"
+nxo=64 fxo=0 dxo=0.05  # offset information: number, first, spacing
+nxs=1  fxs=-4 dxs=0.1  # shot information: number, first, spacing
+ob=0			# to eliminate the turned ray contribution
+
+susynlv v00=$v00 dvdx=$dvdx dvdz=$dvdz \
+		nt=$nt dt=$dt verbose=0 \
+		ref=$REF1 ref=$REF2 ref=$REF3 ref=$REF4 ref=$REF5 ref=$REF6\
+		nxo=$nxo fxo=$fxo dxo=$dxo \
+		nxs=$nxs fxs=$fxs dxs=$dxs \
+		ob=$ob fpeak=$fpeak ndpfz=10 > pp
+#suxmovie perc=99 title="Shot Gathers" windowtitle="Shots" \
+#	label1="Time (sec)" label2="Shot Gather" f2=1 d2=0.0625 \
+#	-geometry ${WIDTH}x${HEIGHT}+${WIDTHOFF1}+${HEIGHTOFF1} < sudata1 &
+# Note: 16 offsets at nominal unit spacing (tracr), so d2 = 1/16 = 0.0625
+sushw key=ntr a=$nxo < pp > sudata1
+suxwigb < sudata1   key=offset  wbox=550 hbox=650  &
+exit 0
+
+
+
+
+

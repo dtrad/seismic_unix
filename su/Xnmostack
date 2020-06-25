@@ -1,0 +1,8 @@
+#!/bin/sh
+set -x
+sunmo par=stkvel."$1" < "$1" | sustack key=cdp > pp
+Xsetntr pp
+suximage < pp perc=98 &
+
+
+

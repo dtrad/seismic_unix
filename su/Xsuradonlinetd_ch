@@ -1,0 +1,246 @@
+#! /bin/sh
+# shell for multiple attenuation by RT along a line
+# June 16 -2001
+# Daniel Trad - UBC
+
+set -x
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+NAME=line159cr # Complete data
+#NAME=cdp${1}char
+FILE=~/china/$NAME'.su'
+FILEOUT=$NAME'.demul.su'
+#PAR=stkvel.line159ar0.su
+PAR=stkvel.line159a.su
+
+CDPMIN=${1}
+CDPMAX=${1}
+dxcdp=1
+ntrmax=100000000   # For fast tests use only few traces.
+
+######################################
+# Radon parameters
+
+VERBOSE=1
+mute=1        
+
+PLOTOPT='XPLOT3'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+
+# Parameters for the center of the line
+#parmute=4.8e-7
+dperv=0.06;
+pervmin=1e-9;
+
+
+nq=63
+step=0.99
+itercg=10
+iter_end=1
+filtout=1
+restart=1
+LI=0
+t0=0
+clip=63 #clip corresponding to perc=100
+norm=1
+#nw=21
+fpeak=25
+nw=0
+plot=1
+outputmodel=1
+tm=0
+
+
+# Parameters for the line159
+centralq=8
+dperv=0.0
+iter_end=3
+itercg=10
+nq=82
+pervmin=4e-9
+mute=1
+
+# Testing parameters for CDP 3001
+centralq=8
+dperv=0.04
+iter_end=5
+itercg=10
+nq=82
+pervmin=3e-9
+mute=1
+tm=0
+t0=1
+parmute=5.e-7
+
+paramset=1
+ 
+if [ $paramset -eq 1 ];then
+    centralq=8
+    dperv=0.04
+    iter_end=5
+    itercg=10
+    pervmin=3e-9
+    parmute=4.8e-7
+    tm=1.5
+    t0=0
+elif [ $paramset -eq 2 ];then
+    centralq=40
+    dperv=0.04
+    iter_end=3
+    itercg=10
+    pervmin=3e-9
+    parmute=1.9e-7
+    PAR=stkvel.line159a.cte.su
+    tm=1.5
+    t0=0
+else
+    centralq=8
+    dperv=0.0
+    iter_end=3
+    itercg=10
+    pervmin=4e-9
+    parmute=5.e-7
+fi 
+
+
+suradonlinetd < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp nhcdp=$nhcdp par=$PAR itercg=$itercg iter_end=$iter_end eps2=5e-2 eps1=5e-2 nq=$nq verbose=$VERBOSE ntrmax=$ntrmax tmpdir='./' norm=0 t0=$t0 mute=$mute  parmute=$parmute testadj=$testadj  LI=$LI nw=$nw centralq=$centralq dperv=$dperv pervmin=$pervmin filtout=$filtout restart=$restart  tm=$tm plot=$plot outputmodel=$outputmodel  > $FILEOUT
+
+$PLOTX < $FILEOUT  title=$label  &
+
+################################################################
+
+case $PLOTOPT in
+    PSPLOT*)
+    ;;
+
+    XPLOT2*)
+    
+    cdp=$CDPMIN
+      
+    while [ $cdp -le $CDPMAX ]
+    do
+    title=$cdp' CDP'
+    suwind key=cdp min=$cdp max=$cdp  < $FILEOUT | $PLOTX  title=$title &
+    suwind key=cdp min=$cdp max=$cdp  < model.su | $PLOTR  title=$title &
+
+cdp=`bc -l <<END
+		$cdp + $DXCDP
+END`
+
+
+    done
+    ;;
+esac
+
+
+
+exit 0
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

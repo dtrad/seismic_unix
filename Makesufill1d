@@ -1,0 +1,48 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I/usr/local/cwp/include  -I/home/dtrad/claerbout -I/home/dtrad/radon/clibrary 
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=sufill1d
+
+FLAG=-c -O -Wall
+
+OBJ=  $(PROG).o miss1.o cgstep.o dot.o conjzero.o contran.o missfip.o \
+	scale.o copy.o shaper.o iner.o contruc.o
+
+
+LIBC=/home/dtrad/radon/clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+miss1.o: miss1.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+cgstep.o: cgstep.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dot.o: $(LIBC)/dot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+contran.o: contran.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+conjzero.o: conjzero.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+missfip.o: missfip.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+scale.o: scale.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+copy.o: copy.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+shaper.o: shaper.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+iner.o: iner.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+contruc.o: contruc.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+

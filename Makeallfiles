@@ -1,0 +1,14 @@
+#! /bin/sh
+# Recompile all files
+#rm *.o 
+make -f Makesuhrrtf
+make -f Makesuhrrti
+make -f Makesuradtd
+make -f Makesuradtdi
+make -f Makesueomig3
+make -f Makesukmig2
+make -f Makesuradnmo
+make -f Makesuvelanrt
+make -f Makesuvelanrti
+make -f Makesumyfilt
+

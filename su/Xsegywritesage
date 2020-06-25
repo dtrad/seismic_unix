@@ -1,0 +1,34 @@
+#!/bin/sh
+# this script writes a segy file from a data set processed 
+# with SU. The original header is put back by using the following
+# trick: scale to 0 the original data set and then add to this
+# the processed data set. It can be done also with sushw.
+# Note: to obtain the original data set from SAGE, use this:
+#
+# segyread tape=temp1.segy | segyclean | susetntr > temp1.su
+# sushw key=cdp a=1 < temp1.su > goodf_s35.su
+#
+# To obtain temp1.segy from sage data use :
+# je fi=testoutsegy.1
+# To write the segy file as sage use:
+# je fi=testoutsegy.2
+#
+# Daniel Trad - Veritas - March 7, 2003.
+ 
+set -x 
+# file with the good header
+file0=temp1.su  
+#preprocessed file
+file1=goodf_s35.dgroll.su
+#scratch file
+fileaux=pp.su 
+# output file
+fileout=temp1b
+ 
+#exchange headers
+sugain scale=0 < $file0 > $fileaux
+suop2 $fileaux $file1 op=sum > ${fileout}.su
+
+# sutosegy
+segywrite < ${fileout}.su tape=${fileout}.segy
+

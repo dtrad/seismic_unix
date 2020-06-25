@@ -1,0 +1,62 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include  -I./clibrary  -I$(HOME)/recipesc/util -I$(HOME)/recipesc/files
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a  $L/libdan.a $L/libnr.a
+
+LFLAGS= $(PRELFLAGS) -L$L -L../bin -lsu -lpar -lcwp -lm -lnr -ldan $(POSTLFLAGS)
+
+PROG=suradonsolvernlcg
+
+FLAG=-c -O3 -Wall 
+
+OBJ=  $(PROG).o  radonsolvernlcg0.o radonsolvernlcg.o nlcg_interface.o \
+		 complex2real.o modelweight.o  radon_matrix.o radon_param.o interval.o \
+		 taper.o nmo.o interpovv.o getvelocities.o radoninv.o 
+	       	 	
+
+
+LIBU=$(HOME)/recipesc/util
+
+LIBF=$(HOME)/recipesc/files
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ) $D
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonsolvernlcg0.o: $(LIBC)/radonsolvernlcg0.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonsolvernlcg.o: $(LIBC)/radonsolvernlcg.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nlcg_interface.o: $(LIBC)/nlcg_interface.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+complex2real.o: $(LIBC)/complex2real.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_matrix.o: $(LIBC)/radon_matrix.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interval.o: $(LIBC)/interval.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+taper.o: $(LIBC)/taper.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nmo.o: $(LIBC)/nmo.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interpovv.o: $(LIBC)/interpovv.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+getvelocities.o: $(LIBC)/getvelocities.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoninv.o: $(LIBC)/radoninv.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nrutil.o: $(LIBU)/nrutil.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+

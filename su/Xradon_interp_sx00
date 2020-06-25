@@ -1,0 +1,363 @@
+#! /bin/sh
+# Xradon_cdp1000_demul --- Multiple attenuation with  Radon Transform.
+######################################################################
+# Author: Daniel Trad- November 2001
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=94"
+
+set -x
+
+METHOD='SOL'
+#METHOD='TFD'
+#METHOD='HRF'
+METHOD='TD'
+METHOD='TX'
+METHOD='FK'
+METHOD=$1
+RADONFORW='y'
+
+sufix=${METHOD}
+echo $METHOD
+
+if [ ${METHOD} = 'SOL' ]; then
+    sufix="${1}"
+else
+    sufix="FK"
+fi
+
+FILE=sx1ext0.su; clip=  #clip corresponding to perc=97
+
+FILEN=$FILE
+FILEGAP=$FILE'gap'
+FILETEMP=pp
+FILETEMP2=ppp
+
+offsetfile=$FILE'off'
+
+FILERAD=${FILEN}'rad'${sufix}
+FILERAD2=${FILEN}'rad'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILEREC2=$FILEN'recb'${sufix}
+FILEMIX=$FILEN'mix'${sufix}
+FILERES=$FILEN'res'${sufix}
+FILERESAMP=$FILE'resamp'${sufix}
+RESAMPLE='n'
+PAR="stkvel.shotpc.su"
+par=$PAR
+
+# Options
+SETNTR='y'
+GETH='y'
+FILT='n'
+TAPER='n'
+OPTIONGAP='y'
+
+# PASS BAND FILTER
+F=1,10,70,80
+AMPS=0,1,1,0
+# RADON
+#***Freq############################ 
+
+VERBOSE=1
+fold=1
+buffer=10; 
+iter_end=4
+sinc=0;
+parmute=3e-9
+parmute=22e-9
+nq=90
+under=0.999
+over=1.001
+qmin=-2e-9
+factor=1.1
+fmax=100
+
+if [ $METHOD = 'SOL' ]; then
+    eps1=1e-2
+    eps2=1e-2
+    factor=1.6
+    norm=0
+    eps=1e-7
+    rtmethod=2
+    itercg=25
+    verbose=0
+    depth=1000
+    PROGRAM=suradonsolver
+    solver="$1"
+elif [ $METHOD = 'TFD' ]; then
+    eps1=1e-2
+    eps2=1e-2
+    factor=1.5
+    norm=0
+    eps=1e-7
+    rtmethod=2
+    itercg=25
+    verbose=0
+    depth=1000
+    PROGRAM=suradonwtcgls_tfd
+    solver="$1"
+elif [ $METHOD = 'TD' ]; then
+    eps1=1e-3
+    eps2=1e-3
+    PROGRAM=suradontd1
+    eps=0.01
+    dperv=0.03;
+    dperv=0.03;
+    pervmin=0.5e-9;
+    centralq=30
+    nq=100
+    perc=100
+    step=0.9
+    itercg=5
+    iter_end=3
+    smoothf=0
+    smoothi=0
+    testadj=0
+    filtout=0
+    restart=1
+    LI=1
+    t0=0
+    clip=63 #clip corresponding to perc=100
+    norm=1
+    nw=21
+    fpeak=25
+    nw=0
+    dtres=0.008
+    ntres=875
+elif [ $METHOD = 'TX' ]; then
+    eps1=1e-3
+    eps2=1e-3
+    PROGRAM=suinterptx
+    eps=0.01
+    dperv=0.03;
+    dperv=0.03;
+    pervmin=0.5e-9;
+    centralq=30
+    nq=70
+    perc=100
+    step=0.9
+    itercg=5
+    iter_end=1
+    smoothf=0
+    smoothi=0
+    filtout=0
+    restart=1
+    LI=0
+    t0=0
+    clip= #clip corresponding to perc=100
+    norm=1
+    nw=21
+    fpeak=25
+    nw=0
+    dtres=0.008
+    ntres=875
+elif [ $METHOD = 'FK' ]; then
+    eps1=1e-3
+    eps2=1e-3
+    PROGRAM=suinterpfk0
+    eps=0.01
+    dperv=0.03;
+    dperv=0.03;
+    pervmin=0.5e-9;
+    centralq=30
+    nq=70
+    perc=100
+    step=0.9
+    itercg=5
+    iter_end=1
+    smoothf=0
+    smoothi=0
+    filtout=0
+    restart=1
+    LI=0
+    t0=0
+    clip= #clip corresponding to perc=100
+    norm=1
+    nw=21
+    fpeak=25
+    nw=0
+    dtres=0.008
+    ntres=875
+
+else 
+    PROGRAM=donothing
+fi
+
+scale=1.0
+CDPMIN=1000
+DXCDP=1
+CDPMAX=1000
+
+reject1=1968,2047,2126,2992,3071,3149,3228
+reject1=1968,1994,2021,2047,2073,2099,2126,2992,3018,3044,3071,3097,3123,3149,3176,3202,3228
+#reject1=1417,1443,1469,1496,1522,1548,1574,1601,1627,1653,1679,1706,1732,1758,1784
+
+if [ $RADONFORW = 'n' ]; then
+    PROGRAM="skipforward"
+fi
+
+############################*****
+perc=100
+
+cp $FILE $FILETEMP
+
+if [ $OPTIONGAP = 'y' ]; then
+    suwind key=offset abs=1 min=0 < $FILETEMP | suwind key=offset reject=$reject1 > $FILETEMP2  
+    #reject=$reject1 accept=$accept1 
+    #suwind key=offset j=2   
+    Xsetntr  $FILETEMP2
+    cp $FILETEMP2 $FILETEMP
+    cp $FILETEMP  $FILEGAP
+
+    $PLOTX perc=$perc < $FILETEMP &
+    
+fi
+
+
+if [ $SETNTR = 'y' ]; then 
+    Xsetntr $FILETEMP
+fi
+
+if [ $FILT = 'y' ]; then
+    sufilter f=$F amps=$AMPS < $FILETEMP > $FILETEMP2;
+    cp  $FILETEMP2 $FILETEMP
+fi
+
+# Save offset  for inverse radon transform
+if [ $GETH = 'y' ]; then
+    sugethw key=offset output=geom < $FILE > $offsetfile    
+fi
+
+if [ $TAPER = 'y' ]; then
+    sutaper < $FILETEMP > $FILETEMP2; cp $FILETEMP2 $FILETEMP
+fi
+
+if [ $RESAMPLE = 'y' ]; then
+    suresamp < $FILETEMP dt=$dtres nt=$ntres > $FILETEMP2
+    cp $FILETEMP2 $FILETEMP
+    cp $FILETEMP2 $FILERESAMP
+fi
+
+
+case $PROGRAM in
+suradonsolver*)
+    $PLOTX < $FILETEMP &
+	
+    suradonsolver < $FILETEMP verbose=$verbose par=$par itercg=$itercg iter_end=$iter_end solver=$solver rtmethod=$rtmethod  depth=$depth eps2=$eps2 eps1=$eps1 eps=$eps testadj=0  nq=$nq qmin=$qmin norm=$norm nmofactor=1 smute=3.0  step=0.95 factor=$factor modelfile=$FILERAD  quantil=1 fmax=$fmax > $FILEREC
+
+    $PLOTX clip=$clip < $FILEREC title="Reconstructed data from suradonsolver " &
+;;
+suradonwtcgls_tfd*)
+    $PLOTX < $FILETEMP &
+	
+    suradonwtcgls_tfd < $FILETEMP verbose=$verbose par=$par itercg=$itercg iter_end=$iter_end solver=$solver rtmethod=$rtmethod  depth=$depth eps2=$eps2 eps1=$eps1 eps=$eps testadj=0  nq=$nq qmin=$qmin norm=$norm nmofactor=1 smute=3.0  step=0.95 factor=$factor modelfile=$FILERAD  quantil=1 > $FILEREC
+
+    $PLOTX clip=$clip < $FILEREC title="Reconstructed data from suradonwtcgls_tfd " &
+;;
+suradontd1*)
+    suradontd1 eps1=$eps1 eps2=$eps2 iter_end=$iter_end itercg=$itercg eps=$eps \
+    step=$step  smooth=0 testadj=$testadj verbose=$verbose par=$PAR \
+    modelfile=$FILERAD  norm=$norm nw=$nw fpeak=$fpeak centralq=$centralq \
+    dperv=$dperv pervmin=$pervmin nq=$nq \
+    filtout=$filtout restart=$restart LI=$LI t0=$t0 < $FILETEMP > $FILEREC
+;;
+suinterptx*)
+    suinterptx eps1=1e-1 eps2=1e-1 iter_end=3 itercg=10 eps=1e-3 \
+    step=0.97  smooth=0 verbose=1 par="stkvel.shotpc.su" \
+    modelfile=$FILERAD offsetfile=$offsetfile norm=$norm \
+    LI=0 t0=0 nw=0 < $FILETEMP > $FILEREC
+;;
+suinterpfk*)
+#    suinterpfk0 < $FILETEMP  vmig=2800,2800 tmig=0,7 offsetfile=$offsetfile plot=0 \
+#    itercg=8 iter_end=3 step=0.95 testadj=0 eps1=8e-1 eps2=8e-1 modelfile=$FILERAD \
+#    ascale=1 fpeak=20 nw=0 typewav=2 option=3 > $FILEREC
+
+    suinterpfk0 < $FILETEMP  vmig=3000,3200 tmig=0,6 offsetfile=$offsetfile plot=0 \
+    itercg=20 iter_end=3 step=0.98 testadj=0 eps1=5e-1 eps2=5e-1 modelfile=$FILERAD \
+    ascale=1 fpeak=20 nw=0 typewav=2 option=3 > $FILEREC
+
+
+;;
+skipforward*)
+echo "Skipping forward model.................................."
+echo "........................................................"
+;;
+esac
+
+$PLOTX perc=$perc < $FILERAD title="Radon transform"  perc=97 &
+$PLOTX clip=$clip < $FILEREC title="Reconstructed data from ${PROGRAM} " &
+
+susort +offset < $FILEREC | sugain tpow=1 > $FILEREC2
+susort +offset < $FILERAD > pp; mv $FILETEMP $FILERAD
+case $PROGRAM in
+suradontd1*)
+    if [ $RESAMPLE = 'y' ]; then
+	suradontdi0 modelfile=$FILERAD2 vgridfile="vgrid" datafile=$FILERESAMP  \
+	offsetfile=$offsetfile > $FILEREC2
+	suresamp < $FILEMULT dt=0.004 nt=1751 > $FILETEMP
+	cp $FILETEMP $FILEMULT
+    else
+	suradontdi0 modelfile=$FILERAD2 vgridfile="vgrid" datafile=$FILE  \
+	offsetfile=$offsetfile > $FILEREC2
+    fi
+;;
+surad*)
+suradoninv $FILE $FILERAD2 fmax=$fmax offsetfile=$offsetfile par=$par nq=$nq nmofactor=1 smute=3.0 > $FILEREC2    
+;;
+esac
+
+#sugain scale=1.2 < $FILEREC2 | sufilter f=60,70 amps=1,0 > $FILETEMP ; cp $FILETEMP $FILEREC2
+
+sumixgathers  $FILEGAP $FILEREC2 | susort +offset > $FILEMIX
+#suwind key=offset reject=-16,0,16 < $FILEMIX >  $FILEMIX'2'
+Xsetntr $FILEMIX
+suop2 $FILE $FILEMIX op=diff > $FILERES
+
+#$PLOTX clip=$clip < $FILEREC2 title="interpolated1" &    
+#$PLOTX clip=$clip < $FILEMIX title="interpolated2" &    
+#$PLOTX clip=$clip < $FILERES  title="residuals" &
+
+supswigp < $FILEREC2 perc=99 x1beg=1.85 x1end=4 title=$FILEREC2 | gv - &
+supswigp < $FILEMIX perc=99 x1beg=1.85 x1end=4 title=$FILEMIX | gv - &
+supswigp < $FILERAD perc=99 x1beg=1.85 x1end=4 title=$FILERAD | gv - &
+
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

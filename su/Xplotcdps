@@ -1,0 +1,29 @@
+#! /bin/sh
+# PLOTS 
+# Plot for cdps.
+# Daniel Trad- UBC Nov 1999
+
+set -x
+
+NAME=sinclinal3_ray # Test data 
+FILE1=$NAME'.gathers.su'
+FILE1=$NAME'.CSP.WDN.su'
+FILE1=$1
+
+PLOTX="suxwigb key=offset perc=99  labelsize=22 label2=cdp label1=t(s)"
+
+
+cdpmin=500
+cdpmax=4500
+
+dcdp=200
+
+cdp=$cdpmin
+while [ $cdp -le $cdpmax ]
+do 
+suwind < $FILE1 key=cdp min=$cdp max=$cdp | $PLOTX  title=$cdp
+
+cdp=` expr $cdp + $dcdp`
+done
+
+exit 0

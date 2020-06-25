@@ -1,0 +1,10 @@
+ #! /bin/sh
+ set -x
+ DATA1=sudata1
+ DATA2=sudata1recf
+ 
+
+ suop < $DATA1 > data1n op=norm 
+ suop < $DATA2 > data2n op=norm
+ suop2 data1n data2n op=diff > data3diff 
+ supsimage key=offset < data3diff | ghostview - &

@@ -1,0 +1,91 @@
+#! /bin/sh
+# PLOTS 
+# Plot for interpolation of mixed shots using suinterpfk4
+# Daniel Trad- UBC Nov 1999
+set -x 
+
+FIGURE="$1"
+
+FILEN=kencmpwin
+
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.surad0RFK'
+FILE3=$FILEN'.suradRFK'
+FILE4=$FILEN'.surecRFK'
+FILE5=$FILEN'.suresRFK'
+
+
+TITLE1="(a)" #data
+TITLE2="(b)" #migrated data
+TITLE3="(c)" #mute
+TITLE4="(d)" #diffractions 
+TITLE5="(d)" #data after subtraction 
+
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)"
+
+parimage="f2=213 d2=50 perc=$2 clip=$3"
+parwigle="clip=2"
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 ${parwigle}  "
+PLOTX2="supsimage label1=$LABEL1 label2=$LABEL2 ${parimage}  "
+
+
+if [ $FIGURE -eq 1 ];then 
+
+image=1 # image
+#image=0 # wigle plot 
+if [ $image -eq 1 ]; then
+FILE='suinterpfk_keni.ps'  
+suwind key=offset min=0 < $FILE1 | sushw key=delrt a=5500 | $PLOTX2 title=$TITLE1  > p  
+suwind key=offset min=0 < $FILE2 | sushw key=delrt a=5500 | $PLOTX2 title=$TITLE2  > pp
+suwind key=offset min=0 < $FILE3 | sushw key=delrt a=5500 | $PLOTX2 title=$TITLE3  > ppp
+suwind key=offset min=0 < $FILE4 | sushw key=delrt a=5500 | $PLOTX2 title=$TITLE4  > pppp 
+else
+FILE='suinterpfk_kenw.ps' 
+
+suwind key=offset min=0 < $FILE1 | sushw key=delrt a=5500 | $PLOTX title=$TITLE1  > p  
+suwind key=offset min=0 < $FILE2 | sushw key=delrt a=5500 | $PLOTX title=$TITLE2  > pp
+suwind key=offset min=0 < $FILE3 | sushw key=delrt a=5500 | $PLOTX title=$TITLE3  > ppp
+suwind key=offset min=0 < $FILE4 | sushw key=delrt a=5500 | $PLOTX title=$TITLE4  > pppp 
+fi
+
+
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.45,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2 > ~/ps/$FILE
+
+gv ~/ps/$FILE &
+
+elif [ $FIGURE -eq 2 ];then 
+
+FILE='suinterpfk_ken2.ps' 
+suwind key=offset min=0 < $FILE1 | sushw key=delrt a=5500 | $PLOTX2 title=$TITLE1  > p  
+suwind key=offset min=0 < $FILE5 | sushw key=delrt a=5500 | $PLOTX2 title=$TITLE2  > pp
+
+supsmerge in=p in=pp scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.45,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2 > ~/ps/$FILE
+gv ~/ps/$FILE &
+
+
+fi
+
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

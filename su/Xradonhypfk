@@ -1,0 +1,27 @@
+#! /bin/sh
+# Hyperbolic RT in the freq domain
+# Daniel Trad.
+
+plotr="suxwigb key=f2"
+
+set -x
+FILE=datap.su
+FILEOUT=model.su
+cdpmin=0
+cdpmax=62
+dxcdp=12.5
+nrad=40
+dv=50
+vmig=3000
+plot=0
+
+vmin=2000
+
+nq=50
+dx=25
+
+#sustoltrad_adj < $FILE plot=$plot cdpmin=$cdpmin cdpmax=$cdpmax dxcdp=$dxcdp nrad=$nrad dv=$dv vmig=$vmig > $FILEOUT
+
+suradonhypfk < $FILE > $FILEOUT vmin=$vmin dv=$dv nq=$nq adj=1 dx=$dx plot=$plot
+
+$plotr < $FILEOUT

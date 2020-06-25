@@ -1,0 +1,210 @@
+#! /bin/sh
+# Xradon --- Hyperbolic Radon Transform.
+######################################################################
+# Example: real  sucdps2, sumiss2
+# PAPER Xradonlin0b 20 1 0.3 0 0.1 10 51
+#######################################################################
+# Author: Daniel Trad- November 1999
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+HBOX=400
+WBOX=350
+
+
+set -x
+NT=512 
+NH=111
+NP=150
+DT=4000
+
+VNMO=1500,2000,3000
+TNMO=0.5,1,2
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+
+FILE=cdps2.su
+FILEN=$FILE'LRT'
+FILETEMP=pp
+FILETEMP2=ppp
+FILENMO=$FILE'nmo'
+FILEGAP=$FILE'gap'
+FILEOFF=$FILE'off'
+FILERAD=$FILEN'rad'
+FILEREC=$FILEN'rec'
+FILERADOFF=$FILEN'radoff'
+FILERAD2=$FILEN'radb'
+FILEREC2=$FILEN'recb'
+FILEMOD=$FILE'mod'
+FILEOFF2=$FILEOFF'2' # Final offset in which data will be resampled 
+
+# Options
+OPTIONGAP='n'
+OPTIONSETNTR='y'
+OPTIONGETH='y'
+OPTIONFILT='n'
+OPTIONAGC='n'
+OPTIONRAD='y'
+OPTIONENMO='n'
+OPTIONENMO1='n'
+OPTIONREC='n'
+OPTIONREC2='y'
+
+# PASS BAND FILTER
+F=1,10,70,80
+AMPS=0,1,1,0
+# RADON (see suhrrtf for more details)
+METHOD=2 # 
+EPS1=1  # Variance of the noise
+ITER_END=1 ; # External iterations 
+QMIN=-0.3e-3;
+QMAX=0.7e-3;
+NQ=180      # NP traces
+FMAX=70     # max freq to compute
+RTMETHOD=1 # 1=LRT 2=PRT 3=HRT
+COSTFLAG=0 # =1 PLOT COST FUNCTIONS (SLOWER)
+ITERCG=14  # CG ITERATIONS
+EPS=0      # =0 FOR METHOD 2 
+NORM=1     # L1 NORM
+STEP=0.8  # Step less 1
+THRES=0.5 
+FACTOR=2.5
+SMOOTH=0
+TVEL=0.0,4.2
+
+tvel=0.01741,0.1323,0.2368,0.3203,0.4491,0.5431,0.5675,0.6859,0.8495,1.017,1.128,1.233,1.271,1.4,1.518,1.636,1.737,1.898,2.037,2.152,2.166
+vel=2412,2446,2520,2600,2691,2736,2748,2822,3004,3158,3181,3306,3363,3517,3545,3517,3454,3329,3204,3084,3073
+
+cp $FILE $FILETEMP
+# Save offset  for inverse radon transform
+
+case $OPTIONGETH in
+y*)
+sugethw key=offset output=geom < $FILE > $FILEOFF
+;;
+esac
+
+case $OPTIONGAP in
+y*)
+suwind key=offset abs=1 min=200 max=700 < $FILETEMP > $FILETEMP2
+cp $FILETEMP2 $FILETEMP 
+$PLOTX < $FILETEMP &
+;;
+esac
+
+
+case $OPTIONSETNTR in
+y*)
+ntr=`surange < $FILE | sed 1q | sed 's/traces://'`
+cp $FILETEMP $FILETEMP2
+sushw key=ntr a=$ntr < $FILETEMP2 > $FILETEMP 
+;;
+esac
+
+case $OPTIONFILT in
+y*)
+sufilter f=$F amps=$AMPS < $FILETEMP > $FILETEMP2
+cp $FILETEMP2 $FILETEMP
+;;
+esac
+
+
+# Save offset  for inverse radon transform
+case $OPTIONGETH in
+y*)
+sugethw key=offset output=geom < $FILE > $FILEOFF
+;;
+esac
+
+case $OPTIONRAD in
+y*)
+#Forward  Radon transform: Time domain
+suhrrtf method=1 eps1=1 iter_end=$NITER qmin=$QMIN nq=$NQ freq=$FMAX rtmethod=1  costflag=0 itercg=35 eps=0 norm=1 step=.5 < $FILETEMP  > $FILERAD 
+
+#Forward  Radon transform: Time domain
+#suradtd method=$METHOD  eps1=$EPS1 iter_end=$ITER_END qmin=$QMIN qmax=$QMAX nq=$NQ freq=$FMAX rtmethod=$RTMETHOD costflag=$COSTFLAG itercg=$ITERCG eps=$EPS norm=$NORM step=$STEP thres=$THRES smooth=$SMOOTH factor=$FACTOR testadj=1 < $FILETEMP  > $FILERAD 
+
+$PLOTR < $FILERAD perc=90 &
+;;
+esac
+
+
+case $OPTIONENMO in
+y*)
+suenmo model=0 smooth=0 < $FILERAD itercg=5 vmin=900 testadj=0 nv=40 \
+iter_end=3 eps1=1e-3 eps2=1e-3  > $FILERAD2
+$PLOTR < $FILERAD2 perc=90 &
+;;
+esac
+
+step=1
+itercg=$1
+iter_end=$2
+eps1=$3
+norm=$4
+dv=$5
+vmin=$6
+nv=$7
+taper=0
+
+case $OPTIONENMO1 in
+y*)
+suenmo3 model=1 smooth=1 < $FILERAD itercg=$itercg vmin=$vmin testadj=1 nv=$nv iter_end=$iter_end eps1=$eps1 norm=$norm eps2=1e-3 taper=$taper vel=$vel tvel=$tvel dv=$dv step=$step eps=0.01 method=0 modelfile=$FILEMOD itercgfin=$1  > $FILERAD2
+perc=90
+$PLOTR < $FILERAD perc=$perc &
+$PLOTR < $FILERAD2 perc=$perc &
+
+;;
+esac
+
+#Inverse Radon Transform
+case $OPTIONREC in
+y*)
+suhrrti rtmethod=$RTMETHOD offsetfile=$FILEOFF2  fmax=$FMAX < $FILERAD  > $FILEREC
+#suradtdi rtmethod=$RTMETHOD fmax=$FMAX offsetfile=$FILEOFF2 smooth=$SMOOTH < $FILERAD > $FILEREC
+$PLOTX < $FILEREC perc=90 &
+;;
+esac
+
+case $OPTIONREC2 in
+y*)
+#Inverse Radon Transformr
+suhrrti rtmethod=$RTMETHOD offsetfile=$FILEOFF2  fmax=$FMAX < $FILERAD2  > $FILEREC2
+
+#suradtdi rtmethod=$RTMETHOD fmax=$FMAX offsetfile=$FILEOFF2 smooth=$SMOOTH < $FILERAD2 > $FILEREC2
+$PLOTX < $FILEREC2 perc=90 &
+;;
+esac
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

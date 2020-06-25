@@ -1,0 +1,2 @@
+#! /bin/sh
+sufft < $1 | suamp| sustack key=cdp  | suxgraph style=normal width=500 height=250 title="Spectrum for $1" label1="Frequency" label2="Amplitude" &

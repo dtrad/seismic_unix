@@ -1,0 +1,38 @@
+#!/bin/sh
+FILEN=$1
+FILE=$FILEN'.su'
+
+FILEPS="../ps/${FILE}.ps"
+FILEJPG="../jpg/${FILE}.jpg"
+
+suswapbytes < '../work2/'$FILE > $FILE
+#cp '../work2/'$FILE $FILE
+
+label1="time(s)"
+#label2="offset(feet)"
+label2="CMP"
+#title="cdp 2000"
+title="Stack"
+#title="Migrated with RADON-EOM"
+#title="Migrated with RADON (freq)-EOM "
+#title="Migrated with EOM"
+perc=97
+key=cdp
+gain="y";
+
+
+#supswigp key=$key perc=$perc < $FILE title=$title label1=$label1 label2=$label2 > $FILEPS
+if [ $gain = 'y' ]; then
+    sugain tpow=2 < $FILE | suwind j=1 | supsimage perc=$perc title=$title label1=$label1 label2=$label2 > $FILEPS
+else
+    supsimage perc=$perc < $FILE title=$title label1=$label1 label2=$label2 > $FILEPS    
+fi
+
+
+
+#convert $FILEPS $FILEJPG
+
+gv ~/ps/$FILEPS &
+
+
+

@@ -1,0 +1,39 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+
+IDIR=-I$(CWPROOT)/include  -I$(HOME)/seismic/clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/libdan.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm -ldan $(POSTLFLAGS)
+
+PROG=libdan.a
+
+FLAG=-c -O3 -Wall -g 
+
+#OBJ=  radonl1.o
+
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	ar r ../bin/$(PROG) $(OBJ) 
+$(PROG).o: $(PROG).cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dot.o: $(LIBC)/dot.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rcdot.o: $(LIBC)/rcdot.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+cdot.o: $(LIBC)/cdot.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+xplusy.o: $(LIBC)/xplusy.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+xtimesy.o: $(LIBC)/xtimesy.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Atimesy.o: $(LIBC)/Atimesy.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+AtimesBm.o: $(LIBC)/AtimesBm.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+

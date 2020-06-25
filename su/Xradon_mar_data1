@@ -1,0 +1,109 @@
+#! /bin/sh
+# Xradon --- Example of interpolation with high resolution radon.
+######################################################################
+# Example: real data sucdps2
+# 
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+NT=512 
+NH=111
+NP=150
+DT=4000
+#VNMO=2600,2800,3000,3200,3400
+#TNMO=0,0.5,1,1.5,2
+VNMO=5100,5300,5400,5500,5800,6000
+TNMO=1.1,1.7,2,3.4,5,7
+
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+
+FILE=sumis9187sg2 
+FILEN=sumis9187sg2 
+FILENMO=$FILEN'nmo'
+FILEGAP=$FILEN'gap'
+FILERAD=$FILEN'radcgcm'
+FILEREC=$FILEN'rec'
+FILEOFF=$FILEN'off'
+FILERADOFF=$FILEN'radoff'
+FILERAD2=$FILEN'radb'
+FILEREC2=$FILE'recbcgcm'
+FILEOFF2=susumis9187sgoff   # Final offset in which data will be resampled 
+
+#NMO in original data
+sunmo tnmo=$TNMO vnmo=$VNMO < $FILE > $FILENMO
+#suxwigb key=offset title="NMO corrected data" < sudata1nmo &
+
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILE > $FILEOFF
+#suxwigb < $FILENMO title="NMO corrected data"  key=offset wbox=550 hbox=650 & 
+
+#Create Gaps           //fprintf(stderr,"alfanum=%e,alfaden=%e\n",alfanum,alfaden);
+#suwind abs=1 key=offset min=0 max=900 < $FILENMO > pp
+#sushw key=ntr a=68 < pp  > $FILENMO
+#suxwigb < $FILENMO  key=offset hbox=$HBOX wbox=$WBOX &
+#suaddnoise < $FILEGAP > pp sn=10
+#cp pp $FILEGAP
+NITER=4
+#Forward  Radon transform
+suhrrtf method=1 eps1=1 iter_end=$NITER qmin=-2.2e-9 nq=150 freq=70 rtmethod=2 costflag=0 itercg=25 eps=0 norm=10 step=.5 < $FILENMO  > $FILERAD 
+sugethw key=f2 output=binary < $FILERAD > $FILERADOFF
+#xgraph d1=1 style=normal n=$NITER x1beg=0 x1end=$NITER < Jtottemp &
+# method 2 eps1=3 eps=1e-5 iter_end=5
+# method 2 eps1=10 eps=1e-15 iter_end=5
+# method 7 eps1=10 eps=1e-7 iter_end=10
+# method 4 eps1=1 eps=1e-5 iter_end=10
+
+#suxwigb < $FILERAD   key=f2 wbox=550 hbox=650 &
+##########
+#sumute < $FILERAD  key=f2 xmute=-2e-7,0e-7,0e-7,3e-7 tmute=0,0,2.0,2.0 below=1 > pp
+#sumute < pp  key=f2 xmute=-1e-7,.5e-7,.6e-7,1e-7,1.4e-7,2e-7  tmute=2.0,2.0,1.4,.8,.5,.4  below=1 > ppp
+#cp ppp $FILERAD2
+################
+#sumute < pp > $FILERAD2 key=f2 xmute=-2e-7,-2e-7,-1e-7,-1e-7,8e-7 tmute=0,2.1,2.1,0,0 below=0
+#cp $FILERAD $FILERAD2
+suxwigb < $FILERAD  perc=99  key=f2 wbox=550 hbox=650 &
+#Inverse Radon Transformr
+
+suhrrti rtmethod=2 offsetfile=$FILEOFF  fmax=70 < $FILERAD  > $FILEREC
+#cp $FILEREC $FILEREC2
+
+#NMO in original data
+sunmo tnmo=$TNMO vnmo=$VNMO invert=1 < $FILEREC  > $FILEREC2 
+#suxmovie title="NMO corrected data" < sudata1nmo &
+
+suxwigb < $FILEREC2   key=offset  wbox=550 hbox=650  &
+
+#binary file with radon parameter
+#sugethw key=f2 output=binary < $FILERAD2 > $FILERADOFF  
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

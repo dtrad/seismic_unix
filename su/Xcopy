@@ -1,0 +1,8 @@
+#! /bin/sh
+set -x
+CDP=1000
+cp "cdp${CDP}.$1.surad"  "cdp${CDP}.$2.surad"
+cp "cdp${CDP}.$1.surecb" "cdp${CDP}.$2.surecb"
+suop2 cdp${CDP}.su  "cdp${CDP}.$1.surecb" op=diff > "cdp${CDP}.$2.sures"
+#cp cdps2.td.sures  "cdps2.td$1.sures"
+

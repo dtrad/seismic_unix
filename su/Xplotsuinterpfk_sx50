@@ -1,0 +1,272 @@
+#! /bin/sh
+# PLOTS 
+# Plot for interpolation of mixed shots using suinterpfk4
+# Daniel Trad- UBC Nov 1999
+set -x 
+sufix=''
+
+FIGURE="$1"
+plotpar="x1beg=1.85 perc=98 x2beg= x2end= "
+plotpar2="x1beg=1.85 perc=98 "
+
+
+FILEN=sx50g
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.sugap'
+FILE2b=$FILEN'.suzero'
+FILE3=$FILEN'.suradFK'
+FILE4=$FILEN'.surecFKrt'
+FILE5=$FILEN'.suresFKrt'
+FILE6=$FILEN'.sumix'
+
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+TITLE5="(e)"
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)"
+LABELR2="q(s/m^2)"
+LABELR1="tau(sec)"
+LABELRF1="f(Hz)"
+
+parimage="f2=-4373 d2=26.5 x1beg=1.85 x1end=6 clip=0.05" # meters
+tpow="tpow=-1 scale=2 "
+parcurve="curve=curvefile1,curvefile2 npair=5,5"
+PLOTI="supsimage key=offset label1=$LABEL1 label2=$LABEL2 $parimage "
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=0.2 x1beg=1.8 x1end=6 x2beg=0 x2end=1000 curve=curvefile1 npair=5"
+PLOTX2="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=0.2 x1beg=1.8 x1end=6 x2beg=2000 x2end=3000 curve=curvefile2 npair=5 "
+
+
+
+
+if [ $FIGURE -eq 1 ];then 
+
+FILEA='/prg/dtrad/ubc/ps/figinterpfk_sx50a.ps'  
+
+sugain $tpow < $FILE2b | $PLOTI  title=$TITLE1  > p  
+sugain $tpow < $FILE3 | $PLOTI  title=$TITLE2  > pp
+sugain $tpow < $FILE4 | $PLOTI  title=$TITLE3  > ppp
+sugain $tpow < $FILE5 | $PLOTI  title=$TITLE4  > pppp 
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5   translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILEA
+
+ghostview $FILEA &
+
+elif [ $FIGURE -eq 2 ];then 
+FILEB='/prg/dtrad/ubc/ps/figinterpfk_sx50b.ps' 
+
+
+sugain $tpow < $FILE1 | $PLOTX  title=$TITLE1  > p  
+sugain $tpow < $FILE4 | $PLOTX  title=$TITLE2  > pp
+sugain $tpow < $FILE5 | $PLOTX  title=$TITLE3  > ppp
+sugain $tpow < $FILE6 | $PLOTX  title=$TITLE4  > pppp 
+
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILEB
+
+ghostview $FILEB &
+
+elif [ $FIGURE -eq 3 ];then 
+
+FILEC='/prg/dtrad/ubc/ps/figinterpfk_sx50c.ps' 
+
+
+sugain $tpow < $FILE1 | $PLOTX2  title=$TITLE1  > p  
+sugain $tpow < $FILE4 | $PLOTX2  title=$TITLE2  > pp
+sugain $tpow < $FILE5 | $PLOTX2  title=$TITLE3  > ppp
+sugain $tpow < $FILE6 | $PLOTX2  title=$TITLE4  > pppp 
+
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILEC
+
+ghostview $FILEC &
+
+elif [ $FIGURE -eq 4 ];then 
+
+FILEN=sx50gus
+
+PLOTFK="supsimage label1=f(Hz) label2=kx(1/m) interp=1 "
+
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.sugap'
+FILE2b=$FILEN'.suzerob'
+FILE2c=$FILEN'.suzeroc'
+FILE3=$FILEN'.suradFK'
+FILE4=$FILEN'.surecFKrt'
+FILE5=$FILEN'.suresFK'
+FILE6=$FILEN'.sumixFK'
+
+FILEC='/prg/dtrad/ubc/ps/figinterpfk_sx50d.ps' 
+
+
+sufill < $FILE2 dhnew=13.25 | sufilter amps=1,0 f=80,100 |  susetntr > $FILE2b
+sufill < $FILE2 dhnew=26.5 |  sufilter amps=1,0 f=80,100 |  susetntr > $FILE2c
+
+sumixgathers $FILE2 $FILE4 | susetntr > pp; susort +offset < pp > $FILE6
+suop2 $FILE2b $FILE4 > $FILE5
+
+# 
+#sutaperinv $FILE1 $FILE4 ntaper=50 > $FILE4'rt' 
+
+sugain $tpow < $FILE1 | $PLOTX2  title=$TITLE1  > p  
+sugain $tpow < $FILE4 | $PLOTX2  title=$TITLE2  > pp
+
+
+
+suspecfk dx=26.5 < $FILE2c |  $PLOTFK  perc=98 > ppp  title=$TITLE3 
+suspecfk dx=13.25 < $FILE4  |  $PLOTFK  perc=98 > pppp  title=$TITLE4 
+
+#sugain $tpow < $FILE5 | $PLOTX2  title=$TITLE3  > ppp
+#sugain $tpow < $FILE6 | $PLOTX2  title=$TITLE4  > pppp 
+
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILEC
+
+ghostview $FILEC &
+# plots for power point presentation
+cp p figinterpfk_sx50d_a.ps
+cp pp figinterpfk_sx50d_b.ps
+cp ppp figinterpfk_sx50d_c.ps
+cp pppp figinterpfk_sx50d_d.ps 
+
+elif [ $FIGURE -eq 5 ];then 
+
+# Since some of the problems for interpolation seems to be
+# due to aliasing, I create a new figure 5 in the paper
+# using the reconstructed data after uppersampling
+# Take the predicted data with uppersampling
+# Apply downsampling to get the original sampling + gap filling
+# Remove taper
+# create figure for far offsets again
+
+
+FILEN=sx50gus
+
+PLOTFK="supsimage label1=f(Hz) label2=kx(1/m) interp=1 "
+
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.sugap'
+FILE2b=$FILEN'.suzerob'
+FILE2c=$FILEN'.suzeroc'
+FILE3=$FILEN'.suradFK'
+FILE4=$FILEN'.surecFKrt'
+FILE5=$FILEN'.suresFK'
+FILE6=$FILEN'.sumixFK'
+FILE7=$FILEN'ds.surecFKrt'
+
+
+
+
+accept1=-555,-528,-502,-475,-449,-422
+accept2=420,447,473,500,526,553,579
+
+suwindsameoffsets $FILE1 $FILE4 > p
+suwind key=offset abs=1 max=0 accept=$accept1,$accept2 < $FILE4 > pp
+cat p pp | susort +offset > ppp
+susetntr < ppp > pppp
+#suxwigb < pppp key=offset perc=98 &
+sutaperinv $FILE1 pppp ntaper=50 > $FILE7 
+
+
+#Create mixgather 
+sumixgathers $FILE2 $FILE7 | susetntr > pppp 
+susort +offset < pppp > $FILE6
+suadapdiff $FILE1 $FILE7 > $FILE5
+
+if [ 0 -eq 1 ]; then
+FILEC='/prg/dtrad/ubc/ps/figinterpfk_sx50e.ps' 
+sugain $tpow < $FILE2 | $PLOTX2  title=$TITLE1  > pgap
+sugain $tpow < $FILE1 | $PLOTX2  title=$TITLE1  > p  
+sugain $tpow < $FILE7 | $PLOTX2  title=$TITLE2  > pp
+sugain $tpow < $FILE5 | $PLOTX2  title=$TITLE3  > ppp
+sugain $tpow < $FILE6 | $PLOTX2  title=$TITLE4  > pppp 
+
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILEC
+cp pgap figinterpfk_sx50e_gap.ps
+cp p figinterpfk_sx50e_a.ps
+cp pp figinterpfk_sx50e_b.ps
+cp ppp figinterpfk_sx50e_c.ps
+cp pppp figinterpfk_sx50e_d.ps 
+
+ghostview $FILEC &
+elif [ 1 -eq 1 ]; then
+FILED='/prg/dtrad/ubc/ps/figinterpfk_sx50f.ps' 
+sugain $tpow < $FILE2 | $PLOTX  title=$TITLE1  > pgap
+sugain $tpow < $FILE1 | $PLOTX  title=$TITLE1  > p  
+sugain $tpow < $FILE7 | $PLOTX  title=$TITLE2  > pp
+sugain $tpow < $FILE5 | $PLOTX  title=$TITLE3  > ppp
+sugain $tpow < $FILE6 | $PLOTX  title=$TITLE4  > pppp 
+
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILED
+
+cp pgap figinterpfk_sx50f_gap.ps
+cp p figinterpfk_sx50f_a.ps
+cp pp figinterpfk_sx50f_b.ps
+cp ppp figinterpfk_sx50f_c.ps
+cp pppp figinterpfk_sx50f_d.ps 
+
+ghostview $FILED &
+elif [ 0 -eq 1 ]; then
+
+FILEA='/prg/dtrad/ubc/ps/figinterpfk_sx50g.ps'  
+FILE3='sx50g.suradFK'
+sugain $tpow < $FILE2c | $PLOTI  title=$TITLE1  > p  
+sugain $tpow < $FILE3 | $PLOTI  title=$TITLE2  > pp
+sugain $tpow < $FILE7 | $PLOTI  title=$TITLE3  > ppp
+sugain $tpow < $FILE5 | $PLOTI  title=$TITLE4  > pppp 
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5   translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILEA
+
+cp p figinterpfk_sx50g_a.ps
+cp pp figinterpfk_sx50g_b.ps
+cp ppp figinterpfk_sx50g_c.ps
+cp pppp figinterpfk_sx50g_d.ps 
+
+ghostview $FILEA &
+fi
+
+
+fi
+exit 0
+
+sufill < $FILE2 dhnew=13.25 | sufilter amps=1,0 f=80,100 |  susetntr > $FILE2b
+sufill < $FILE2 dhnew=26.5 |  sufilter amps=1,0 f=80,100 |  susetntr > $FILE2c
+
+sumixgathers $FILE2 $FILE4 | susetntr > pp; susort +offset < pp > $FILE6
+suop2 $FILE2b $FILE4 > $FILE5
+
+sugain $tpow < $FILE1 | $PLOTX2  title=$TITLE1  > p  
+sugain $tpow < $FILE4 | $PLOTX2  title=$TITLE2  > pp
+
+suspecfk dx=26.5 < $FILE2c |  $PLOTFK  perc=98 > ppp  title=$TITLE3
+suspecfk dx=13.25 < $FILE4  |  $PLOTFK  perc=98 > pppp  title=$TITLE4
+
+#sugain $tpow < $FILE5 | $PLOTX2  title=$TITLE3  > ppp
+#sugain $tpow < $FILE6 | $PLOTX2  title=$TITLE4  > pppp 
+
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILEC
+
+ghostview $FILEC &
+
+
+fi
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

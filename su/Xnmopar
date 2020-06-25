@@ -1,0 +1,25 @@
+#!/bin/sh
+# comparison of hyperbolic vs parabolic nmo with t square transformation
+# Daniel Trad - Veritas June 2003
+# Usage:
+# Xnmopar file clip x1beg x2end
+# It requires to have the velocity par file with name stkvel.filename
+# as can be obtained with Velan0 file cdpmin cdpmax dcdp clip
+# Examples:
+# Xnmopar sx50.su 0.5 1.5 4
+# Xnmopar data1.su 0.5 0.2 1.5
+# Xnmopar goodf_s35.su 0.5 0.01 1.5
+#
+
+plotprog="suxwigb key=offset  x1end=$4 x1beg=$3 x2beg=0 perc=98 legend=1 clip=$2 wbox=1000 hbox=1400 "
+#plotprog="suximage"
+
+file=$1
+
+
+#Hyperbolic nmo
+sunmo < $file par=stkvel.${file} smute=20 | $plotprog  title="HyperNMO"  &
+
+
+#Hyperbolic nmo  
+sutsq flag=1 < $file | sunmopar  par=stkvel.${file} smute=20 | sutsq flag=-1 | $plotprog title="ParabNMO" xbox=1600 &

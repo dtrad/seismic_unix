@@ -1,0 +1,49 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+include $(CWPROOT)/src/Makefile.config
+
+IDIR=-I$(CWPROOT)/include -I$(CWPROOT)/src/Complex/include -I./clibrary
+
+
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS) 
+#LFLAGS= $(PRELFLAGS) -L$L  -lcwp -lm $(POSTLFLAGS) -lComplex -s
+
+PROG=suhrrti
+
+FLAG=-c -O 
+
+OBJ=  $(PROG).o hrrti.o matrix_3.o expc.o fftgo.o fftback.o \
+Atimesx.o displayA.o  Complex.o
+
+LIB=./flibrary
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+hrrti.o: $(LIBC)/hrrti.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/hrrti.cpp $(IDIR)
+matrix_3.o: $(LIBC)/matrix_3.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/matrix_3.cpp $(IDIR)
+expc.o: $(LIBC)/expc.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/expc.cpp $(IDIR)
+fftgo.o: $(LIBC)/fftgo.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/fftgo.cpp $(IDIR)
+fftback.o: $(LIBC)/fftback.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/fftback.cpp $(IDIR)
+Atimesx.o: $(LIBC)/Atimesx.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/Atimesx.cpp $(IDIR)
+displayA.o: $(LIBC)/displayA.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/displayA.cpp $(IDIR)
+Complex.o: $(CWPROOT)/src/Complex/lib/Complex.cc
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+

@@ -1,0 +1,50 @@
+#! /bin/sh
+# shell for dip filter
+# Daniel Trad - UBC - CDSST 
+set -x
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+
+NAME=$1
+
+FILEIN=$NAME'.su'
+FILEOUT=$NAME'.dipf.su'
+
+FILEIN=$NAME
+FILEOUT=$NAME'dip'
+
+
+
+# slopes are compute as k/w+bias
+
+slopes=-${2},0,${2}
+slopes=-0,${2}
+slopes=-${2},0,${3}
+
+bias="${4}"
+if [ -z ${4} ]; then
+    bias=0
+fi
+
+if [ -z ${2} ]; then
+    slopes=-0.0005,0,0.0005 
+fi
+
+amps=0.0,1,0.0
+amps=1,0.0
+amps=0.0,1,0.0
+amps=1.0,0,1.0
+
+dx=25
+
+sudipfilt < $FILEIN dx=$dx  bias=$bias amps=$amps slopes=$slopes  > $FILEOUT
+suximage <  $FILEOUT perc=98 key=offset title=filtered &
+suspecfk < $FILEOUT | suximage perc=98 title="output" &
+
+suop2  $FILEIN  $FILEOUT |  suximage perc=99 key=offset title="difference" &
+#sudipfilt < $FILEIN dx=$dx  amps=$amps slopes=$slopes  | suximage perc=99 &
+

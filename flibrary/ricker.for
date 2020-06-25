@@ -1,0 +1,14 @@
+      SUBROUTINE RICKER(W,NW,F,DT)
+      REAL W(NW)
+! GENERATES RICKER WAVELET OF LENGTH NW
+! WAVELET WILL APPEAR TO BE ABOUT NW/3 POINTS LONG
+!      Z=1.+(NW-1.)/2.
+      Z=1.+(NW)/2.
+      PI=3.141593
+      CONST=PI*F*DT
+      DO 100 I=1,NW
+      A=(I-Z)*CONST
+      ARG=A**2
+  100 W(I)=(1.-2.*ARG)*EXP(-ARG)
+      RETURN
+      END

@@ -1,0 +1,30 @@
+#!/bin/sh
+plotx="suxwigb key=offset perc=97"
+set -x
+
+j=3
+max=10000
+
+# Find a shot gather and decimate it
+suwind < misscn1.su key=sx min=0 max=0 count=183 | suwind j=$j > sx0n.su
+suchw < sx0n.su key1=offset  key2=offset key3=offset b=-1 > sx0p.su
+cat sx0n.su sx0p.su > sx0.su
+suwind max=$max abs=1 key=offset < sx0.su > pp; susort +offset < pp > sx0.su
+Xsetntr sx0.su
+sugethw key=offset output=geom < sx0.su > sx0.suoff
+
+# Set different kind of gaps
+
+#suwind < sx0.su key=offset reject=4180,4443,4705,4968,5230,5493 > sx0gap.su
+
+suwind < sx0.su key=offset min=1000 abs=1 > sx0gap.su
+
+Xsetntr sx0gap.su
+
+$plotx < sx0.su &
+
+$plotx < sx0gap.su &
+
+
+
+

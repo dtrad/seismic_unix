@@ -1,0 +1,719 @@
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Tue May 14 15:16:31 2002
+;; Emacs version 20.7.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring '("mute" "mutemask" "mute" "modelf" "h" "model" "FILE" "dataout1" "dataout" "name" "ascale" "modelfile" "buf" "vmig" "option==1" "zero"))
+(setq regexp-search-ring nil)
+(setq register-alist '((27 . " Copyright (c) University of British Columbia, 1999.*/\n/* All rights reserved.                       */\n\n/* suinterpfk4 :  $Date: November 2001- Last version January 2000  */\n\n#include \"interpfk.h\"\n#include \"segy.h\"\n#include \"header.h\"\n#include <time.h>\n\n/*********************** self documentation **********************/\nchar *sdoc[] = {\n  \" 	   								\",\n  \" SUINTERPFK0  Interpolation with LS square time migration            \", \n  \"	         by using Stolt fk operator                       	\",\n  \" 	   								\",\n  \" suinterpfk4  < stdin > stdout [optional parameters]          	\",\n  \" 									\",\n  \" Given a data set with gaps or poor sampling this program adds       \",\n  \" new traces into the gaps or between traces and uses a least         \",\n  \" squares migration algorithm (with Stolt operator) to move the       \",\n  \" energy to these new traces, performing interpolation.               \",\n  \" If the original gather is irregularly sampled then a discrete       \",\n  \" Fourier transform is used in the offset direction                   \",\n  \" (dft=1, see below). This is slow, so in general a FFT along         \",\n  \" offset is prefered.                                                 \",\n  \" A sparseness constraint can be enforced (in the time domain)        \",\n  \" by using more than one iteration (iter_end > 1).                    \",\n  \" This improves interpolation. Itercg always is set to > 1,  but      \",\n  \" in general 3-5 iterations in the CG algorithm are enough.           \", \n  \"                                                                     \",\n  \" Required parameters:		[None]		       		\",\n  \"                                                                	\",\n  \" Standard input : data file  (offset time domain)          		\",\n  \" Standard output : Interpolated data file                            \",\n  \" modelfile= 	    Migrated gather        				\",\n  \"                                                                     \",\n  \" Optional parameters:		       				\",\n  \" option=1        1 sinc interpolation with (interpfact-1)            \",\n  \"                   non-zero traces                                   \",\n  \"                 2 interpolate first with (interpfact-1)             \", \n  \"                   zero traces and then fill them with LS migration  \",\n  \"                 3 interpolate gaps first with zero traces           \",\n  \"                   as specified by offsetfile                        \",\n  \"                   and then fill them with LS migration              \",\n  \"                 other.. do not interpolate                          \",\n  \" modelfile=      migrated domain (sufile)                            \",\n  \" offsetfile=     ascii file with new offset (1 columm)               \",\n  \" interpfact=2    Factor for increasing sampling      		\",\n  \" dft=0           0 2D FFT; 1 1D FFT + 1D DFT                       	\",\n  \" vmig=4000       Velocity trend                                      \",\n  \" tmig            Time for velocity trend                             \",\n  \" eps1=0.8        Quantil to use in the numerator hyperparameter      \",\n  \"                 for Wm                                              \",\n  \" eps1=0.8        Quantil to use in the denomirator hyperparameter    \",\n  \"                 for Wm                                              \",\n  \" itercg=3        Internal iterations for CG                          \",\n  \" iter_end=2      External iterations for CG                          \",\n  \" step=1          step scale for CG (use 0.8-0.9 for more stable      \",\n  \" norm=0          0 Cauchy 1 L1                                       \",\n  \" testadj=0       Calculate adjoint test (Claerbout,1992)             \",\n  \" verbose=1       =1  verbose output                                  \",\n  \" plot=0          =1  additional plots (debug and testing)            \",\n  \" plot2=0         =1  additional plots for testing migration operator \",\n  \"                 without LS                                          \",\n  \" Experimental convolution in the operator                            \",\n  \" (does not work very well, in general do not convolve by setting nw=0\",\n  \" typewav=1       1 Read a wavelet generated by Matlab                \",\n  \"                          (stored in an ascii file)                  \",  \n  \"                 2 Generate a Ricker with SU                         \",\n  \"                 3 Design a simple wavelet                           \",\n  \" fpeak=25        peak frequency for the Ricker wavelet               \",           \n  \" nw=0            lenght of a wavelet   =0 No convolution applied     \", \n  \"            	                                        		\",\n  \"		                                        		\",\n  \"		                                        		\",\n  \"		                                        		\",\n  \" Example1: Interpolate by a factor of 2                              \",\n")))
+
+;; Buffer section:
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makelibdan2"
+  "Makelibdan2"
+  'fundamental-mode
+  '(nil)
+  457
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/file_functions.cpp"
+  "file_functions.cpp"
+  'c++-mode
+  '(nil)
+  206
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/read_ascii_file.cpp"
+  "read_ascii_file.cpp"
+  'c++-mode
+  '(nil)
+  289
+  '(194 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonlinetd.cpp"
+  "suradonlinetd.cpp"
+  'c++-mode
+  '(nil)
+  14375
+  '(9562 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radontd_win2.h"
+  "radontd_win2.h"
+  'c-mode
+  '(nil)
+  4604
+  '(4339 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/adjteststoltz2.cpp"
+  "adjteststoltz2.cpp"
+  'c++-mode
+  '(nil)
+  942
+  '(1 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radontd_win.cpp"
+  "radontd_win.cpp"
+  'c++-mode
+  '(nil)
+  11647
+  '(9497 t)
+  nil
+  nil
+  '((overwrite-mode . overwrite-mode-textual)))
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/contran.cpp"
+  "contran.cpp"
+  'c++-mode
+  '(nil)
+  1027
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/plotwindow"
+  "plotwindow"
+  'sh-mode
+  '(nil)
+  87
+  '(3 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suinterpfk3.cpp"
+  "suinterpfk3.cpp"
+  'c++-mode
+  '(nil)
+  8091
+  '(4422 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stoltzop3.cpp"
+  "stoltzop3.cpp"
+  'c++-mode
+  '(nil)
+  2733
+  '(2067 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/convgather.cpp"
+  "convgather.cpp"
+  'c++-mode
+  '(nil)
+  1207
+  '(434 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonlinetd"
+  "Makesuradonlinetd"
+  'fundamental-mode
+  '(nil)
+  327
+  '(318 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonline"
+  "Makesuradonline"
+  'fundamental-mode
+  '(nil)
+  1398
+  '(1674 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stopcriteria.cpp"
+  "stopcriteria.cpp"
+  'c++-mode
+  '(nil)
+  1
+  '(790 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stoltz_wtcgls2.cpp"
+  "stoltz_wtcgls2.cpp"
+  'c++-mode
+  '(nil)
+  7426
+  '(7118 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radon_cgfft2.cpp"
+  "radon_cgfft2.cpp"
+  'c++-mode
+  '(nil)
+  3205
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xstack"
+  "Xstack"
+  'sh-mode
+  '(nil)
+  844
+  '(836 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xsuinterpfk_sparse_data"
+  "Xsuinterpfk_sparse_data"
+  'sh-mode
+  '(nil)
+  1121
+  '(1236 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xradon_interp_cdpw"
+  "Xradon_interp_cdpw"
+  'sh-mode
+  '(nil)
+  5666
+  '(723 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xplotsuinterpfk_cdpwr"
+  "Xplotsuinterpfk_cdpwr"
+  'sh-mode
+  '(nil)
+  1
+  '(2344 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonline.cpp"
+  "suradonline.cpp"
+  'c++-mode
+  '(nil)
+  2515
+  '(1483 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stretching2.cpp"
+  "stretching2.cpp"
+  'c++-mode
+  '(nil)
+  1887
+  '(41 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/cwp/src/Complex/lib/Complex.cc"
+  "Complex.cc"
+  'c++-mode
+  '(nil)
+  1367
+  '(1 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/Dcomplex.cpp"
+  "Dcomplex.cpp"
+  'c++-mode
+  '(nil)
+  1425
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/cwp/include/cwp.h"
+  "cwp.h"
+  'c-mode
+  '(nil)
+  2096
+  '(1716 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makelibdan"
+  "Makelibdan"
+  'fundamental-mode
+  '(nil)
+  524
+  '(1599 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/cwp/include/Dcomplex.h"
+  "Dcomplex.h"
+  'c-mode
+  '(nil)
+  1541
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/dftls.cpp"
+  "dftls.cpp"
+  'c++-mode
+  '(nil)
+  521
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/FTmatrix.cpp"
+  "FTmatrix.cpp"
+  'c++-mode
+  '(nil)
+  3
+  '(2 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stoltop_one_trace.cpp"
+  "stoltop_one_trace.cpp"
+  'c++-mode
+  '(nil)
+  684
+  '(5245 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stoltzop5.cpp"
+  "stoltzop5.cpp"
+  'c++-mode
+  '(nil)
+  8521
+  '(924 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/get_wavelet.cpp"
+  "get_wavelet.cpp"
+  'c++-mode
+  '(nil)
+  116
+  '(67 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stoltz_wtcgls3.cpp"
+  "stoltz_wtcgls3.cpp"
+  'c++-mode
+  '(nil)
+  2789
+  '(2658 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/save_vector.cpp"
+  "save_vector.cpp"
+  'c++-mode
+  '(nil)
+  1514
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/save_gather_freq.cpp"
+  "save_gather_freq.cpp"
+  'c++-mode
+  '(nil)
+  373
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xplotsuinterpfk_padding"
+  "Xplotsuinterpfk_padding"
+  'sh-mode
+  '(nil)
+  894
+  '(1528 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xcreate_asym_data"
+  "Xcreate_asym_data"
+  'sh-mode
+  '(nil)
+  897
+  '(20 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xsuinterpfk4_sparse_data"
+  "Xsuinterpfk4_sparse_data"
+  'sh-mode
+  '(nil)
+  235
+  '(1211 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/fft2_zeropad.cpp"
+  "fft2_zeropad.cpp"
+  'c++-mode
+  '(nil)
+  3181
+  '(321 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xmixshots2"
+  "Xmixshots2"
+  'sh-mode
+  '(nil)
+  1039
+  '(1553 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/sumixgathers.c"
+  "sumixgathers.c"
+  'c-mode
+  '(nil)
+  3433
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suchwmod.c"
+  "suchwmod.c"
+  'c-mode
+  '(nil)
+  6630
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makefile"
+  "Makefile"
+  'makefile-mode
+  '(nil)
+  441
+  '(268 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xconvert_feet_m_FK"
+  "Xconvert_feet_m_FK"
+  'sh-mode
+  '(nil)
+  590
+  '(372 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xcomp_results_fkmig"
+  "Xcomp_results_fkmig"
+  'sh-mode
+  '(nil)
+  485
+  '(1595 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/dan.h"
+  "dan.h"
+  'c-mode
+  '(nil)
+  1899
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/AtimesBm.cpp"
+  "AtimesBm.cpp"
+  'c++-mode
+  '(nil)
+  3112
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/plotgather.cpp"
+  "plotgather.cpp"
+  'c++-mode
+  '(nil)
+  2753
+  '(2640 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonclass"
+  "Makesuradonclass"
+  'fundamental-mode
+  '(nil)
+  579
+  '(490 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonclass.cpp"
+  "suradonclass.cpp"
+  'c++-mode
+  '(nil)
+  2988
+  '(4181 t)
+  nil
+  nil
+  '((overwrite-mode)))
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xmuterad"
+  "Xmuterad"
+  'sh-mode
+  '(nil)
+  297
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xmute"
+  "Xmute"
+  'sh-mode
+  '(nil)
+  1102
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuinterpfk3"
+  "Makesuinterpfk3"
+  'fundamental-mode
+  '(nil)
+  110
+  '(1583 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuinterpfk0"
+  "Makesuinterpfk0"
+  'fundamental-mode
+  '(nil)
+  2045
+  '(1963 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/inversion_par.h"
+  "inversion_par.h"
+  'c-mode
+  '(nil)
+  94
+  '(734 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/maskclass.cpp"
+  "maskclass.cpp"
+  'c++-mode
+  '(nil)
+  981
+  '(1 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/maskclass.hpp"
+  "maskclass.hpp"
+  'c++-mode
+  '(nil)
+  349
+  '(205 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suinterpfk0.cpp"
+  "suinterpfk0.cpp"
+  'c++-mode
+  '(nil)
+  17865
+  '(17860 t)
+  nil
+  nil
+  '((overwrite-mode) (case-fold-search . t)))
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/mutemask.c"
+  "mutemask.c"
+  'c-mode
+  '(nil)
+  891
+  '(849 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/interpfk.h"
+  "interpfk.h"
+  'c-mode
+  '(nil)
+  5343
+  '(5246 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xsuinterpfk_ken"
+  "Xsuinterpfk_ken"
+  'sh-mode
+  '(nil)
+  5562
+  '(5657 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xplotdifractions"
+  "Xplotdifractions"
+  'sh-mode
+  '(nil)
+  321
+  '(155 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xplotsuinterpfk_ken"
+  "Xplotsuinterpfk_ken"
+  'sh-mode
+  '(nil)
+  411
+  '(1727 t)
+  nil
+  nil
+  nil)
+

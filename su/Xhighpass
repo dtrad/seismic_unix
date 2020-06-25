@@ -1,0 +1,26 @@
+#! /bin/sh
+# Template for shells
+# Daniel Trad - UBC - CDSST 
+set -x
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+
+NAME=$1
+
+FILEIN=$NAME'.su'
+
+FILEOUT=$NAME'.filt.su'
+
+sufilter f=0,$2,$3,80 amps=0,0,1,1 < $FILEIN > $FILEOUT 
+
+if [ -z ${1} ]; then
+    echo "USAGE: Xhighpass file"
+    exit 1
+fi
+
+suxwigb <  $FILEOUT perc=90 key=offset &
+

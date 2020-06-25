@@ -1,0 +1,18 @@
+#! /bin/sh
+#sugain < sutape2 tpow=2 gpow=.5 scale=-1 agc=1 wagc=0.2 | suxwigb key=offset wbox=450 hbox=550 &
+#sugain < sutape2  tpow=2 gpow=.5  scale=-1 perc=100 agc=1 wagc=1 | suxwigb key=offset wbox=450 hbox=550 &
+#sugain < sutape2  tpow=4 gpow=.5  scale=-1 perc=110  | suxwigb key=offset wbox=450 hbox=550 &
+#sugain < sutape2  agc=1 wagc=.5 scale=-1 perc=95  | suxwigb key=offset wbox=450 hbox=550 &
+
+#sugain < sutape2 panel=0 qbal=1 mbal=1  tpow=1 scale=-2500 perc=90  \
+# | sugain  | suxwigb key=offset wbox=450 hbox=550 &
+
+#sugain < sutape2  tpow=3 scale=-2500 perc=90  | suxwigb key=offset wbox=450 hbox=550 &
+
+sugain < sutape2 > sudata1 tpow=2 scale=-2500 perc=90
+#suxwigb key=offset wbox=450 hbox=550 < sudata1 &
+#supswigp key=offset  < susg40 > pp.ps &
+sumute < sudata1  key=offset xmute=0,1000  tmute=0.20,0.20  below=0 |
+sumute  key=offset xmute=0,1000  tmute=1.8,1.80  below=1 |
+#supswigp key=offset  > pp.ps
+suxwigb key=offset wbox=450 hbox=550 &

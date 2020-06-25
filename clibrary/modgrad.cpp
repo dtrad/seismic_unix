@@ -1,0 +1,176 @@
+/*
+  It computes the term Qp for the total gradient g=(L'L+Qp)u-L'd
+  This term corresponds to the probability model, so that
+  the distribution parameters sigma and norm are passed.
+  Qp is a vector of dimension nq, but in fact is the diagonal 
+  of the Qp matrix of size nq x nq.
+  Inqut 
+          u: model
+          nq: number of model traces
+          norm: implemented 1 Huber, 10 Cauchy
+          powd: energy for the model u
+  Output
+          Qp: Vector such Matrix(diag(Qp)) defines the
+          model norm as Jmod= u'Qpu
+          eps2: standard deviation of the model
+
+  Daniel Trad- 21 March 99. UBC- Canada
+  Based in Sacchi, 1996. phD thesis. UBC. Canada
+*/
+#include "su.h"
+#include "clibrary.h"
+#include "Complex.h"
+ float real(complex a);
+
+
+float modgrad(complex *u, int nq, int norm,float powd, complex *Qp)
+
+{ 
+      int i;
+      float power,*power2,pmax,pmin, eps2, eps;
+      extern int method;
+     
+      eps=1e-5; // small number to avoid instability
+      
+      if ((power2=alloc1float(nq))==NULL)
+         err("cannot allocate memory for power2\n");
+      power=0;
+
+      for (i=0;i<nq;i++){
+	power2[i]=real(conjg(u[i])*u[i]);
+	if ((power2[i]<eps)&&(norm==1)) power2[i]=eps;
+           power+=power2[i];
+      }
+      
+      pmax=power2[0];
+      pmin=power2[0];
+      for (i=0;i<nq;i++){
+	if (power2[i] > pmax) pmax=power2[i];
+           if (power2[i] < pmin) pmin=power2[i];    
+      }
+      
+      eps2=power/(nq);if (eps2<eps) eps2=eps;
+      
+      
+      if ((method==3)||(method==9)||(method==10)){
+	for (i=0;i<nq;i++){ 
+	  if (norm==10){
+	    Qp[i].r=powd/(power2[i]+eps2); 
+	    Qp[i].i=0;                
+          }
+          else if (norm==1)    
+	    {Qp[i].r=powd/(eps+eps2*sqrt(power2[i]));Qp[i].i=0;}
+	}
+      }
+      else if (method==4){
+	for (i=0;i<nq;i++){ 
+	  if (norm==10){ Qp[i].r=(eps2+power2[i]);Qp[i].i=0;}
+	  else if (norm==1)    
+	    {Qp[i].r=(eps2*sqrt(power2[i]));Qp[i].i=0;}
+	}
+      }
+      //displayA(Qp,nq);
+      free1float(power2);
+      return(eps2);
+}
+
+
+float modgrad(complex *u, int nq, int norm,float powd, complex *Qp, int method)
+
+{ 
+      int i;
+      float power,*power2,pmax,pmin, eps2, eps;
+
+     
+      eps=1e-5; // small number to avoid instability
+      
+      if ((power2=alloc1float(nq))==NULL)
+         err("cannot allocate memory for power2\n");
+      power=0;
+
+      for (i=0;i<nq;i++){
+	power2[i]=real(conjg(u[i])*u[i]);
+	if ((power2[i]<eps)&&(norm==1)) power2[i]=eps;
+           power+=power2[i];
+      }
+      
+      pmax=power2[0];
+      pmin=power2[0];
+      for (i=0;i<nq;i++){
+	if (power2[i] > pmax) pmax=power2[i];
+           if (power2[i] < pmin) pmin=power2[i];    
+      }
+      
+      eps2=power/(nq);if (eps2<eps) eps2=eps;
+      
+      
+      if ((method==3)||(method==9)||(method==10)){
+	for (i=0;i<nq;i++){ 
+	  if (norm==10){
+	    Qp[i].r=powd/(power2[i]+eps2); 
+	    Qp[i].i=0;                
+          }
+          else if (norm==1)    
+	    {Qp[i].r=powd/(eps+eps2*sqrt(power2[i]));Qp[i].i=0;}
+	}
+      }
+      else if (method==4){
+	for (i=0;i<nq;i++){ 
+	  if (norm==10){ Qp[i].r=(eps2+power2[i]);Qp[i].i=0;}
+	  else if (norm==1)    
+	    {Qp[i].r=(eps2*sqrt(power2[i]));Qp[i].i=0;}
+	}
+      }
+      //displayA(Qp,nq);
+      free1float(power2);
+      return(eps2);
+}
+
+float real(complex a) { return a.r; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

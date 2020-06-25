@@ -1,0 +1,126 @@
+#! /bin/sh
+# Xsuradonfk_ken --- Attenuation of difractions with  
+# non apex centered Radon Transform.
+# Data contain multiples of diffractions. 
+# USAGE: Xsuradonfkpaper 2> file.log 
+# OR   : Xsuradonfkpaper 
+#       
+# data preprocessing:
+# Althouth the data is a real data set, for this example we need to take a
+# window, and make the data to look symmetric 
+# from  kencmpsnonmo.su take cdp 5300 and window from 5.5s to end.
+# Data name kencmpwin0.su
+# then make the data symmetric by 
+# suchw key1=offset key2=offset b=-1 < kencmpwin0.su > pp
+# cat pp kencmpwin0.su > kencmpwin.su
+# sushw key=delrt a=0 < kencmpwin.su > pp
+# susort +offset < pp >  kencmpwin.su
+# Xsetntr kencmpwin.su
+######################################################################
+# Author: Daniel Trad- Last update: July 2002
+
+# Some shortcuts for plots
+set -x
+
+echo "Log file: Xsuradonfkpaper"
+
+date 1>&2
+
+METHOD='TX'
+METHOD='RFK' # Radon fk (equiv to LSFK so far)
+sufix=${METHOD}
+
+FILE=kencmpwin.su; 
+FILEN=$FILE
+FILETEMP=pp
+FILETEMP2=ppp
+
+offsetfile=$FILE'off'
+
+FILERAD=${FILEN}'rad'${sufix}
+FILERAD0=${FILEN}'rad0'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILERES=$FILEN'res'${sufix}
+
+if [ $METHOD = 'TX' ]; then
+    PROGRAM=suinterptx
+elif [ $METHOD = 'RFK' ]; then
+    PROGRAM=suradonfk
+else 
+    PROGRAM=donothing
+fi
+
+cp $FILE $FILETEMP
+
+case $PROGRAM in
+suinterptx*)
+    sufill  < $FILETEMP > pp1;  # Fill gaps with zero traces 
+    #extract offset range with possibly apex locations
+    suwind < pp1 key=offset abs=1 max=8000 | sugethw key=offset\
+    output=geom > $offsetfile 
+    #Use RT to collapse and mute multiples of diffractions
+    suradontx eps1=9e-1 eps2=9e-1 iter_end=1 itercg=15 eps=1e-3 \
+    step=0.99  smooth=0 verbose=1 par="stkvel.kencmp2.su" \
+    modelfile=$FILERAD offsetfile=$offsetfile norm=1 \
+    LI=0 t0=0 nw=0 tmin_m=0.8 tmax_m=2 ihmin_m=128 \
+    ihmax_m=158 thres_m=0 slope_m=27 mute=1 < pp1 | suremovedead hmax=800 | susetntr > $FILEREC
+    cp migrated2.su $FILERAD0
+;;
+suradonfk*)
+    sufill  < $FILETEMP > pp1;  # Fill gaps with zero traces 
+    # Zero traces are identified with tr.trid=2
+    # After suradonfk0 we need remove dead traces and set ntr to the original
+    suradonfk0 < pp1 vmig=3600,3000 tmig=0,4 plot=1  \
+    itercg=5 iter_end=1 step=0.98 testadj=1 eps1=9.8e-1 eps2=9.8e-1 modelfile=$FILERAD \
+    ascale=1 fpeak=20 nw=0 typewav=2 option=3 tmin_m=0.8 tmax_m=2 ihmin_m=128 \
+    ihmax_m=158 thres_m=0 slope_m=27 mute=1 norm=0 | suremovedead hmax=800 | susetntr > $FILEREC
+    cp migrated.su $FILERAD0
+;;
+esac
+
+PLOTXX="suximage perc=98 hbox=900 wbox=700 curve=curve1 npair=5  &"
+
+$PLOTXX < $FILERAD xbox=0 &
+$PLOTXX < $FILEREC xbox=600 &
+
+suadapdiff $FILE $FILEREC > $FILERES
+$PLOTXX < $FILE xbox=0 x2beg=120 &
+$PLOTXX < $FILERES xbox=600 x2beg=120 &
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

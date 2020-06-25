@@ -1,0 +1,54 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a ../bin/libdan.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm -ldan $(POSTLFLAGS)
+
+PROG=suradonwtcgls
+
+FLAG=-c -O3 -Wall -g
+
+OBJ=  $(PROG).o  radonfreqband.o  radonfreqband.o Complex.o interpovv.o dot.o modelweight.o \
+		 save_vector.o nmo.o fftgo.o fftback.o freqweight.o \
+		 radon_param.o interval.o radfinv.o taper.o getvelocities.o 
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Complex.o: $(LIBC)/Complex.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interpovv.o: $(LIBC)/interpovv.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_vector.o: $(LIBC)/save_vector.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nmo.o: $(LIBC)/nmo.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fftgo.o: $(LIBC)/fftgo.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fftback.o: $(LIBC)/fftback.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+matrix_3.o: $(LIBC)/matrix_3.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+freqweight.o: $(LIBC)/freqweight.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interval.o: $(LIBC)/interval.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radfinv.o: $(LIBC)/radfinv.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+taper.o: $(LIBC)/taper.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+getvelocities.o: $(LIBC)/getvelocities.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+

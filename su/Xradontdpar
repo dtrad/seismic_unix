@@ -1,0 +1,139 @@
+#! /bin/sh
+# Xradon --- Hyperbolic Radon Transform.
+######################################################################
+# Example: real  sucdps2, sumiss2
+# 
+#######################################################################
+# Author: Daniel Trad- November 1999
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+HBOX=400
+WBOX=350
+
+
+set -x
+NT=512 
+NH=111
+NP=150
+DT=4000
+VNMO=2600,2800,3000,3200,3400
+TNMO=0,0.5,1,1.5,2
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+
+FILE=sudata17
+FILEN=$FILE'TD'
+FILENMO=$FILE'nmo'
+FILEGAP=$FILE'gap'
+FILEOFF=$FILE'off'
+FILERAD=$FILEN'rad'
+FILEREC=$FILEN'rec'
+FILERADOFF=$FILEN'radoff'
+FILERAD2=$FILEN'radb'
+FILEREC2=$FILEN'recb'
+FILEOFF2=$FILEOFF # Final offset in which data will be resampled 
+
+# Options
+OPTIONSETNTR='y'
+OPTIONGETH='y'
+OPTIONFILT='y'
+OPTIONAGC='y'
+OPTIONRAD='y'
+OPTIONMUTE='n'
+OPTIONREC='y'
+OPTIONRES='y'
+
+# PASS BAND FILTER
+F=1,10,70,80
+AMPS=0,1,1,0
+# RADON (see suhrrtf for more details)
+METHOD=7 # 1 LEVINSON 2 WTCGLS 3 CHOLESKY OVER 4 CHOLESKY UNDER 10 CGCM
+EPS1=1  # Variance of the noise
+ITER_END=1; # External iterations 
+QMIN=0e-7   # Min q
+QMAX=5.5e-7
+NQ=100      # NP traces
+FMAX=64     # max freq to compute
+RTMETHOD=2 # 1=LRT 2=PRT
+COSTFLAG=0 # =1 PLOT COST FUNCTIONS (SLOWER)
+ITERCG=10  # CG ITERATIONS
+EPS=0      # =0 FOR METHOD 2 
+NORM=1     # L1 NORM
+STEP=0.9  # Step less 1
+THRES=0.5 
+
+case $OPTIONSETNTR in
+y*)
+ntr=`surange < $FILE | sed 1q | sed 's/traces://'`
+cp $FILE pp
+sushw key=ntr a=$ntr < pp > $FILE 
+;;
+esac
+
+case $OPTIONFILT in
+y*)
+sufilter f=$F amps=$AMPS < $FILE > pp; cp pp $FILE
+;;
+esac
+
+
+# Save offset  for inverse radon transform
+case $OPTIONGETH in
+y*)
+sugethw key=offset output=geom < $FILE > $FILEOFF
+;;
+esac
+
+case $OPTIONRAD in
+y*)
+#Forward  Radon transform
+suradtd method=$METHOD  eps1=$EPS1 iter_end=$ITER_END qmin=$QMIN qmax=$QMAX nq=$NQ fmax=$FMAX rtmethod=$RTMETHOD costflag=$COSTFLAG itercg=$ITERCG eps=$EPS norm=$NORM step=$STEP thres=$THRES testadj=1 < $FILE  > $FILERAD 
+;;
+esac
+
+suxwigb < $FILERAD  key=f2 wbox=550 hbox=650 &
+
+#Inverse Radon Transformr
+case $OPTIONREC in
+y*)
+suradtdi rtmethod=$RTMETHOD fmax=$FMAX offsetfile=$FILEOFF2 < $FILERAD | 
+sufilter f=$F amps=$AMPS > $FILEREC
+;;
+esac
+
+
+suxwigb < $FILEREC   key=offset  wbox=550 hbox=650  &
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

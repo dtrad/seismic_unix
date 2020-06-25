@@ -1,0 +1,14 @@
+#!/bin/sh
+set -x
+
+file1=$1 
+
+
+suaddhead < $1".rec.bin" ns=128 | sushw key=dt a=4000 | suwind key=tracl max=86  > $1".noise.su"
+
+sugain < ${1}".su" scale=0 > ${1}"header.su" 
+
+
+suop2 ${1}"header.su" ${1}".noise.su" op=sum > pp
+
+mv pp ${1}".noise.su"

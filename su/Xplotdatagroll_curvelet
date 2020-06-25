@@ -1,0 +1,47 @@
+#!/bin/sh
+set -x
+
+FILE="/home/dtrad/ps/curvedatagroll.ps"
+path="/home/dtrad/work/"
+
+filen=datagroll
+
+file1=${path}${filen}.su
+file2=${path}${filen}.den.su
+file3=${path}${filen}.noise.su
+
+file4="/home/dtrad/ps/datagroll.curvetransf.ps"
+
+suaddhead < ${filen}".RNden.bin" ns=256 | sushw key=dt a=8000 | susetntr > ${file2}
+
+suxwigb key=offset < ${file2} perc=98 &
+
+
+#Xsuwrite2 ${filen} rec
+suadapdiff ${file1} ${file2} > ${file3}
+
+PLOTX="supswigp key=offset label1=Time(s) label2=Offset(m) perc=98 "
+PLOTR="supsimage clip=0.0001"
+PLOTI="supsimage clip=2.5 x2beg=-3175 d2=25"
+#suop2 $file1 $file2 > $file3
+
+$PLOTI < $file1 > p1 title='(a)'
+$PLOTI < $file3 > p2 title='(b)' 
+$PLOTI < $file2 > p3 title='(c)' 
+cp $file4 p4
+supsmerge in=$file4 in=labeld.ps scale=1,1 scale=1.3,0.6 translate=0,0 translate=4,2.1 > p4
+
+#$PLOTR < $file4".su" > p4 title='(d)'
+#$PLOTR < $file5".su" > p5 title='(e)'
+
+
+#supsmerge in=p1 in=p2 in=p3 in=p4  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.6  translate=0,5 translate=4,5 translate=0,0 translate=4,-1 > $FILE
+
+supsmerge in=p1 in=p2 in=p3 in=p4 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.37,0.68 translate=0,5 translate=4,5 translate=0,0 translate=4.7,-1 > $FILE
+
+gv $FILE 
+
+
+
+
+

@@ -1,0 +1,36 @@
+#!/bin/sh
+# Run this script to undo the segyclean in a sufile 
+# before rewriting the segyfile 
+
+set -x 
+
+segyfile0="T0770693_CMP_dat2.sgy" #Original segfile
+sufile0="lline77b.su" #temorary file
+
+hfile="header77b"
+bfile="binary77b"
+sufile1="./fxdata/results/line77b.demultd.su" # preprocessed sufile
+sufileout="line77b_segy.su"  # This file is ready for segywrite
+
+#segyfile="lline77b.segy"
+
+
+# Read original segyfile to recover the headers
+#if the original line has been resort or windowed do the same before going on
+# Only need to do this once so you may need to comment out these three lines
+
+#segyread tape=$segyfile0 > $sufile0 hfile=$hfile bfile=$bfile endian=0 
+#suwind key=cdp min=300 max=800  < $sufile0 > temp
+#sugain < temp scale=0 > $sufile0
+
+suop2 $sufile0 $sufile1 op=sum > $sufileout
+
+############################################################
+
+
+exit 0
+
+#Usually this is done in the workstation
+
+segywrite  < $sufile tape=$segyfile hfile=$hfile bfile=$bfile
+

@@ -1,0 +1,2908 @@
+
+cgstep.cpp,18
+void cgstep(4,55
+
+conjzero.cpp,20
+void conjzero(2,16
+
+contran.cpp,19
+void contran(4,87
+
+contruc.cpp,41
+void contruc(6,243
+void advance(30,704
+
+copy.cpp,16
+void copy(3,17
+
+helix.cpp,33
+typedef struct helix{helix5,45
+
+iner.cpp,18
+void iner(10,348
+
+kolmogoroff.cpp,68
+#define LOOKFAC	4,38
+#define PFA_MAX	5,93
+void kolmogoroff(6,153
+
+miss1.cpp,19
+void miss1(10,283
+
+missfip.cpp,22
+void  missfip(11,529
+
+pp.cpp,784
+char *sdoc[10,288
+segy tr,59,3007
+segy tr,*trr;59,3007
+int nt,61,3045
+int nt,nh,61,3045
+int nt,nh,nq,61,3045
+int nt,nh,nq,nx,61,3045
+int nt,nh,nq,nx,ny,61,3045
+int nt,nh,nq,nx,ny,rtmethod,61,3045
+int nt,nh,nq,nx,ny,rtmethod,itercg,61,3045
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,61,3045
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,61,3045
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm,61,3045
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm, reorth;61,3045
+float dt,62,3110
+float dt,dh,62,3110
+float dt,dh,dq,62,3110
+float dt,dh,dq,eps1,62,3110
+float dt,dh,dq,eps1,eps2,62,3110
+float dt,dh,dq,eps1,eps2, step,62,3110
+float dt,dh,dq,eps1,eps2, step, thres,62,3110
+float dt,dh,dq,eps1,eps2, step, thres,theta;62,3110
+int main(64,3156
+
+radint_sparse3.cpp,18
+void radint(4,41
+
+scale.cpp,17
+void scale(3,17
+
+shaper.cpp,20
+void shaper(10,283
+
+suadapdiff.cpp,153
+char *sdoc[15,376
+segy tr,24,606
+segy tr,tr2;24,606
+FILE *fp1;25,620
+FILE *fp2;26,667
+FILE *tracefp;27,715
+FILE *headerfp;28,764
+int main(30,816
+
+sudmorad.cpp,701
+#define NNX 5,141
+#define NT 6,157
+char *sdoc[11,299
+segy tr,62,3159
+segy tr,*trr;62,3159
+int nt;64,3197
+int nh;65,3230
+int nq;66,3238
+int nx;67,3246
+int ny;68,3254
+int rtmethod,69,3262
+int rtmethod,itercg,69,3262
+int rtmethod,itercg,iter_end,69,3262
+int rtmethod,itercg,iter_end,method,69,3262
+int rtmethod,itercg,iter_end,method,norm,69,3262
+int rtmethod,itercg,iter_end,method,norm, reorth;69,3262
+float dt,70,3312
+float dt,dh,70,3312
+float dt,dh,dq,70,3312
+float dt,dh,dq,eps1,70,3312
+float dt,dh,dq,eps1,eps2,70,3312
+float dt,dh,dq,eps1,eps2, step,70,3312
+float dt,dh,dq,eps1,eps2, step, thres,70,3312
+float dt,dh,dq,eps1,eps2, step, thres,theta;70,3312
+int main(71,3357
+
+suenmo.cpp,288
+char *sdoc[20,689
+segy tr;61,2715
+int nt,62,2724
+int nt,nv,62,2724
+int nt,nv,np;62,2724
+float dt,63,2738
+float dt,dv,63,2738
+float dt,dv,dp;63,2738
+char headerfile[64,2754
+FILE *headerfp;65,2817
+int verbose;66,2868
+int main(68,2882
+void enmo_old(231,7103
+void enmo(289,8475
+
+suenmo0.cpp,248
+char *sdoc[15,562
+segy tr;56,2588
+int nt,57,2597
+int nt,nv,57,2597
+int nt,nv,np;57,2597
+float dt,58,2611
+float dt,dv,58,2611
+float dt,dv,dp;58,2611
+int main(60,2628
+void enmo(201,6281
+float testadjenmo(265,7650
+void wtcglsenmo(316,8736
+
+suenmo1.cpp,290
+char *sdoc[21,887
+segy tr;62,2913
+int nt,63,2922
+int nt,nv,63,2922
+int nt,nv,np;63,2922
+float dt,64,2936
+float dt,dv,64,2936
+float dt,dv,dp;64,2936
+char headerfile[65,2952
+FILE *headerfp;66,3015
+int verbose;67,3066
+int main(69,3080
+void enmo1_old(273,8589
+void enmo1(333,9963
+
+suenmo1_old.cpp,290
+char *sdoc[21,887
+segy tr;62,2913
+int nt,63,2922
+int nt,nv,63,2922
+int nt,nv,np;63,2922
+float dt,64,2936
+float dt,dv,64,2936
+float dt,dv,dp;64,2936
+char headerfile[65,2952
+FILE *headerfp;66,3015
+int verbose;67,3066
+int main(69,3080
+void enmo1_old(273,8589
+void enmo1(333,9963
+
+suenmo1mod.cpp,395
+char *sdoc[21,887
+segy tr;62,2913
+int nt,63,2922
+int nt,nv,63,2922
+int nt,nv,np;63,2922
+float dt,64,2936
+float dt,dv,64,2936
+float dt,dv,dp;64,2936
+char headerfile[65,2952
+FILE *headerfp;66,3015
+int verbose;67,3066
+int method;68,3079
+int main(69,3091
+void enmo1_old(278,8786
+void enmo1(338,10160
+int rad_ellip_sp(387,11172
+void rad_ellip_sp(415,11704
+void radonellip(450,12339
+
+suenmo2.cpp,399
+char *sdoc[29,1049
+segy tr;70,3075
+int nt,71,3084
+int nt,nv,71,3084
+int nt,nv,np;71,3084
+float dt,72,3098
+float dt,dv,72,3098
+float dt,dv,dp;72,3098
+char headerfile[73,3114
+FILE *headerfp;74,3177
+int verbose;75,3228
+int main(77,3242
+void enmo1_old(372,12228
+void enmo1(432,13602
+void enmo1(481,14614
+int rad_ellip_sp(530,15626
+void rad_ellip_sp(558,16157
+void radonellip(594,16788
+
+suenmo3.cpp,399
+char *sdoc[29,1076
+segy tr;70,3102
+int nt,71,3111
+int nt,nv,71,3111
+int nt,nv,np;71,3111
+float dt,72,3125
+float dt,dv,72,3125
+float dt,dv,dp;72,3125
+char headerfile[73,3141
+FILE *headerfp;74,3204
+int verbose;75,3255
+int main(77,3269
+void enmo1_old(371,12088
+void enmo1(431,13462
+void enmo1(480,14474
+int rad_ellip_sp(529,15486
+void rad_ellip_sp(557,16016
+void radonellip(596,16758
+
+suenmo4.cpp,399
+char *sdoc[29,1049
+segy tr;70,3075
+int nt,71,3084
+int nt,nv,71,3084
+int nt,nv,np;71,3084
+float dt,72,3098
+float dt,dv,72,3098
+float dt,dv,dp;72,3098
+char headerfile[73,3114
+FILE *headerfp;74,3177
+int verbose;75,3228
+int main(77,3242
+void enmo1_old(375,12353
+void enmo1(435,13727
+void enmo1(484,14739
+int rad_ellip_sp(533,15751
+void rad_ellip_sp(561,16282
+void radonellip(597,16913
+
+suenmo5.cpp,361
+char *sdoc[36,1506
+inv_par inv;76,3531
+segy tr;77,3544
+char headerfile[79,3554
+FILE *headerfp;80,3617
+int verbose;81,3668
+int main(83,3682
+void enmo1_old(421,14124
+void enmo1(481,15498
+void enmo1(536,16590
+int rad_ellip_sp(585,17606
+int rad_ellip_sp(614,18137
+void rad_ellip_sp(651,18840
+void radonellip(688,19633
+void rad_ellip_sp_old(713,20319
+
+suenmo6.cpp,361
+char *sdoc[36,1506
+inv_par inv;76,3531
+segy tr;77,3544
+char headerfile[79,3554
+FILE *headerfp;80,3617
+int verbose;81,3668
+int main(83,3682
+void enmo1_old(417,13799
+void enmo1(477,15173
+void enmo1(532,16265
+int rad_ellip_sp(581,17281
+int rad_ellip_sp(610,17812
+void rad_ellip_sp(647,18515
+void radonellip(684,19308
+void rad_ellip_sp_old(709,19994
+
+suenmo7.cpp,580
+#define TRACE 7,161
+char *sdoc[53,2260
+inv_par inv;93,4285
+segy tr;94,4298
+char headerfile[96,4308
+FILE *headerfp;97,4371
+int verbose;98,4422
+int main(100,4436
+void enmo1_old(474,15348
+void enmo1(534,16722
+void enmo1(589,17814
+int rad_ellip_sp(638,18830
+int rad_ellip_sp(667,19361
+int rad_ellip_sp_LI(704,20064
+void create_elliptical_taper(741,20770
+void rad_ellip_sp(774,21469
+void rad_ellip_sp_LI(809,22260
+void radonellip(846,23057
+void radonellip_LI(873,23778
+void rad_ellip_sp_old(921,24710
+int tapercentre(965,25702
+void irreg_velocity_grid(1012,27107
+
+suenmo8.cpp,666
+#define TRACE 7,161
+char *sdoc[57,2388
+inv_par inv;97,4413
+segy tr;98,4426
+char headerfile[100,4436
+FILE *headerfp;101,4499
+int verbose;102,4550
+int main(104,4564
+void enmo1_old(493,16444
+void enmo1(553,17818
+void enmo1(608,18910
+int rad_ellip_sp(657,19926
+int rad_ellip_sp(686,20457
+int rad_ellip_sp_LI(723,21160
+void create_elliptical_taper(760,21866
+void rad_ellip_sp(793,22565
+void rad_ellip_sp_LI(828,23356
+void radonellip(865,24153
+void radonellip_LI(892,24874
+void rad_ellip_sp_old(940,25806
+int tapercentre(984,26798
+void irreg_velocity_grid(1028,28040
+void elliptical_stack_sinc(1079,29463
+void elliptical_stack_sinc_orig(1131,30532
+
+suenmo9.cpp,644
+#define NWIN 14,284
+char *sdoc[17,368
+inv_par inv;62,2803
+segy tr;63,2816
+char headerfile[65,2826
+FILE *headerfp;66,2889
+int verbose;67,2940
+int main(69,2954
+void enmo1(312,9738
+int rad_ellip_sp(361,10754
+int rad_ellip_sp(390,11268
+int rad_ellip_sp_LI(425,11962
+void create_elliptical_taper(464,12738
+void rad_ellip_sp(496,13418
+void rad_ellip_sp_LI(537,14349
+void radonellip(577,15214
+void radonellip_LI(604,15935
+void rad_ellip_sp_old(652,16867
+int tapercentre(696,17862
+void irreg_velocity_grid(743,19267
+void enmo_make_win(794,20690
+void enmo_win(862,23131
+void create_taper(995,26870
+void critical_angle(1051,28192
+
+suenmo9_old.cpp,693
+#define NWIN 14,284
+char *sdoc[17,368
+inv_par inv;57,2393
+segy tr;58,2406
+char headerfile[60,2416
+FILE *headerfp;61,2479
+int verbose;62,2530
+int main(64,2544
+void enmo1_old(304,9262
+void enmo1(364,10636
+void enmo1(419,11728
+int rad_ellip_sp(468,12744
+int rad_ellip_sp(497,13258
+int rad_ellip_sp_LI(532,13945
+void create_elliptical_taper(571,14714
+void rad_ellip_sp(603,15394
+void rad_ellip_sp_LI(644,16318
+void radonellip(684,17176
+void radonellip_LI(711,17897
+void rad_ellip_sp_old(759,18829
+int tapercentre(803,19824
+void irreg_velocity_grid(850,21229
+void enmo_make_win(901,22652
+void enmo_win(959,24400
+void create_taper(1069,27718
+void critical_angle(1125,29040
+
+sueomig0.cpp,352
+#define USHRT_MAX 16,386
+char *sdoc[20,486
+FILE *modelfilep;74,3858
+FILE *cspfilep;75,3916
+int nh;79,4062
+int nt;80,4099
+int nx;81,4136
+int nhcsp;82,4170
+float dt;83,4214
+float dh;84,4241
+float dhe;85,4270
+float dx;86,4311
+float eps;87,4343
+int testadj;88,4380
+int smooth;89,4412
+int FLAG=90,4447
+int KEEP_WM;91,4525
+int main(93,4598
+
+sueomig1.cpp,347
+char *sdoc[12,309
+char tracefile[31,1137
+char headerfile[32,1199
+FILE *tracefp;33,1262
+FILE *headerfp;34,1311
+segy tr,36,1363
+segy tr,trf;36,1363
+int nt,41,1597
+int nt,nh,41,1597
+int nt,nh,nx,41,1597
+int nt,nh,nx,nhmax;41,1597
+float dt,42,1641
+float dt,dh,42,1641
+float dt,dh,dx,42,1641
+float dt,dh,dx,dhe;42,1641
+int main(43,1673
+
+sueomig2.cpp,347
+char *sdoc[12,309
+char tracefile[35,1437
+char headerfile[36,1499
+FILE *tracefp;37,1562
+FILE *headerfp;38,1611
+segy tr,40,1663
+segy tr,trf;40,1663
+int nt,48,2057
+int nt,nh,48,2057
+int nt,nh,nx,48,2057
+int nt,nh,nx,nhmax;48,2057
+float dt,49,2101
+float dt,dh,49,2101
+float dt,dh,dx,49,2101
+float dt,dh,dx,dhe;49,2101
+int main(51,2134
+
+sueomig3.cpp,368
+char *sdoc[12,309
+char tracefile[58,3160
+char headerfile[59,3222
+FILE *tracefp;60,3285
+FILE *headerfp;61,3334
+int nh;66,3476
+int nt;67,3513
+int nx;68,3550
+int nhcsp;69,3584
+float dt;70,3628
+float dh;71,3655
+float dhe;72,3684
+float dx;73,3725
+float eps;74,3757
+int testadj;75,3794
+int smooth;76,3826
+int main(107,5601
+static void closefiles(605,22316
+
+sueomig4.cpp,368
+char *sdoc[14,345
+char tracefile[61,3273
+char headerfile[62,3335
+FILE *tracefp;63,3398
+FILE *headerfp;64,3447
+int nh;69,3589
+int nt;70,3626
+int nx;71,3663
+int nhcsp;72,3697
+float dt;73,3741
+float dh;74,3768
+float dhe;75,3797
+float dx;76,3838
+float eps;77,3870
+int testadj;78,3907
+int smooth;79,3939
+int main(110,5714
+static void closefiles(652,24720
+
+sueomig5.cpp,368
+char *sdoc[14,345
+char tracefile[61,3273
+char headerfile[62,3335
+FILE *tracefp;63,3398
+FILE *headerfp;64,3447
+int nh;69,3589
+int nt;70,3626
+int nx;71,3663
+int nhcsp;72,3697
+float dt;73,3741
+float dh;74,3768
+float dhe;75,3797
+float dx;76,3838
+float eps;77,3870
+int testadj;78,3907
+int smooth;79,3939
+int main(113,5856
+static void closefiles(660,25209
+
+sueomig6.cpp,352
+#define USHRT_MAX 16,386
+char *sdoc[20,486
+FILE *modelfilep;74,3858
+FILE *cspfilep;75,3916
+int nh;79,4062
+int nt;80,4099
+int nx;81,4136
+int nhcsp;82,4170
+float dt;83,4214
+float dh;84,4241
+float dhe;85,4270
+float dx;86,4311
+float eps;87,4343
+int testadj;88,4380
+int smooth;89,4412
+int FLAG=90,4447
+int KEEP_WM;91,4525
+int main(93,4598
+
+sueomig6b.cpp,368
+char *sdoc[14,345
+char tracefile[64,3499
+char headerfile[65,3561
+FILE *tracefp;66,3624
+FILE *headerfp;67,3673
+int nh;72,3815
+int nt;73,3852
+int nx;74,3889
+int nhcsp;75,3923
+float dt;76,3967
+float dh;77,3994
+float dhe;78,4023
+float dx;79,4064
+float eps;80,4096
+int testadj;81,4133
+int smooth;82,4165
+int main(134,6881
+static void closefiles(684,26013
+
+sueomig6f.cpp,483
+#define USHRT_MAX 16,386
+char *sdoc[21,487
+char tracefile[76,3984
+char headerfile[77,4046
+FILE *tracefp;78,4109
+FILE *headerfp;79,4158
+FILE *modelfilep;80,4209
+FILE *cspfilep;81,4267
+int nh;85,4413
+int nt;86,4450
+int nx;87,4487
+int nhcsp;88,4521
+float dt;89,4565
+float dh;90,4592
+float dhe;91,4621
+float dx;92,4662
+float eps;93,4694
+int testadj;94,4731
+int smooth;95,4763
+int FLAG=96,4798
+int KEEP_WM;97,4876
+int main(102,5003
+static void closefiles(705,25920
+
+sueomig7.cpp,482
+#define USHRT_MAX 16,386
+char *sdoc[20,486
+char tracefile[74,3858
+char headerfile[75,3920
+FILE *tracefp;76,3983
+FILE *headerfp;77,4032
+FILE *modelfilep;78,4083
+FILE *cspfilep;79,4141
+int nh;83,4287
+int nt;84,4324
+int nx;85,4361
+int nhcsp;86,4395
+float dt;87,4439
+float dh;88,4466
+float dhe;89,4495
+float dx;90,4536
+float eps;91,4568
+int testadj;92,4605
+int smooth;93,4637
+int FLAG=94,4672
+int KEEP_WM;95,4750
+int main(97,4823
+static void closefiles(713,26728
+
+sueomig7b.cpp,352
+#define USHRT_MAX 16,386
+char *sdoc[20,486
+FILE *modelfilep;74,3858
+FILE *cspfilep;75,3916
+int nh;79,4062
+int nt;80,4099
+int nx;81,4136
+int nhcsp;82,4170
+float dt;83,4214
+float dh;84,4241
+float dhe;85,4270
+float dx;86,4311
+float eps;87,4343
+int testadj;88,4380
+int smooth;89,4412
+int FLAG=90,4447
+int KEEP_WM;91,4525
+int main(93,4598
+
+sufft.cpp,100
+char *sdoc[10,268
+#define LOOKFAC	57,1689
+#define PFA_MAX	58,1744
+segy tr;60,1805
+main(63,1819
+
+sufill1d.cpp,75
+char *sdoc[11,274
+segy tr,28,1003
+segy tr,trf;28,1003
+int main(34,1263
+
+sugazmigmod.cpp,204
+char *sdoc[12,314
+char tracefile[68,2538
+char headerfile[69,2600
+FILE *tracefp;70,2663
+FILE *headerfp;71,2712
+segy tr;73,2764
+main 76,2778
+void gazdagvt 252,8056
+static void closefiles(355,10787
+
+suhrfft2.cpp,89
+char *sdoc[16,368
+FILE *modelfilep;44,2059
+FILE *offsetfile;45,2117
+int main(48,2205
+
+suhrrtf.cpp,800
+#define NNX 5,141
+#define NT 6,157
+char *sdoc[19,523
+segy tr;119,6331
+complex czero=120,6340
+int nt,121,6361
+int nt, nh,121,6361
+int nt, nh, nq,121,6361
+int nt, nh, nq, method,121,6361
+int nt, nh, nq, method, iter_end,121,6361
+int nt, nh, nq, method, iter_end, rtmethod,121,6361
+int nt, nh, nq, method, iter_end, rtmethod, norm,121,6361
+int nt, nh, nq, method, iter_end, rtmethod, norm, itercg,121,6361
+int nt, nh, nq, method, iter_end, rtmethod, norm, itercg, freqflag,121,6361
+int nt, nh, nq, method, iter_end, rtmethod, norm, itercg, freqflag, costflag;121,6361
+int reorth;122,6439
+int nbad;123,6451
+float step;124,6461
+float factor;125,6473
+int testadj;126,6487
+float depth;127,6500
+char headerfile[128,6513
+FILE *headerfp;129,6576
+int verbose;130,6627
+int main(132,6641
+
+suhrrtfpi.cpp,646
+#define NNX 7,279
+#define NT 8,295
+char *sdoc[14,564
+segy tr,73,3586
+segy tr,*trr;73,3586
+complex czero=74,3623
+int nt,75,3644
+int nt, nh,75,3644
+int nt, nh, nq,75,3644
+int nt, nh, nq, method,75,3644
+int nt, nh, nq, method, iter_end,75,3644
+int nt, nh, nq, method, iter_end, rtmethod,75,3644
+int nt, nh, nq, method, iter_end, rtmethod, norm,75,3644
+int nt, nh, nq, method, iter_end, rtmethod, norm, itercg,75,3644
+int nt, nh, nq, method, iter_end, rtmethod, norm, itercg, freqflag,75,3644
+int nt, nh, nq, method, iter_end, rtmethod, norm, itercg, freqflag, costflag,75,3644
+  nfpm;76,3722
+complex **pm;77,3730
+int main(78,3744
+
+suhrrti.cpp,276
+#define NNX 5,141
+#define NT 6,157
+char *sdoc[14,412
+segy tr;58,2479
+int nt,59,2488
+int nt, nh,59,2488
+int nt, nh, nq,59,2488
+int nt, nh, nq, rtmethod;59,2488
+float depth;60,2514
+char headerfile[61,2527
+FILE *headerfp;62,2590
+int verbose;63,2641
+int main(65,2655
+
+sukmig0.cpp,203
+#define NNX 5,141
+#define NT 6,157
+char *sdoc[12,300
+segy tr;28,802
+int nt,31,922
+int nt,nh,31,922
+int nt,nh,nx;31,922
+float dt,32,960
+float dt,dh,32,960
+float dt,dh,dx;32,960
+int main(33,988
+
+sukmig1.cpp,193
+char *sdoc[11,269
+segy tr,28,927
+segy tr,trf;28,927
+int nt,33,1176
+int nt,nh,33,1176
+int nt,nh,nx;33,1176
+float dt,34,1214
+float dt,dh,34,1214
+float dt,dh,dx;34,1214
+int main(35,1242
+
+sukmig2.cpp,195
+char *sdoc[11,269
+segy tr,31,1150
+segy tr,trf;31,1150
+int nt,36,1400
+int nt,nh,36,1400
+int nt,nh,nx;36,1400
+float dt,37,1438
+float dt,dh,37,1438
+float dt,dh,dx;37,1438
+int main(38,1466
+
+sukmig3.cpp,133
+char *sdoc[12,309
+char tracefile[38,1644
+char headerfile[39,1706
+FILE *tracefp;40,1769
+FILE *headerfp;41,1818
+int main(58,2509
+
+sukmig3temp.cpp,333
+char *sdoc[12,309
+char tracefile[38,1644
+char headerfile[39,1706
+FILE *tracefp;40,1769
+FILE *headerfp;41,1818
+int nh;46,1960
+int nt;47,1997
+int nx;48,2034
+int nhcsp;49,2068
+float dt;50,2112
+float dh;51,2139
+float dhe;52,2168
+float dx;53,2209
+float eps;54,2241
+int testadj;55,2278
+int smooth;56,2310
+int main(68,2893
+
+sukmig4.cpp,133
+char *sdoc[12,309
+char tracefile[38,1615
+char headerfile[39,1677
+FILE *tracefp;40,1740
+FILE *headerfp;41,1789
+int main(59,2619
+
+sumyfilt.cpp,73
+char *sdoc[11,269
+segy tr,28,914
+segy tr,trf;28,914
+int main(34,1108
+
+sumyfilt2.cpp,73
+char *sdoc[11,318
+segy tr,28,963
+segy tr,trf;28,963
+int main(34,1157
+
+sumynmo.cpp,73
+char *sdoc[11,270
+segy tr,28,914
+segy tr,trf;28,914
+int main(32,1023
+
+suradfreq.cpp,269
+#define USHRT_MAX 16,386
+char *sdoc[21,487
+char tracefile[71,3618
+char headerfile[72,3680
+FILE *tracefp;73,3743
+FILE *headerfp;74,3792
+FILE *modelfilep;75,3843
+FILE *cmpfilep;76,3901
+FILE *offsetfile;77,3957
+int main(80,4045
+static void closefiles(661,23354
+
+suradfreqint.cpp,269
+#define USHRT_MAX 16,386
+char *sdoc[21,487
+char tracefile[71,3618
+char headerfile[72,3680
+FILE *tracefp;73,3743
+FILE *headerfp;74,3792
+FILE *modelfilep;75,3843
+FILE *cmpfilep;76,3901
+FILE *offsetfile;77,3957
+int main(80,4045
+static void closefiles(716,24933
+
+suradfreqint_s.cpp,243
+char *sdoc[15,364
+char tracefile[67,3759
+char headerfile[68,3821
+FILE *tracefp;69,3884
+FILE *headerfp;70,3933
+FILE *modelfilep;71,3984
+FILE *cmpfilep;72,4042
+FILE *offsetfile;73,4098
+int main(76,4186
+static void closefiles(637,22773
+
+suradint.cpp,937
+#define USHRT_MAX 14,349
+char *sdoc[18,449
+segy tr;62,2838
+float factor;63,2848
+int nt,64,2862
+int nt,nh,64,2862
+int nt,nh,nq,64,2862
+int nt,nh,nq,nx,64,2862
+int nt,nh,nq,nx,ny,64,2862
+int nt,nh,nq,nx,ny,rtmethod,64,2862
+int nt,nh,nq,nx,ny,rtmethod,itercg,64,2862
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,64,2862
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,64,2862
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm,64,2862
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm, reorth;64,2862
+int nh2;65,2927
+float dt,66,2936
+float dt,dh,66,2936
+float dt,dh,dq,66,2936
+float dt,dh,dq,eps1,66,2936
+float dt,dh,dq,eps1,eps2,66,2936
+float dt,dh,dq,eps1,eps2, step,66,2936
+float dt,dh,dq,eps1,eps2, step, thres,66,2936
+float dt,dh,dq,eps1,eps2, step, thres,theta;66,2936
+int testadj;67,2981
+int taper;68,2994
+char headerfile[69,3005
+FILE *headerfp;70,3068
+int verbose;71,3119
+int main(73,3133
+
+suradint0.cpp,917
+char *sdoc[11,308
+segy tr;68,3609
+float factor;69,3619
+int nt,70,3633
+int nt,nh,70,3633
+int nt,nh,nq,70,3633
+int nt,nh,nq,nx,70,3633
+int nt,nh,nq,nx,ny,70,3633
+int nt,nh,nq,nx,ny,rtmethod,70,3633
+int nt,nh,nq,nx,ny,rtmethod,itercg,70,3633
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,70,3633
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,70,3633
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm,70,3633
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm, reorth;70,3633
+float dt,71,3698
+float dt,dh,71,3698
+float dt,dh,dq,71,3698
+float dt,dh,dq,eps1,71,3698
+float dt,dh,dq,eps1,eps2,71,3698
+float dt,dh,dq,eps1,eps2, step,71,3698
+float dt,dh,dq,eps1,eps2, step, thres,71,3698
+float dt,dh,dq,eps1,eps2, step, thres,theta;71,3698
+int testadj;72,3743
+int taper;73,3756
+char headerfile[74,3767
+FILE *headerfp;75,3830
+int verbose;76,3881
+int main(78,3895
+void radint(303,10502
+
+suradintfreq.cpp,243
+char *sdoc[16,385
+char tracefile[68,3780
+char headerfile[69,3842
+FILE *tracefp;70,3905
+FILE *headerfp;71,3954
+FILE *modelfilep;72,4005
+FILE *cmpfilep;73,4063
+FILE *offsetfile;74,4119
+int main(77,4207
+static void closefiles(632,22548
+
+suradmulfreq.cpp,243
+char *sdoc[15,364
+char tracefile[67,3759
+char headerfile[68,3821
+FILE *tracefp;69,3884
+FILE *headerfp;70,3933
+FILE *modelfilep;71,3984
+FILE *cmpfilep;72,4042
+FILE *offsetfile;73,4098
+int main(76,4186
+static void closefiles(634,22905
+
+suradnmo.cpp,367
+#define NNX 5,141
+#define NT 6,157
+char *sdoc[13,377
+segy tr,54,2403
+segy tr,*trr;54,2403
+int nt,55,2417
+int nt,nh,55,2417
+int nt,nh,nq,55,2417
+int nt,nh,nq,nx,55,2417
+int nt,nh,nq,nx,ny,55,2417
+int nt,nh,nq,nx,ny,rtmethod,55,2417
+int nt,nh,nq,nx,ny,rtmethod,itercg;55,2417
+float dt,56,2453
+float dt,dh,56,2453
+float dt,dh,dq;56,2453
+int main(58,2470
+
+suradon0.cpp,1009
+#define USHRT_MAX 14,349
+char *sdoc[18,449
+segy tr,66,3138
+segy tr,tri;66,3138
+float factor;67,3152
+int nt,68,3166
+int nt,nh,68,3166
+int nt,nh,nq,68,3166
+int nt,nh,nq,nx,68,3166
+int nt,nh,nq,nx,ny,68,3166
+int nt,nh,nq,nx,ny,rtmethod,68,3166
+int nt,nh,nq,nx,ny,rtmethod,itercg,68,3166
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,68,3166
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,68,3166
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm,68,3166
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm, reorth;68,3166
+int nh2;69,3231
+float dt,70,3240
+float dt,dh,70,3240
+float dt,dh,dq,70,3240
+float dt,dh,dq,eps1,70,3240
+float dt,dh,dq,eps1,eps2,70,3240
+float dt,dh,dq,eps1,eps2, step,70,3240
+float dt,dh,dq,eps1,eps2, step, thres,70,3240
+float dt,dh,dq,eps1,eps2, step, thres,theta;70,3240
+int testadj;71,3285
+int taperflag;72,3298
+char tracefile[74,3378
+char headerfile[75,3440
+FILE *tracefp;76,3503
+FILE *headerfp;77,3553
+int verbose;78,3604
+int main(80,3618
+
+suradon00.cpp,190
+char *sdoc[16,391
+char tracefile[30,991
+char headerfile[31,1053
+FILE *tracefp;32,1116
+FILE *headerfp;33,1165
+FILE *offsetfile;34,1216
+int main(37,1304
+static void closefiles(83,2527
+
+suradon00forw.cpp,243
+char *sdoc[15,680
+char tracefile[53,3025
+char headerfile[54,3087
+FILE *tracefp;55,3150
+FILE *headerfp;56,3199
+FILE *modelfilep;57,3250
+FILE *cmpfilep;58,3308
+FILE *offsetfile;59,3364
+int main(62,3452
+static void closefiles(345,12124
+
+suradon00inv.cpp,160
+char *sdoc[16,482
+segy tr,32,1151
+segy tr,tr2;32,1151
+FILE *fp1;33,1165
+FILE *fp2;34,1212
+FILE *tracefp;35,1260
+FILE *headerfp;36,1309
+int main(38,1361
+
+suradon00inv_beam.cpp,160
+char *sdoc[18,901
+segy tr,34,1570
+segy tr,tr2;34,1570
+FILE *fp1;35,1584
+FILE *fp2;36,1631
+FILE *tracefp;37,1679
+FILE *headerfp;38,1728
+int main(40,1780
+
+suradon01.cpp,244
+char *sdoc[20,1277
+char tracefile[75,4896
+char headerfile[76,4958
+FILE *tracefp;77,5021
+FILE *headerfp;78,5070
+FILE *modelfilep;79,5121
+FILE *cmpfilep;80,5179
+FILE *offsetfile;81,5235
+int main(84,5323
+static void closefiles(745,27762
+
+suradon1.cpp,238
+char *sdoc[14,354
+inv_par inv;75,4033
+segy tr,76,4046
+segy tr,tri;76,4046
+options_par opt;77,4060
+char tracefile[80,4143
+char headerfile[81,4205
+FILE *tracefp;82,4268
+FILE *headerfp;83,4318
+int verbose;84,4369
+int main(86,4383
+
+suradoncgfft.cpp,218
+char *sdoc[14,346
+char tracefile[43,2070
+char headerfile[44,2132
+FILE *tracefp;45,2195
+FILE *headerfp;46,2244
+FILE *modelfilep;47,2295
+FILE *offsetfile;48,2353
+int main(51,2441
+static void closefiles(300,9925
+
+suradonfreqband.cpp,218
+char *sdoc[14,354
+char tracefile[43,2075
+char headerfile[44,2137
+FILE *tracefp;45,2200
+FILE *headerfp;46,2249
+FILE *modelfilep;47,2300
+FILE *offsetfile;48,2358
+int main(51,2446
+static void closefiles(290,9832
+
+suradonhybrid.cpp,219
+char *sdoc[14,346
+char tracefile[39,1742
+char headerfile[40,1804
+FILE *tracefp;41,1867
+FILE *headerfp;42,1916
+FILE *modelfilep;43,1967
+FILE *offsetfile;44,2025
+int main(47,2113
+static void closefiles(336,11233
+
+suradonhybridl1.cpp,219
+char *sdoc[14,346
+char tracefile[39,1742
+char headerfile[40,1804
+FILE *tracefp;41,1867
+FILE *headerfp;42,1916
+FILE *modelfilep;43,1967
+FILE *offsetfile;44,2025
+int main(47,2113
+static void closefiles(336,11233
+
+suradonl1.cpp,192
+char *sdoc[18,368
+segy tr,54,2179
+segy tr,tri;54,2179
+char tracefile[56,2258
+char headerfile[57,2320
+FILE *tracefp;58,2383
+FILE *headerfp;59,2433
+int verbose;60,2484
+int main(62,2498
+
+suradonl1freq.cpp,89
+char *sdoc[16,388
+FILE *modelfilep;39,1689
+FILE *offsetfile;40,1747
+int main(44,1836
+
+suradontd0.cpp,117
+char *sdoc[14,387
+inv_par inv;75,4067
+segy tr,76,4080
+segy tr,tri;76,4080
+int verbose;78,4095
+int main(80,4109
+
+suradontd1.cpp,117
+char *sdoc[14,387
+inv_par inv;75,4067
+segy tr,76,4080
+segy tr,tri;76,4080
+int verbose;78,4095
+int main(80,4109
+
+suradontdi0.cpp,128
+char *sdoc[12,346
+segy tr;53,2377
+int verbose;55,2388
+int main(57,2402
+void radonhyp(242,7128
+void radonhyp_sinc(281,8032
+
+suradontoep.cpp,219
+char *sdoc[16,367
+char tracefile[45,2088
+char headerfile[46,2150
+FILE *tracefp;47,2213
+FILE *headerfp;48,2262
+FILE *modelfilep;49,2313
+FILE *offsetfile;50,2371
+int main(53,2459
+static void closefiles(310,10152
+
+suradontoep_2.cpp,89
+char *sdoc[16,367
+FILE *modelfilep;44,2058
+FILE *offsetfile;45,2116
+int main(48,2204
+
+suradonwtcgls.cpp,218
+char *sdoc[14,346
+char tracefile[43,2070
+char headerfile[44,2132
+FILE *tracefp;45,2195
+FILE *headerfp;46,2244
+FILE *modelfilep;47,2295
+FILE *offsetfile;48,2353
+int main(51,2441
+static void closefiles(301,9993
+
+suradonwtcgls_td.cpp,218
+char *sdoc[14,346
+char tracefile[43,2070
+char headerfile[44,2132
+FILE *tracefp;45,2195
+FILE *headerfp;46,2244
+FILE *modelfilep;47,2295
+FILE *offsetfile;48,2353
+int main(51,2441
+static void closefiles(300,9930
+
+suradonwtcgls_tfd.cpp,218
+char *sdoc[14,346
+char tracefile[43,2070
+char headerfile[44,2132
+FILE *tracefp;45,2195
+FILE *headerfp;46,2244
+FILE *modelfilep;47,2295
+FILE *offsetfile;48,2353
+int main(51,2441
+static void closefiles(300,9931
+
+suradtd.cpp,913
+char *sdoc[11,308
+segy tr;69,3684
+float factor;70,3694
+int nt,71,3708
+int nt,nh,71,3708
+int nt,nh,nq,71,3708
+int nt,nh,nq,nx,71,3708
+int nt,nh,nq,nx,ny,71,3708
+int nt,nh,nq,nx,ny,rtmethod,71,3708
+int nt,nh,nq,nx,ny,rtmethod,itercg,71,3708
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,71,3708
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,71,3708
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm,71,3708
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm, reorth;71,3708
+float dt,72,3773
+float dt,dh,72,3773
+float dt,dh,dq,72,3773
+float dt,dh,dq,eps1,72,3773
+float dt,dh,dq,eps1,eps2,72,3773
+float dt,dh,dq,eps1,eps2, step,72,3773
+float dt,dh,dq,eps1,eps2, step, thres,72,3773
+float dt,dh,dq,eps1,eps2, step, thres,theta;72,3773
+int testadj;73,3818
+int taper;74,3831
+char headerfile[75,3842
+FILE *headerfp;76,3905
+int verbose;77,3956
+int crude;78,3969
+int main(80,3981
+
+suradtd0.cpp,784
+char *sdoc[10,288
+segy tr,61,3151
+segy tr,*trr;61,3151
+int nt,63,3189
+int nt,nh,63,3189
+int nt,nh,nq,63,3189
+int nt,nh,nq,nx,63,3189
+int nt,nh,nq,nx,ny,63,3189
+int nt,nh,nq,nx,ny,rtmethod,63,3189
+int nt,nh,nq,nx,ny,rtmethod,itercg,63,3189
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,63,3189
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,63,3189
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm,63,3189
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm, reorth;63,3189
+float dt,64,3254
+float dt,dh,64,3254
+float dt,dh,dq,64,3254
+float dt,dh,dq,eps1,64,3254
+float dt,dh,dq,eps1,eps2,64,3254
+float dt,dh,dq,eps1,eps2, step,64,3254
+float dt,dh,dq,eps1,eps2, step, thres,64,3254
+float dt,dh,dq,eps1,eps2, step, thres,theta;64,3254
+int main(65,3299
+
+suradtd2.cpp,894
+char *sdoc[11,308
+segy tr;68,3609
+float factor;69,3619
+int nt,70,3633
+int nt,nh,70,3633
+int nt,nh,nq,70,3633
+int nt,nh,nq,nx,70,3633
+int nt,nh,nq,nx,ny,70,3633
+int nt,nh,nq,nx,ny,rtmethod,70,3633
+int nt,nh,nq,nx,ny,rtmethod,itercg,70,3633
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,70,3633
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,70,3633
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm,70,3633
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm, reorth;70,3633
+float dt,71,3698
+float dt,dh,71,3698
+float dt,dh,dq,71,3698
+float dt,dh,dq,eps1,71,3698
+float dt,dh,dq,eps1,eps2,71,3698
+float dt,dh,dq,eps1,eps2, step,71,3698
+float dt,dh,dq,eps1,eps2, step, thres,71,3698
+float dt,dh,dq,eps1,eps2, step, thres,theta;71,3698
+int testadj;72,3743
+int taper;73,3756
+char headerfile[74,3767
+FILE *headerfp;75,3830
+int verbose;76,3881
+int main(78,3895
+
+suradtdi.cpp,415
+#define NNX 5,141
+#define NT 6,157
+char *sdoc[13,320
+segy tr;54,2346
+int nt,55,2355
+int nt,nh,55,2355
+int nt,nh,nq,55,2355
+int nt,nh,nq,nx,55,2355
+int nt,nh,nq,nx,ny,55,2355
+int nt,nh,nq,nx,ny,rtmethod,55,2355
+int nt,nh,nq,nx,ny,rtmethod,itercg;55,2355
+float dt,56,2391
+float dt,dh,56,2391
+float dt,dh,dq;56,2391
+char headerfile[57,2407
+FILE *headerfp;58,2470
+int verbose;59,2521
+int main(61,2535
+
+suradtestfreq.cpp,244
+char *sdoc[20,1277
+char tracefile[75,4896
+char headerfile[76,4958
+FILE *tracefp;77,5021
+FILE *headerfp;78,5070
+FILE *modelfilep;79,5121
+FILE *cmpfilep;80,5179
+FILE *offsetfile;81,5235
+int main(84,5323
+static void closefiles(745,27762
+
+sureadveli.cpp,62
+char *sdoc[12,307
+int main(40,1523
+void interpovv 243,8279
+
+susynth.cpp,37
+char *sdoc[13,374
+int main(53,2881
+
+susynth0.cpp,37
+char *sdoc[13,374
+int main(53,2849
+
+susynth1.cpp,130
+char *sdoc[19,781
+int main(58,3213
+void in_vintz(253,8587
+void out_vrmst(267,8943
+void in_vintt(283,9300
+void tzzt(298,9638
+
+sutemplate0.cpp,191
+char *sdoc[12,328
+char tracefile[28,945
+char headerfile[29,1007
+FILE *tracefp;30,1070
+FILE *headerfp;31,1119
+FILE *offsetfile;32,1170
+int main(35,1258
+static void closefiles(181,5386
+
+sutemplate1.cpp,156
+char *sdoc[12,270
+segy tr,28,911
+segy tr,tr2;28,911
+FILE *fp1;29,925
+FILE *fp2;30,972
+FILE *tracefp;31,1020
+FILE *headerfp;32,1069
+int main(34,1121
+
+sutemplate2.cpp,244
+char *sdoc[17,1218
+char tracefile[55,3563
+char headerfile[56,3625
+FILE *tracefp;57,3688
+FILE *headerfp;58,3737
+FILE *modelfilep;59,3788
+FILE *cmpfilep;60,3846
+FILE *offsetfile;61,3902
+int main(64,3990
+static void closefiles(412,14990
+
+sutemplate3.cpp,218
+char *sdoc[14,346
+char tracefile[43,2067
+char headerfile[44,2129
+FILE *tracefp;45,2192
+FILE *headerfp;46,2241
+FILE *modelfilep;47,2292
+FILE *offsetfile;48,2350
+int main(51,2438
+static void closefiles(299,9875
+
+sutemplate4.cpp,217
+#define USHRT_MAX 8,155
+char *sdoc[12,255
+segy tr,60,2944
+segy tr,tri;60,2944
+char tracefile[62,3023
+char headerfile[63,3085
+FILE *tracefp;64,3148
+FILE *headerfp;65,3198
+int verbose;66,3249
+int main(68,3263
+
+suvelanrt.cpp,821
+#define NNX 5,148
+#define NT 6,164
+char *sdoc[11,306
+segy tr,62,3166
+segy tr,*trr;62,3166
+int nt,67,3307
+int nt,nh,67,3307
+int nt,nh,nq,67,3307
+int nt,nh,nq,nx,67,3307
+int nt,nh,nq,nx,ny,67,3307
+int nt,nh,nq,nx,ny,rtmethod,67,3307
+int nt,nh,nq,nx,ny,rtmethod,itercg,67,3307
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,67,3307
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,67,3307
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm,67,3307
+int nt,nh,nq,nx,ny,rtmethod,itercg,iter_end,method,norm, reorth;67,3307
+float dt,68,3372
+float dt,dh,68,3372
+float dt,dh,dq,68,3372
+float dt,dh,dq,eps1,68,3372
+float dt,dh,dq,eps1,eps2,68,3372
+float dt,dh,dq,eps1,eps2, step,68,3372
+float dt,dh,dq,eps1,eps2, step, thres,68,3372
+float dt,dh,dq,eps1,eps2, step, thres,theta;68,3372
+int main(69,3417
+
+suvelanrti.cpp,367
+#define NNX 5,141
+#define NT 6,157
+char *sdoc[12,361
+segy tr,53,2387
+segy tr,*trr;53,2387
+int nt,54,2401
+int nt,nh,54,2401
+int nt,nh,nq,54,2401
+int nt,nh,nq,nx,54,2401
+int nt,nh,nq,nx,ny,54,2401
+int nt,nh,nq,nx,ny,rtmethod,54,2401
+int nt,nh,nq,nx,ny,rtmethod,itercg;54,2401
+float dt,55,2437
+float dt,dh,55,2437
+float dt,dh,dq;55,2437
+int main(58,2455
+
+testcg.cpp,76
+char *sdoc[5,108
+int main(10,336
+void Atimesx(75,1893
+float dot(90,2205
+
+testcg0.cpp,282
+int main(21,573
+void Atimesx(86,2094
+float dot(102,2408
+float mpcgne(140,3806
+void **alloc2 238,6311
+void free2 255,6641
+void *alloc1 263,6701
+void free1 272,6844
+float *alloc1float(278,6887
+float **alloc2float(283,6969
+void free1float(288,7067
+void free2float(294,7148
+
+testcg1.cpp,216
+int main(21,573
+void **alloc2 88,2124
+void free2 105,2454
+void *alloc1 113,2514
+void free1 122,2657
+float *alloc1float(128,2700
+float **alloc2float(133,2782
+void free1float(138,2880
+void free2float(144,2961
+
+clibrary/AplusDiag.cpp,22
+void AplusDiag(5,183
+
+clibrary/AtimesBC.cpp,21
+void AtimesBC(4,136
+
+clibrary/AtimesBm.cpp,87
+void AtimesBm(4,55
+void AtimesBm(17,361
+void AtimesBm(33,745
+void AtimesBm(49,1137
+
+clibrary/AtimesBupper.cpp,21
+void AtimesBm(4,136
+
+clibrary/AtimesDiag.cpp,47
+void AtimesDiag(6,112
+void AtimesDiag(16,306
+
+clibrary/Atimesx.cpp,104
+void Atimesx(5,56
+void Atimesx(17,265
+void Atimesx(30,458
+void Atimesx(42,652
+void Atimesx(75,1313
+
+clibrary/Complex.cpp,245
+complex sqrt(9,349
+complex cos(33,787
+complex sin(38,872
+complex cosh(43,956
+complex sinh(48,1041
+complex exp(53,1126
+complex log(59,1213
+complex pow(65,1321
+complex pow(88,1649
+complex pow(99,1924
+complex pow(111,2204
+main(127,2615
+
+clibrary/Dcomplex.cpp,256
+dcomplex sqrt(9,351
+dcomplex cos(33,795
+dcomplex sin(38,883
+dcomplex cosh(43,970
+dcomplex sinh(48,1058
+dcomplex exp(53,1146
+dcomplex log(59,1237
+dcomplex pow(65,1349
+dcomplex pow(88,1683
+dcomplex pow(99,1964
+dcomplex pow(111,2250
+main(127,2668
+
+clibrary/Lumley_precond.cpp,26
+void Lumley_precond(4,35
+
+clibrary/PD_lp_bm.cpp,134
+void radon_PD_lp_bm(3,17
+int PD_lp_bm(40,662
+void matmul0(189,3641
+float min3(205,3965
+int NMO(222,4170
+int  CG_solver(254,4726
+
+clibrary/build_index.cpp,23
+void build_index(4,35
+
+clibrary/cdot.cpp,19
+complex cdot(5,56
+
+clibrary/cghrrt.cpp,17
+int cghrrt(6,78
+
+clibrary/cgls.cpp,16
+void cgls(5,77
+
+clibrary/cgls0.cpp,63
+#define LOOKFAC	7,96
+#define PFA_MAX	8,151
+void cgls0(9,211
+
+clibrary/cgnl.cpp,872
+#define NRANSI6,178
+#define ITMAX 8,215
+#define EPS 9,234
+#define FREEALL 10,255
+void frprmn(14,393
+#define NRANSI66,1563
+#define TOL 68,1600
+int ncom;70,1622
+float *pcom,71,1633
+float *pcom,*xicom,71,1633
+void dlinmin(74,1713
+#define NRANSI108,2595
+extern int ncom;111,2634
+extern float *pcom,112,2652
+extern float *pcom,*xicom,112,2652
+float df1dim(115,2746
+#define NRANSI133,3133
+#define ITMAX 135,3170
+#define ZEPS 136,3189
+#define MOV3(MOV3137,3211
+float dbrent(139,3266
+#define NRANSI226,5190
+#define GOLD 228,5227
+#define GLIMIT 229,5250
+#define TINY 230,5272
+#define SHFT(SHFT231,5294
+void mnbrak(233,5344
+#define NRANSI290,6559
+extern int ncom;293,6598
+extern float *pcom,294,6616
+extern float *pcom,*xicom,294,6616
+float f1dim(296,6666
+#define NRANSI313,6972
+float func1(315,7009
+#define NRANSI340,7660
+void dfunc1(345,7726
+
+clibrary/cgnl0.cpp,597
+extern int nh,7,115
+extern int nh, nq;7,115
+int nnq=8,134
+int nnh=9,148
+float **LR,10,162
+float **LR, **LRH,10,162
+float **LR, **LRH, *CD,10,162
+float **LR, **LRH, *CD, *CM,10,162
+float **LR, **LRH, *CD, *CM, *RHS,10,162
+float **LR, **LRH, *CD, *CM, *RHS, *DC,10,162
+float **LR, **LRH, *CD, *CM, *RHS, *DC, *XXC,10,162
+float **LR, **LRH, *CD, *CM, *RHS, *DC, *XXC, *RES,10,162
+float **LR, **LRH, *CD, *CM, *RHS, *DC, *XXC, *RES, lambda,10,162
+float **LR, **LRH, *CD, *CM, *RHS, *DC, *XXC, *RES, lambda, sigma;10,162
+#define LOOKFAC	14,287
+#define PFA_MAX	15,342
+void cgnl0(16,402
+
+clibrary/cgtd.cpp,16
+void cgtd(5,59
+
+clibrary/cgtdhr.cpp,18
+void cgtdhr(5,59
+
+clibrary/cgtdhr1.cpp,18
+void cgtdhr(5,59
+
+clibrary/cgtdrd0.cpp,18
+void cgtdhr(5,59
+
+clibrary/cgtoeprt.cpp,67
+#define LOOKFAC	8,249
+#define PFA_MAX	9,304
+void p_stack(10,364
+
+clibrary/chol_all.cpp,20
+void chol_all(4,59
+
+clibrary/choldc.cpp,39
+void choldc(9,219
+void choldc(34,827
+
+clibrary/choldc2.cpp,19
+void choldc(9,300
+
+clibrary/cholesky.cpp,19
+void cholesky(2,2
+
+clibrary/choleskyrt.cpp,70
+#define LOOKFAC	8,116
+#define PFA_MAX	9,171
+void choleskyrt(10,231
+
+clibrary/choleskyrt0.cpp,70
+#define LOOKFAC	8,249
+#define PFA_MAX	9,304
+void choleskyrt(10,364
+
+clibrary/cholover.cpp,66
+#define LOOKFAC	6,77
+#define PFA_MAX	7,132
+void cholover(8,192
+
+clibrary/cholover0.cpp,68
+#define LOOKFAC	8,249
+#define PFA_MAX	9,304
+void cholover(10,364
+
+clibrary/cholsl.cpp,38
+void cholsl(4,58
+void cholsl(19,419
+
+clibrary/cholsl2.cpp,19
+void cholsl(4,139
+
+clibrary/cholund.cpp,65
+#define LOOKFAC	5,76
+#define PFA_MAX	6,131
+void cholund(7,191
+
+clibrary/cholund0.cpp,67
+#define LOOKFAC	8,249
+#define PFA_MAX	9,304
+void cholund(10,364
+
+clibrary/cholund2.cpp,68
+#define LOOKFAC	9,269
+#define PFA_MAX	10,324
+void cholund(11,384
+
+clibrary/cholundpi.cpp,273
+#define LOOKFAC	9,269
+#define PFA_MAX	10,324
+void cholundpi(11,384
+   for (iq=0;iq<nq;140,5323
+   for (iq=0;iq<nq;iq++)     m2[140,5323
+   for (freq=maxfreq;freq<nfreq;141,5398
+       for (iq=0;iq<nq;142,5439
+          m2[143,5468
+   exit=146,5539
+   if 147,5577
+
+clibrary/circ_mult.cpp,22
+void  circ_mult(6,94
+
+clibrary/complex2real.cpp,52
+void complex2real(16,371
+void real2complex(35,749
+
+clibrary/compute_r.cpp,22
+void compute_r(6,207
+
+clibrary/compute_rhs.cpp,24
+void compute_rhs(6,207
+
+clibrary/conjgrad.cpp,21
+void conjgrad(5,185
+
+clibrary/conjgrad2.cpp,71
+#define LOOKFAC	8,226
+#define PFA_MAX	9,281
+void conjgradrt2(10,341
+
+clibrary/conjgrad3c.cpp,71
+#define LOOKFAC	8,226
+#define PFA_MAX	9,281
+void conjgradrt3(10,341
+
+clibrary/conjgrad3r.cpp,68
+#define LOOKFAC	6,77
+#define PFA_MAX	7,132
+void conjgrad3r(8,192
+
+clibrary/conjgradrt.cpp,70
+#define LOOKFAC	8,226
+#define PFA_MAX	9,281
+void conjgradrt(10,341
+
+clibrary/conjgradrt2.cpp,71
+#define LOOKFAC	8,226
+#define PFA_MAX	9,281
+void conjgradrt2(10,341
+
+clibrary/conjgradrt2a.cpp,71
+#define LOOKFAC	8,226
+#define PFA_MAX	9,281
+void conjgradrt2(10,341
+
+clibrary/conjgradrt2b.cpp,71
+#define LOOKFAC	8,226
+#define PFA_MAX	9,281
+void conjgradrt2(10,341
+
+clibrary/conjgradrt3.cpp,69
+#define LOOKFAC	7,96
+#define PFA_MAX	8,151
+void conjgradrt3(9,211
+
+clibrary/conjgradrt3pi.cpp,73
+#define LOOKFAC	8,226
+#define PFA_MAX	9,281
+void conjgradrt3pi(10,341
+
+clibrary/conjgradrt4.cpp,71
+#define LOOKFAC	8,113
+#define PFA_MAX	9,168
+void conjgradrt4(10,228
+
+clibrary/contran.cpp,187
+#define TRACE 9,525
+void contruc_2(12,587
+void contran(40,1125
+void advance(67,1657
+void conjzero(85,1939
+void contruc(104,2185
+void convin(130,2648
+float testadjop_conv(154,3131
+
+clibrary/contruc.cpp,41
+void contruc(6,243
+void advance(30,704
+
+clibrary/costfunc.cpp,21
+float costfunc(5,77
+
+clibrary/costfunction.cpp,25
+int costfunction(15,304
+
+clibrary/count_nsparse.cpp,24
+int count_nsparse(5,36
+
+clibrary/ctoephcg.cpp,19
+int ctoephcg(6,78
+
+clibrary/ctoeplitz.cpp,20
+int ctoeplitz(4,55
+
+clibrary/displayA.cpp,64
+void displayA(4,55
+void displayA(17,417
+void displayA(25,585
+
+clibrary/displayv.cpp,21
+void displayA(4,136
+
+clibrary/dot.cpp,15
+float dot(1,0
+
+clibrary/dot2.cpp,16
+double dot(1,0
+
+clibrary/elliptical_taper.cpp,27
+void elliptical_taper(1,0
+
+clibrary/eom_sparse.cpp,232
+void build_index(9,213
+void build_index_inv(47,1099
+void build_index(84,1987
+void build_index_inv(124,2972
+void eomig(165,3961
+void eomig(187,4512
+void build_index(211,5065
+void build_index_inv(252,6279
+void eomig(294,7499
+
+clibrary/eom_sparse_large.cpp,0
+
+clibrary/eom_sparse_long.cpp,99
+void irreg_velaxis(4,38
+int count_nsparse(35,1050
+void build_index(71,1918
+void eomig(110,2822
+
+clibrary/eom_sparse_old.cpp,99
+void irreg_velaxis(4,38
+int count_nsparse(35,1050
+void build_index(72,1960
+void eomig(112,2905
+
+clibrary/eomig0.cpp,18
+void eomig0(4,80
+
+clibrary/eomig1.cpp,18
+void eomig1(4,38
+
+clibrary/eomig2.cpp,18
+void eomig1(4,38
+
+clibrary/eomig4.cpp,18
+void eomig1(4,38
+
+clibrary/eomig5.cpp,18
+void eomig1(4,38
+
+clibrary/eomig_old.cpp,21
+void eomig_old(3,17
+
+clibrary/eomigls.cpp,129
+void eomigls(36,1040
+void migration(125,3419
+void modelling_out_dr(166,4457
+void modelling(245,6649
+void wtcglsmig(314,8229
+
+clibrary/eomigls2.cpp,90
+void eomigls(27,954
+void eomgetvel(158,4862
+void eomig(255,8005
+void get_vel(325,9465
+
+clibrary/eomigls3.cpp,90
+void eomigls(27,954
+void eomgetvel(168,5273
+void eomig(265,8416
+void get_vel(335,9876
+
+clibrary/eomigls_op.cpp,127
+void eomigls_op(27,813
+void eomgetvel_op(170,5134
+void eomig(279,8734
+void get_vel(348,10158
+void irreg_velaxis(400,11452
+
+clibrary/eomigls_sparse.cpp,145
+void eomigls_sparse(17,536
+void eomgetvel(171,5417
+void get_vel(280,8984
+void eomigls_sparse_large(334,10357
+void eomgetvel_large(493,15324
+
+clibrary/eomigls_sparse_large.cpp,64
+void eomigls_sparse_large(9,126
+void eomgetvel_large(166,5030
+
+clibrary/eomigls_sparse_long.cpp,100
+void eomigls_sparse(35,1456
+void eomgetvel(191,6382
+void eomig(312,10511
+void get_vel(382,11971
+
+clibrary/eomigls_sparse_sinc.cpp,32
+void eomigls_sparse_sinc(9,126
+
+clibrary/eomls_sparse_long.cpp,100
+void eomigls_sparse(35,1456
+void eomgetvel(191,6382
+void eomig(312,10511
+void get_vel(382,11971
+
+clibrary/equiv_offset.cpp,122
+void equiv_offset(25,766
+void equiv_offset(168,4772
+void equiv_offset_1side(312,8990
+void equiv_offset_test(428,12070
+
+clibrary/equiv_offset0.cpp,119
+void equiv_offset(27,812
+void equiv_offset_1side(164,4983
+#define MINTIME 273,8133
+void equiv_offset_test(275,8155
+
+clibrary/equiv_offset1.cpp,26
+void equiv_offset(19,519
+
+clibrary/equiv_offset2.cpp,26
+void equiv_offset(18,501
+
+clibrary/equiv_offset4.cpp,26
+void equiv_offset(19,519
+
+clibrary/equiv_offset_fold.cpp,119
+void equiv_offset(27,812
+void equiv_offset_1side(164,4983
+#define MINTIME 276,8250
+void equiv_offset_test(278,8272
+
+clibrary/equiv_offset_test.cpp,31
+void equiv_offset_test(19,564
+
+clibrary/expc.cpp,41
+complex expc(3,43
+dcomplex expc(10,142
+
+clibrary/fft0.cpp,62
+#define LOOKFAC	3,34
+#define PFA_MAX	4,89
+void fftgo(7,171
+
+clibrary/fftback.cpp,85
+#define PFA_MAX	4,55
+int fftback(8,195
+int fftback0(50,1429
+int fftback1(94,2693
+
+clibrary/fftgo.cpp,105
+#define LOOKFAC	3,34
+#define PFA_MAX	4,89
+void fftgo(7,171
+void fftgo0(55,1559
+void fftgo1(105,2978
+
+clibrary/filt.cpp,16
+void filt(3,34
+
+clibrary/four1.cpp,41
+#define SWAP(SWAP2,19
+void four1(4,68
+
+clibrary/freqweight.cpp,29
+      float freqweight(2,21
+
+clibrary/get_wavelet.cpp,46
+#define TRACE 10,170
+int get_wavelet(13,238
+
+clibrary/getparvelocity.cpp,25
+int getparvelocity(5,55
+
+clibrary/getvelocities.cpp,54
+void getvelocities(4,19
+void getvelocities(114,3382
+
+clibrary/hrfft2.cpp,120
+#define LOOKFAC	4,57
+#define PFA_MAX	5,112
+void hrfft2_interface(13,173
+void hrfft2(74,1885
+void matrix_3(175,5356
+
+clibrary/hrrtf.cpp,17
+void hrrtf(4,39
+
+clibrary/hrrtfpi.cpp,20
+void hrrtfpi(8,453
+
+clibrary/hrrti.cpp,17
+void hrrti(6,78
+
+clibrary/hrrti_beam.cpp,103
+#define LOOKFAC	36,1164
+#define PFA_MAX	37,1219
+void radonwtcgls_beam(38,1279
+void matrix(283,7006
+
+clibrary/htmult.cpp,17
+void htmul(5,77
+
+clibrary/interpovv.cpp,44
+void interpovv 3,17
+void interpovv 39,983
+
+clibrary/interval.cpp,19
+void interval(1,0
+
+clibrary/irregaxis.cpp,120
+void irreg_velaxis(5,36
+void irreg_velaxis(37,1107
+void irreg_slowness_axis(68,2107
+void reg_slowness_axis(103,3381
+
+clibrary/karmarkar.cpp,43
+#define USE_TRACE4,54
+int karmarker(6,73
+
+clibrary/kmig0.cpp,17
+void kmig0(4,38
+
+clibrary/kmig1.cpp,17
+void kmig1(4,80
+
+clibrary/kmig2.cpp,17
+void kmig2(4,81
+
+clibrary/kmig3.cpp,37
+void kmig3(4,81
+void kmig3(79,2143
+
+clibrary/lpcgnr.cpp,20
+void lpcgnr(20,602
+
+clibrary/lsqr.cpp,39
+void lsqr(4,58
+float pythag(233,7432
+
+clibrary/lsqr0.cpp,63
+#define LOOKFAC	7,96
+#define PFA_MAX	8,151
+void lsqr0(9,211
+
+clibrary/lsqrc.cpp,41
+void lsqrc(4,56
+float pythag2(187,5843
+
+clibrary/matrix.cpp,18
+void matrix(4,56
+
+clibrary/matrix_2.cpp,22
+void matrix_2(10,160
+
+clibrary/matrix_2s.cpp,21
+void matrix_2(7,168
+
+clibrary/matrix_3.cpp,260
+void matrix_4(6,67
+void matrix_3(66,1863
+void matrix_3(126,3658
+void matrix_3(161,4554
+void matrix_3(186,5191
+void matrix_3(207,5711
+void matrix_3(231,6295
+void matrix_3(258,6927
+void matrix_3(289,7826
+void matrix_5(330,9033
+void matrix_5(405,11106
+
+clibrary/maxmax.cpp,41
+float maxmax(5,102
+float maxmax(15,316
+
+clibrary/mcgnr.cpp,19
+void mcgnr(20,621
+
+clibrary/misfit.cpp,19
+float misfit(5,77
+
+clibrary/modelweight.cpp,82
+void modelweight(23,649
+void modelweight_inv(62,1794
+void modelweight(103,2869
+
+clibrary/modgard.cpp,0
+
+clibrary/modgrad.cpp,66
+float modgrad(26,759
+float modgrad(78,2021
+float real(129,3270
+
+clibrary/modgrad2.cpp,42
+float modgrad(25,758
+float real(76,2007
+
+clibrary/modnorm.cpp,42
+float modnorm(5,77
+float modnorm(21,394
+
+clibrary/modnorm2.cpp,20
+float modnorm(6,78
+
+clibrary/mpcgne.cpp,45
+float mpcgne(31,1155
+float mpcgne(136,3915
+
+clibrary/mpcgne0.cpp,22
+float mpcgne(31,1211
+
+clibrary/mpcgne_c.cpp,22
+float mpcgne(31,1223
+
+clibrary/mpcgnr.cpp,20
+void mpcgnr(20,621
+
+clibrary/multmat.cpp,20
+float multmat(2,18
+
+clibrary/mycdot.cpp,22
+complex mycdot(5,137
+
+clibrary/nmo.cpp,15
+void nmo(4,37
+
+clibrary/nmo0.cpp,15
+void nmo(4,37
+
+clibrary/nmoop.cpp,40
+void nmoop(9,120
+void nmoopold(46,907
+
+clibrary/norma.cpp,17
+void norma(3,40
+
+clibrary/nrutil.cpp,1468
+#define NR_END 6,134
+#define FREE_ARG 7,152
+void nrerror(9,178
+float *vector(18,425
+int *ivector(28,715
+unsigned char *cvector(38,996
+unsigned long *lvector(48,1295
+double *dvector(58,1585
+float **matrix(68,1883
+double **dmatrix(93,2660
+int **imatrix(118,3447
+struct FCOMPLEX *compvector(145,4211
+struct FCOMPLEX **cmatrix(156,4541
+float **submatrix(185,5369
+float **convert_matrix(206,6000
+float ***f3tensor(229,6775
+void free_vector(264,7944
+void free_ivector(270,8083
+void free_cvector(276,8221
+void free_lvector(282,8379
+void free_dvector(288,8537
+void free_matrix(294,8680
+void free_dmatrix(301,8881
+void free_imatrix(308,9086
+void free_submatrix(315,9286
+void free_convert_matrix(321,9450
+void free_f3tensor(327,9621
+#define NR_END 340,9961
+#define FREE_ARG 341,9979
+void nrerror(343,10005
+float *vector(355,10282
+int *ivector(366,10546
+unsigned char *cvector(377,10803
+unsigned long *lvector(388,11110
+double *dvector(399,11408
+float **matrix(410,11679
+double **dmatrix(435,12393
+int **imatrix(460,13115
+float **submatrix(486,13818
+float **convert_matrix(507,14430
+float ***f3tensor(531,15180
+void free_vector(567,16363
+void free_ivector(575,16507
+void free_cvector(583,16650
+void free_lvector(591,16813
+void free_dvector(599,16976
+void free_matrix(607,17124
+void free_dmatrix(616,17328
+void free_imatrix(625,17536
+void free_submatrix(634,17739
+void free_convert_matrix(642,17906
+void free_f3tensor(650,18080
+
+clibrary/p_stack.cpp,67
+#define LOOKFAC	8,249
+#define PFA_MAX	9,304
+void p_stack(10,364
+
+clibrary/p_stackold.cpp,67
+#define LOOKFAC	8,249
+#define PFA_MAX	9,304
+void p_stack(10,364
+
+clibrary/p_stackold2.cpp,67
+#define LOOKFAC	8,249
+#define PFA_MAX	9,304
+void p_stack(10,364
+
+clibrary/pcgnr.cpp,21
+float pcgnr(48,1380
+
+clibrary/plotgather.cpp,97
+void plotgather(4,53
+void plotgather(38,763
+void plotgatherb(72,1449
+void plotvector(91,1789
+
+clibrary/polygonalFilter.cpp,49
+#define PIBY2 22,873
+void polygonalFilter(3,17
+
+clibrary/ppp.cpp,67
+#define LOOKFAC	8,224
+#define PFA_MAX	9,279
+void svdover(10,339
+
+clibrary/precond.cpp,19
+void precond(4,41
+
+clibrary/pythag.cpp,62
+#define NRANSI2,19
+float pythag(5,58
+complex pythag(15,340
+
+clibrary/rad_wpcgnr.cpp,99
+#define LOOKFAC	39,1245
+#define PFA_MAX	40,1300
+void rad_wpcgnr(41,1360
+void matrixcg(167,5538
+
+clibrary/radfinv.cpp,17
+void hrrti(6,78
+
+clibrary/radfinv_beam.cpp,17
+void hrrti(6,78
+
+clibrary/radftoep.cpp,67
+#define LOOKFAC	5,82
+#define PFA_MAX	6,137
+void toepradon(7,197
+
+clibrary/radhypsp.cpp,19
+int radhypsp(5,36
+
+clibrary/radint.cpp,18
+void radint(4,41
+
+clibrary/radint_spar.cpp,18
+void radint(4,41
+
+clibrary/radint_sparse.cpp,18
+void radint(4,41
+
+clibrary/radint_sparse2.cpp,18
+void radint(4,41
+
+clibrary/radint_sparse3.cpp,18
+void radint(4,41
+
+clibrary/radint_sparse4.cpp,26
+void radint_sparse4(6,69
+
+clibrary/radon.cpp,265
+void radonhyp(7,73
+void radonhyp_crude(59,1523
+void radonpar(97,2301
+void radonlin(152,3613
+void radonhyp(207,4919
+void radonhyp_old(256,6249
+void radonhyp(308,7284
+void radonhyp_crude(357,8813
+void radonhyp_inv(393,9679
+void radonhyp_crude_inv(439,11013
+
+clibrary/radon0.cpp,143
+void radonhyp(7,73
+void radonpar(62,1409
+void radonlin(117,2721
+void radonhyp(172,4027
+void radonhyp_old(223,5075
+void radonhyp(275,6110
+
+clibrary/radon00inv.cpp,24
+void radon00inv(21,423
+
+clibrary/radon00inv_beam.cpp,29
+void radon00inv_beam(35,967
+
+clibrary/radon_cholund.cpp,72
+#define LOOKFAC	5,76
+#define PFA_MAX	6,131
+void radon_cholund(10,269
+
+clibrary/radon_freq.cpp,22
+void radon_freq(4,38
+
+clibrary/radon_matrix.cpp,24
+void radon_matrix(3,17
+
+clibrary/radon_mpcgne.cpp,71
+#define LOOKFAC	5,76
+#define PFA_MAX	6,131
+void radon_mpcgne(14,411
+
+clibrary/radon_mpcgnec.cpp,72
+#define LOOKFAC	5,76
+#define PFA_MAX	6,131
+void radon_mpcgnec(12,428
+
+clibrary/radon_mpcgnec_alias.cpp,78
+#define LOOKFAC	5,76
+#define PFA_MAX	6,131
+void radon_mpcgnec_alias(12,428
+
+clibrary/radon_param.cpp,48
+void radon_param(4,37
+void radon_param(36,950
+
+clibrary/radon_param_beam.cpp,29
+void radon_param_beam(8,247
+
+clibrary/radon_sparse.cpp,76
+int count_nsparse(5,40
+void build_index(42,950
+void radon_sparse(82,1886
+
+clibrary/radonall.cpp,66
+#define LOOKFAC	7,231
+#define PFA_MAX	8,286
+void p_stack(9,346
+
+clibrary/radoncg.cpp,69
+#define LOOKFAC	28,813
+#define PFA_MAX	29,868
+void wtcgls0(30,928
+
+clibrary/radoncg_levinson.cpp,76
+#define LOOKFAC	8,113
+#define PFA_MAX	9,168
+void radoncg_levinson(11,229
+
+clibrary/radoncg_levinson0.cpp,76
+#define LOOKFAC	8,113
+#define PFA_MAX	9,168
+void radoncg_levinson(11,229
+
+clibrary/radoncg_levinson_alias.cpp,82
+#define LOOKFAC	8,113
+#define PFA_MAX	9,168
+void radoncg_levinson_alias(11,229
+
+clibrary/radoncg_levinson_beam.cpp,81
+#define LOOKFAC	8,113
+#define PFA_MAX	9,168
+void radoncg_levinson_beam(11,229
+
+clibrary/radoncg_levinson_beam0.cpp,81
+#define LOOKFAC	8,113
+#define PFA_MAX	9,168
+void radoncg_levinson_beam(11,229
+
+clibrary/radoncg_levinson_beam2.cpp,81
+#define LOOKFAC	8,113
+#define PFA_MAX	9,168
+void radoncg_levinson_beam(11,229
+
+clibrary/radoncgfft.cpp,24
+void radoncgfft(14,215
+
+clibrary/radoncglevin.cpp,76
+#define LOOKFAC	8,113
+#define PFA_MAX	9,168
+void radoncg_levinson(10,228
+
+clibrary/radonfreq.cpp,51
+void radonfreq(20,668
+void radonfreqint(107,3367
+
+clibrary/radonfreq0.cpp,23
+void radonfreq(19,606
+
+clibrary/radonfreqband.cpp,27
+void radonfreqband0(10,98
+
+clibrary/radonfreqband0.cpp,70
+void radonfreqband(4,44
+void radonf(111,2964
+float wpcgnr(203,5827
+
+clibrary/radonhybrid.cpp,25
+void radonhybrid(14,215
+
+clibrary/radonhybridl1.cpp,25
+void radonhybrid(14,215
+
+clibrary/radoninv_beam.cpp,162
+#define LOOKFAC	47,1582
+#define PFA_MAX	48,1637
+void radoninv_beam(49,1697
+void radoninv_beam(150,4179
+#define PIBY2 339,9024
+void polygonalFilter(320,8168
+
+clibrary/radoninv_beam_loop.cpp,83
+#define LOOKFAC	34,1001
+#define PFA_MAX	35,1056
+void radoninv_beam_loop(37,1117
+
+clibrary/radonirr.cpp,19
+void radonopi(1,0
+
+clibrary/radonl1.cpp,162
+#define USE_TRACE4,54
+void radon_PD_lp_bm(6,73
+int PD_lp_bm(70,1558
+void matmul0(230,4851
+float min3(248,5280
+int radonop(261,5481
+int  CG_solver(294,6111
+
+clibrary/radonl1_freq_Karmarkar.cpp,148
+#define USE_TRACE4,54
+void radonl1_freq_Karmarkar(6,73
+int PD_lp_bm(76,1471
+void matmul0(234,4657
+float min3(265,5294
+int  CG_solver(279,5425
+
+clibrary/radonl1_v2.cpp,162
+#define USE_TRACE4,54
+void radon_PD_lp_bm(6,73
+int PD_lp_bm(76,1636
+void matmul0(234,4890
+float min3(252,5319
+int radonop(265,5520
+int  CG_solver(305,6377
+
+clibrary/radonl1freq.cpp,25
+void radonl1freq(14,239
+
+clibrary/radonl1freq_karmarkar.cpp,147
+#define USE_TRACE6,80
+void radonl1freq_karmarkar(8,99
+int PD_lp_bm(53,1060
+void matmul0(214,4265
+float min3(245,4902
+int  CG_solver(257,5029
+
+clibrary/radonl1freq_loop.cpp,100
+#define LOOKFAC	30,839
+#define PFA_MAX	31,894
+void radonl1freq_loop(33,955
+void matrix(170,4491
+
+clibrary/radonop.cpp,138
+void radonop(8,125
+void radonop(43,903
+void radonop(84,1823
+void radonop_par(115,2435
+void radonop_lin(150,3187
+float sinc(186,3929
+
+clibrary/radonop0.cpp,39
+void radonop(7,101
+float sinc(40,729
+
+clibrary/radonopi.cpp,260
+void radonopi(8,118
+void radonopi(49,1229
+void radonopi_old(93,2398
+void radonopi_old(133,3279
+void radonopi(169,4057
+void radonopi(208,5063
+void radonopi_id(254,6300
+void radonopi_id2(338,8930
+void radonopi_lin(439,11551
+void radonopi_par(482,12632
+
+clibrary/radonopi0.cpp,21
+void radonopi(7,101
+
+clibrary/radontd_sparse.cpp,422
+void radontd_sparse(7,192
+void build_index_slowness(217,7691
+void radonhyp(263,8840
+void radonhyp(297,9603
+float testadjop(353,11226
+float testadjop(404,12566
+void irreg_slowness_axis(453,13800
+void irreg_slowness_axis(500,15194
+void modelweight(534,16444
+void radonhyp_li(567,17340
+void radonhyp_li(625,18596
+void build_index_slowness_li(702,20535
+void radonhyp_sinc(747,21682
+void Lumley_precond(797,23176
+
+clibrary/radontd_sparse2.cpp,350
+void radontd_sparse(6,70
+void build_index_slowness(160,5542
+void radonhyp(206,6691
+void radonhyp(240,7454
+float testadjop(296,9077
+float testadjop(347,10417
+void irreg_slowness_axis(396,11651
+void modelweight(430,12901
+void radonhyp_li(463,13797
+void radonhyp_li(521,15053
+void build_index_slowness_li(598,16992
+float wpcgnr_m0(642,18138
+
+clibrary/radontd_sparse_int.cpp,227
+void radontd_sparse(6,70
+void build_index_slowness(161,5523
+void radonhyp(202,6579
+void radonhyp(260,7878
+float testadjop(339,9852
+float testadjop(390,11192
+void irreg_slowness_axis(441,12428
+void modelweight(476,13704
+
+clibrary/radontd_sparse_interp.cpp,226
+void radontd_sparse(6,70
+void build_index_slowness(148,4720
+void radonhyp(189,5666
+void radonhyp(245,6720
+float testadjop(324,8653
+float testadjop(375,9979
+void irreg_slowness_axis(426,11201
+void modelweight(461,12477
+
+clibrary/radontd_sparse_li.cpp,324
+void radontd_sparse(6,70
+void build_index_slowness(195,6966
+void radonhyp(234,7875
+void radonhyp(267,8617
+float testadjop(325,10242
+float testadjop(376,11582
+void irreg_slowness_axis(427,12818
+void modelweight(462,14094
+void radonhyp_li(495,14990
+void radonhyp_li(553,16253
+void build_index_slowness_li(631,18229
+
+clibrary/radontd_sparse_sinc.cpp,174
+void radontd_sparse(6,70
+void build_index_slowness(102,3145
+void radonhyp(154,4445
+float testadjop(199,5425
+void irreg_slowness_axis(251,6767
+void modelweight(286,8043
+
+clibrary/radontd_sparse_win.cpp,444
+#define NWIN 4,72
+void radontd_sparse(12,464
+void build_index_slowness(262,9083
+void radonhyp(310,10295
+void radonhyp(347,11140
+float testadjop(403,12763
+float testadjop(454,14103
+void irreg_slowness_axis(503,15337
+void irreg_slowness_axis(550,16731
+void modelweight(584,17981
+void radonhyp_li(617,18877
+void radonhyp_li(675,20133
+void build_index_slowness_li(752,22072
+void radonhyp_sinc(798,23223
+void Lumley_precond(848,24717
+
+clibrary/radontd_sparse_win2.cpp,478
+#define NWIN 4,72
+void radontd_sparse(11,431
+void radontd_sparse_win(90,3164
+void build_index_slowness(292,10213
+void radonhyp(329,11028
+void radonhyp(363,11791
+float testadjop(419,13414
+float testadjop(470,14754
+void irreg_slowness_axis(519,15988
+void irreg_slowness_axis(566,17382
+void modelweight(600,18632
+void radonhyp_li(633,19528
+void radonhyp_li(691,20784
+void build_index_slowness_li(768,22723
+void radonhyp_sinc(812,23775
+void Lumley_precond(862,25220
+
+clibrary/radontd_sparse_win3.cpp,478
+#define NWIN 4,72
+void radontd_sparse(11,431
+void radontd_sparse_win(94,3208
+void build_index_slowness(296,10257
+void radonhyp(333,11072
+void radonhyp(367,11835
+float testadjop(423,13458
+float testadjop(474,14798
+void irreg_slowness_axis(523,16032
+void irreg_slowness_axis(570,17426
+void modelweight(604,18676
+void radonhyp_li(637,19572
+void radonhyp_li(695,20828
+void build_index_slowness_li(772,22767
+void radonhyp_sinc(816,23819
+void Lumley_precond(866,25264
+
+clibrary/radontd_sparse_windows.cpp,323
+void radontd_sparse(6,70
+void build_index_slowness(160,5539
+void radonhyp(207,6661
+void radonhyp(241,7424
+float testadjop(297,9047
+float testadjop(348,10387
+void irreg_slowness_axis(397,11621
+void modelweight(431,12871
+void radonhyp_li(464,13767
+void radonhyp_li(522,15023
+void build_index_slowness_li(599,16962
+
+clibrary/radontd_sparse_wine.cpp,478
+#define NWIN 4,72
+void radontd_sparse(11,431
+void radontd_sparse_win(94,3208
+void build_index_slowness(296,10257
+void radonhyp(333,11072
+void radonhyp(367,11835
+float testadjop(423,13458
+float testadjop(474,14798
+void irreg_slowness_axis(523,16032
+void irreg_slowness_axis(570,17426
+void modelweight(604,18676
+void radonhyp_li(637,19572
+void radonhyp_li(695,20828
+void build_index_slowness_li(772,22767
+void radonhyp_sinc(816,23819
+void Lumley_precond(866,25264
+
+clibrary/radontestfreq.cpp,27
+void radonfreqint(42,3054
+
+clibrary/radontestfreq0.cpp,24
+void radonfreq(30,1957
+
+clibrary/radontestfreq_beam.cpp,32
+void radonfreqint_beam(41,2291
+
+clibrary/radontoepf.cpp,24
+void radontoepf(14,215
+
+clibrary/radonwtcgls.cpp,72
+#define LOOKFAC	35,1074
+#define PFA_MAX	36,1129
+void wtcgls0(37,1189
+
+clibrary/radonwtcgls0.cpp,26
+void radonwtcgls0(14,215
+
+clibrary/radonwtcgls0_td.cpp,26
+void radonwtcgls0(14,215
+
+clibrary/radonwtcgls0_tfd.cpp,30
+void radonwtcgls0_tfd(14,215
+
+clibrary/radonwtcgls_beam.cpp,137
+#define LOOKFAC	43,1495
+#define PFA_MAX	44,1550
+void radonwtcgls_beam(45,1610
+void radonwtcgls_beam2(247,6670
+void matrix(546,14466
+
+clibrary/radonwtcgls_beam2.cpp,104
+#define LOOKFAC	49,1820
+#define PFA_MAX	50,1875
+void radonwtcgls_beam2(51,1935
+void matrix(317,8828
+
+clibrary/radonwtcgls_td.cpp,72
+#define LOOKFAC	29,831
+#define PFA_MAX	30,886
+void wtcgls0_td(31,946
+
+clibrary/radonwtcgls_tfd.cpp,119
+#define LOOKFAC	6,98
+#define PFA_MAX	7,153
+void radonwtcgls_tfd(28,998
+void radonf(177,5265
+float wpcgnr(269,8128
+
+clibrary/radsparse.cpp,89
+void radhypsp(4,38
+void radonhyp(38,873
+void radhypsp(60,1417
+void radonhyp(100,2495
+
+clibrary/radsparse2.cpp,222
+void build_index_rad(8,298
+void radonhyp(44,1213
+void radonhyp(71,1985
+void radhypsp(123,3533
+void radonhyp(163,4611
+void build_index_rad_inv(204,5610
+void build_index_rad_inv_FM(244,6561
+void radonhyp_FM(284,7542
+
+clibrary/radtd.cpp,18
+void radtd2(6,80
+
+clibrary/radtd2.cpp,18
+void radtd2(6,80
+
+clibrary/rcdot.cpp,18
+float rcdot(4,55
+
+clibrary/read_ascii_file.cpp,26
+int read_ascii_file(3,17
+
+clibrary/readmute.cpp,15
+int main(3,39
+
+clibrary/readmute2.cpp,16
+void main(3,43
+
+clibrary/real.cpp,17
+float real(4,55
+
+clibrary/rho_filter.cpp,24
+void rho_filter 10,318
+
+clibrary/rhofilt.cpp,19
+void rhofilt(4,41
+
+clibrary/rjwfilter.cpp,91
+#define LOOKFAC	3,34
+#define PFA_MAX	4,89
+void rjwfilter(10,296
+void rjwfilter(65,1955
+
+clibrary/rstack.cpp,66
+inline float sincin(4,58
+void rstack(12,205
+float sinc(50,1169
+
+clibrary/rstack2.cpp,68
+inline double sincin(4,58
+void rstack(12,209
+double sinc(49,1072
+
+clibrary/save_gather_freq.cpp,28
+void save_gather_freq(5,57
+
+clibrary/save_vector.cpp,153
+void save_vector(5,56
+void save_gather(22,365
+void save_gather(56,1057
+void save_gather(89,1696
+void save_gather(121,2339
+void save2dfile(158,3225
+
+clibrary/savesudata.cpp,46
+void savesudata(5,54
+void savesudata(30,736
+
+clibrary/savevector.cpp,22
+void savevector(4,36
+
+clibrary/semblance.cpp,22
+void semblance(8,103
+
+clibrary/smoothing.cpp,22
+void smoothing(8,182
+
+clibrary/svdover.cpp,68
+#define LOOKFAC	9,132
+#define PFA_MAX	10,187
+void svdover(11,247
+
+clibrary/svdover0.cpp,67
+#define LOOKFAC	8,224
+#define PFA_MAX	9,279
+void svdover(10,339
+
+clibrary/svdover1.cpp,67
+#define LOOKFAC	8,224
+#define PFA_MAX	9,279
+void svdover(10,339
+
+clibrary/testadj.cpp,26
+float testadj_mig(20,589
+
+clibrary/testadj_mig.cpp,26
+float testadj_mig(20,589
+
+clibrary/testadj_rad_f.cpp,26
+float testadj_rad_f(7,59
+
+clibrary/testadjop.cpp,231
+float testadjop(8,99
+float testadjop(56,1230
+float testadjop(119,2826
+float testadjop(184,4426
+float testadjop(247,6015
+float testadjop(310,7600
+float testadjop(376,9292
+float testadjop(429,10528
+float testadjop(494,12086
+
+clibrary/testadjrad.cpp,24
+float testadjrad(8,203
+
+clibrary/testchol.cpp,21
+float testchol(5,97
+
+clibrary/testfunction.cpp,23
+int testfunction(2,16
+
+clibrary/testpointer.cpp,23
+void testpointer(3,40
+
+clibrary/toepradon.cpp,67
+#define LOOKFAC	5,80
+#define PFA_MAX	6,135
+void toepradon(7,195
+
+clibrary/toepradoncg.cpp,70
+#define LOOKFAC	7,119
+#define PFA_MAX	8,174
+void toepradoncg(9,234
+
+clibrary/tqli.cpp,36
+#define NRANSI2,19
+void tqli(5,58
+
+clibrary/tred2.cpp,18
+void tred2(9,199
+
+clibrary/velanal.cpp,19
+void velanal(6,80
+
+clibrary/velanrt.cpp,19
+void velanrt(6,43
+
+clibrary/velop.cpp,78
+void velop(8,125
+void velop(43,909
+void velop(84,1835
+float sinc(115,2477
+
+clibrary/velopi.cpp,61
+void velopi(8,118
+void velopi(49,1235
+void velopi(95,2414
+
+clibrary/vint2rms.cpp,20
+void vint2rms(4,19
+
+clibrary/wpcgnr.cpp,116
+float wpcgnr(31,1155
+float wpcgnr(145,4121
+float wpcgnr(268,7179
+float wpcgnr(387,10224
+float wpcgnr(509,13256
+
+clibrary/wpcgnr2.cpp,115
+float wpcgnr(32,1182
+float wpcgnr(144,3973
+float wpcgnr(253,6704
+float wpcgnr(366,9537
+float wpcgnr(475,12122
+
+clibrary/wpcgnr2_win.cpp,115
+float wpcgnr(32,1182
+float wpcgnr(144,3948
+float wpcgnr(253,6679
+float wpcgnr(366,9512
+float wpcgnr(475,12097
+
+clibrary/wpcgnr_cmplx.cpp,18
+int wpcgnr(7,102
+
+clibrary/wtcgls.cpp,18
+void wtcgls(5,57
+
+clibrary/wtcgls0.cpp,69
+#define LOOKFAC	28,813
+#define PFA_MAX	29,868
+void wtcgls0(30,928
+
+clibrary/wtcgls1.cpp,18
+void wtcgls(5,57
+
+clibrary/wtcgls2.cpp,40
+void wtcgls(4,58
+void wtcgls(126,3624
+
+clibrary/wtcgls22.cpp,18
+void wtcgls(4,59
+
+clibrary/wtcgls3.cpp,19
+void wtcgls3(4,58
+
+clibrary/wtcgls4.cpp,19
+void wtcgls4(5,59
+
+clibrary/wtcgls5.cpp,18
+void wtcgls(5,57
+
+clibrary/wtcglsop.cpp,87
+void wtcgls(19,554
+void wtcgls(147,4325
+void wtcgls(277,8278
+void wtcgls(407,12233
+
+clibrary/wtcglstd.cpp,44
+void wtcglstd(5,59
+void wtcglstd(127,3768
+
+clibrary/wtcglsvel.cpp,46
+void wtcglsvel(5,59
+void wtcglsvel(119,3377
+
+clibrary/xequaly.cpp,19
+void xequaly(4,55
+
+clibrary/xminusy.cpp,40
+void xminusy(4,55
+void xminusy(12,184
+
+clibrary/xplusy.cpp,18
+void xplusy(4,55
+
+clibrary/xtimesy.cpp,40
+void xtimesy(4,55
+void xtimesy(12,184

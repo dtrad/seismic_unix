@@ -1,0 +1,9 @@
+#! /bin/sh
+# shell for Kirchhoff depth migration
+set -v
+
+sufrac < shot phasefac=.25  > shot.tmp
+
+sukdmig2d < shot.tmp par=kdmig.par > kd.shot 
+ 	exit
+

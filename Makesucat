@@ -1,0 +1,31 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+CWPROOT=/home/dtrad/cwp
+IDIR=-I$(CWPROOT)/include  
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a 
+
+#$L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=sucat
+
+FLAG=-c -g -Wall -O0
+
+OBJ=  $(PROG).o 
+
+
+# dependence 
+$(PROG): $(OBJ)
+	gcc -o ~/bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).c
+	gcc -c $(OPTC) $(ENDIANFLAG) $(PROG).c $(FLAG) $(IDIR)
+clean:
+	rm -rf $(PROG) *.o 
+
+
+
+

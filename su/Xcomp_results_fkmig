@@ -1,0 +1,85 @@
+#! /bin/sh
+# Compare results in windows
+# Daniel Trad - UBC
+# Example:
+# Xcomp_results_fkmig "" mixFK 1000 2000 4 5  98 70 0.7 70
+# 1000 2000 4 5 is the window
+# 98 perc 
+# 70 scale for gain
+# 0.7 window for agc 
+# 70 is max freq for filter 
+# For paper results use
+# Between 1.8 and 4 seconds
+# Xcomp_results_fkmig "" mixFK 300 1200 2 4 99.5 80 1 80
+# Between 4 and 6 seconds
+# Xcomp_results_fkmig "" mixFK 300 1200 2 4 99.5 50 1 80
+
+
+set -x
+
+name=sx1ext0.su
+perc=$7
+FILE=sx1ext0.ps
+FILE1=${name}$1"m"
+FILE2=${name}$2"m"
+window="x2beg=$3 x2end=$4 x1beg=$5 x1end=$6 "
+label="label1=Time(s) label2=Offset(m)"
+
+# Adjust amplitude, filter and then mix results with original gather 
+if [ $2 = "mixFK" ]; then
+
+sugain gagc=1 scale=$8 wagc=$9 < ${name}"recFKm" | sufilter amps=1,0 f=50,${10} > ${name}"recbFKm"
+sumixgathers ${name}"gapm" ${name}"recbFKm" | susort +offset > ${name}"mixFKm"
+
+elif [ $2 = "zeroes" ];then
+
+    sugain scale=0 < ${name}"recFKm"  > temp
+    sumixgathers ${name}"gapm" temp | susort +offset > ${name}"zeroes"
+
+fi
+
+if [ 0 -eq 1 ]; then
+window="x2beg=$3 x2end=$4 x1beg=1.8 x1end=4 "
+suxwigb key=offset <  $FILE1 title=$FILE1 perc=$perc $window  &
+suxwigb key=offset < $FILE2 title=$FILE2 perc=$perc xbox=600 $window  &
+
+supswigp key=f2 <  $FILE1 title="(a)" perc=$perc $window $label > p 
+supswigp key=f2 < $FILE2 title="(b)" perc=$perc $window $label> pp 
+
+
+supsmerge in=p in=pp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.45,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2 > ~/ps/$FILE
+gv ~/ps/$FILE &
+
+
+elif [ 0 -eq 1 ];then
+
+window="x2beg=$3 x2end=$4 x1beg=4 x1end=6 "
+suxwigb key=offset <  $FILE1 title=$FILE1 perc=$perc $window  &
+suxwigb key=offset < $FILE2 title=$FILE2 perc=$perc xbox=600 $window  &
+
+supswigp key=f2 <  $FILE1 title="(c)" perc=$perc $window $label > ppp 
+supswigp key=f2 < $FILE2 title="(d)" perc=$perc $window $label> pppp 
+
+supsmerge in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.45,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2 > ~/ps/$FILE
+gv ~/ps/$FILE &
+
+elif [ 1 -eq 1 ];then 
+
+supsmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.45,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2 > ~/ps/$FILE
+gv ~/ps/$FILE &
+
+
+
+
+fi
+
+
+exit 0
+
+
+
+
+
+
+
+

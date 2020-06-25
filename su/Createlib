@@ -1,0 +1,8 @@
+#! /bin/sh
+# Create a static library
+# Daniel Trad - UBC - CDSST 
+set -x
+
+NAME=libdan.a
+ar r $NAME dot.o rcdot.o xequaly.o xplusy.o Atimesx.o AtimesBm.o freqweight.o 
+ar tv $NAME

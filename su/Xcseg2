@@ -1,0 +1,73 @@
+#! /bin/sh
+# PLOTS 
+# Plot for CMP and CSPs.
+# Daniel Trad- UBC Nov 1999
+  
+FILE=fig5seg.ps
+
+# PLot model
+
+
+FILEN=../cseg/moddata2n
+FILE1=$FILEN'.filt.900.su'
+FILE2=$FILEN'.csp.B.900.su'
+FILE3=$FILEN'.csp.R.900.su'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+
+LABEL1="time (sec)" 
+LABEL2="offset(m)"
+
+OPTIONAGC="n"
+OPTIONNUM="3"
+
+case $OPTIONAGC in
+y*)
+GAIN="sugain agc=1 wagc=0.5"
+PLOTC="supswigp f1=0 f2=0 key=cdp label1=$LABEL1 label2=$LABEL2 perc=99"
+;;
+n*)
+PLOTC="supswigp f1=0 f2=0 key=offset label1=$LABEL1 label2=$LABEL2 perc=99"
+;;
+esac
+
+
+case $OPTIONAGC in
+y*)
+$GAIN < $FILE1 | $PLOTC  title=$TITLE1  > p
+$GAIN < $FILE2 | $PLOTC  title=$TITLE2  > pp 
+$GAIN < $FILE3 | $PLOTC  title=$TITLE3  > ppp
+;;
+n*)
+$PLOTC < $FILE1  title=$TITLE1  > p
+$PLOTC < $FILE2  title=$TITLE2  > pp 
+$PLOTC < $FILE3  title=$TITLE3  > ppp
+;;
+esac
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.33,0.33  translate=0,7 translate=2.8,7 translate=5.6,7  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+

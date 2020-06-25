@@ -1,0 +1,70 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I/usr/local/cwp/include -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=suradtd2
+
+FLAG=-c -O -Wall
+
+OBJ=  $(PROG).o radtd2.o dot.o lsqr.o semblance.o radonop.o radonopi.o \
+	wtcglstd.o rho_filter.o radon_param.o interval.o testadjrad.o \
+	smoothing.o wtcglsop.o radon.o testadjop.o
+
+
+LIB=./flibrary
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+radtd2.o: $(LIBC)/radtd2.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dot.o: $(LIBC)/dot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+lsqr.o: $(LIBC)/lsqr.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+semblance.o: $(LIBC)/semblance.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonop.o: $(LIBC)/radonop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonopi.o: $(LIBC)/radonopi.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wtcglstd.o: $(LIBC)/wtcglstd.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rho_filter.o: $(LIBC)/rho_filter.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interval.o: $(LIBC)/interval.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+testadjrad.o: $(LIBC)/testadjrad.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+smoothing.o: $(LIBC)/smoothing.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wtcglsop.o: $(LIBC)/wtcglsop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon.o: $(LIBC)/radon.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+testadjop.o: $(LIBC)/testadjop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+
+
+
+
+
+
+
+
+

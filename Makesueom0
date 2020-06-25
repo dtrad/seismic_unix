@@ -1,0 +1,47 @@
+SHELL= /bin/sh
+
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/libdan.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm -ldan  $(POSTLFLAGS)
+
+PROG=sueom0
+
+FLAG=-c -O3 -Wall
+OPTC= -O3 -Wall
+OBJ=  $(PROG).o  eomig6.o rjwfilter.o filt.o interpovv.o equiv_offset_fold.o \
+		t2t0.o getvelocities.o 
+		 
+			
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+eomig6.o: $(LIBC)/eomig6.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rjwfilter.o: $(LIBC)/rjwfilter.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+filt.o: $(LIBC)/filt.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interpovv.o: $(LIBC)/interpovv.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+equiv_offset_fold.o: $(LIBC)/equiv_offset_fold.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+t2t0.o: $(LIBC)/t2t0.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,88 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+  
+FILE=fig2linrad_after.ps
+
+# PLot model
+
+
+FILEN=cdps2.res.su
+
+
+FILE1=$FILEN
+FILE2=$FILEN'LRTrad'
+FILE3=$FILEN'LRTrecb'
+FILE4=$FILEN'LRTradb'
+
+OPTIONAGC='y'
+OPTIONNUM='4'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+
+LABEL1="time(sec)" 
+LABEL2="offset(m)"
+LABELR="p(sec/m)"
+
+
+case $OPTIONAGC in
+y*)
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABEL1 label2=$LABELR perc=99"
+PLOTX="supswigp f1=0 f2=0 key=offset label1=$LABEL1 label2=$LABEL2 perc=99"
+GAINR="sugain agc=0 wagc=1.5"
+GAINX="sugain agc=0 wagc=2"
+;;
+n*)
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABEL1 label2=$LABELR perc=100"
+PLOTX="supswigp f1=0 f2=0 key=offset label1=$LABEL1 label2=$LABEL2 perc=99"
+;;
+esac
+
+
+case $OPTIONAGC in
+y*)
+#$PLOTM < $FILE1  title=$TITLE1  > p  
+$GAINX < $FILE1 | $PLOTX  title=$TITLE1  > p
+$GAINR < $FILE2 | $PLOTR perc=99.5  title=$TITLE2  > pp
+#$PLOTR < $FILE2  title=$TITLE2  > pp
+$GAINX < $FILE3 | $PLOTX  title=$TITLE3  > ppp 
+$GAINR < $FILE4 | $PLOTR perc=99.5 title=$TITLE4  > pppp
+#$PLOTR < $FILE4  title=$TITLE4  > pppp
+
+;;
+n*)
+$PLOTX < $FILE1  title=$TITLE1  > p  
+$PLOTR < $FILE2  title=$TITLE2  > pp
+$PLOTX < $FILE3  title=$TITLE3  > ppp 
+$PLOTR < $FILE4  title=$TITLE4  > pppp
+;;
+esac
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,41 @@
+SHELL= /bin/sh
+OPTC= -O3 -Wall
+IDIR=-I$(CWPROOT)/include -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=suenmo9
+
+FLAG=-c -O3 -Wall 
+
+OBJ=  $(PROG).o  dot.o smoothing.o testadjop.o wpcgnr2.o save_vector.o modelweight.o rms2intvel.o plotgather.o
+
+
+LIB=./flibrary
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+smoothing.o: $(LIBC)/smoothing.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dot.o: $(LIBC)/dot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+testadjop.o: $(LIBC)/testadjop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wpcgnr2.o: $(LIBC)/wpcgnr2.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_vector.o: $(LIBC)/save_vector.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rms2intvel.o: $(LIBC)/rms2intvel.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+plotgather.o: $(LIBC)/plotgather.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)

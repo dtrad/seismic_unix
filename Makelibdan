@@ -1,0 +1,87 @@
+SHELL= /bin/sh
+OPTC= -O3 -Wall
+
+IDIR=-I$(CWPROOT)/include  -I$(HOME)/seismic/clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/libdan.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm -lComplex -ldan $(POSTLFLAGS)
+
+PROG=libdan.a
+
+
+FLAG=-c -O -Wall
+
+OBJ= dot.o rcdot.o xequaly.o xplusy.o xtimesy.o Atimesx.o AtimesBm.o freqweight.o \
+	 save_vector.o  plotgather.o normalize.o fft.o file_functions.o \
+	 fft2.o pfafft.o window.o filters.o padding_zeros.o Dcomplex.o Complex.o \
+	 cleansegy.o filters.o
+
+CPP= g++
+
+LIBC=./clibrary
+
+# dependence 
+$L/$(PROG): $(OBJ)
+	ar r  $L/$(PROG) $(OBJ) 
+$(PROG).o: $(PROG).cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dot.o: $(LIBC)/dot.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rcdot.o: $(LIBC)/rcdot.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+cdot.o: $(LIBC)/cdot.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+xequaly.o: $(LIBC)/xequaly.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+xplusy.o: $(LIBC)/xplusy.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+xtimesy.o: $(LIBC)/xtimesy.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Atimesx.o: $(LIBC)/Atimesx.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+AtimesBm.o: $(LIBC)/AtimesBm.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+freqweight.o: $(LIBC)/freqweight.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_vector.o: $(LIBC)/save_vector.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+plotgather.o: $(LIBC)/plotgather.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Complex.o: $(LIBC)/Complex.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Dcomplex.o: $(LIBC)/Dcomplex.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+normalize.o: $(LIBC)/normalize.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fft.o: $(LIBC)/fft.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fft2.o: $(LIBC)/fft2.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+file_functions.o: $(LIBC)/file_functions.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+pfafft.o: $(LIBC)/pfafft.c
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+window.o: $(LIBC)/window.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+filters.o: $(LIBC)/filters.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+padding_zeros.o: $(LIBC)/padding_zeros.cpp
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+quest.o: $(LIBC)/quest.c
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+cleansegy.o: $(LIBC)/cleansegy.c
+	${CPP} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+
+
+
+
+
+
+

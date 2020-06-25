@@ -1,0 +1,213 @@
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Fri May 17 20:38:44 2002
+;; Emacs version 20.7.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring '("modelfile" "efopen" "mute" "nh" "nmofactor"))
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+
+;; Buffer section:
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonavo.cpp"
+  "suradonavo.cpp"
+  'c++-mode
+  '(nil)
+  15709
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonavo"
+  "Makesuradonavo"
+  'fundamental-mode
+  '(nil)
+  1735
+  '(405 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radontd_win_avo.cpp"
+  "radontd_win_avo.cpp"
+  'c++-mode
+  '(nil)
+  10793
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xsuradonfreq_data"
+  "Xsuradonfreq_data"
+  'sh-mode
+  '(nil)
+  821
+  '(495 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonfreq"
+  "Makesuradonfreq"
+  'fundamental-mode
+  '(nil)
+  954
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonline"
+  "Makesuradonline"
+  'fundamental-mode
+  '(nil)
+  589
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonline.cpp"
+  "suradonline.cpp"
+  'c++-mode
+  '(nil)
+  13068
+  '(12472 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xsuradonavo"
+  "Xsuradonavo"
+  'sh-mode
+  '(nil)
+  1229
+  '(743 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonfreq.cpp"
+  "suradonfreq.cpp"
+  'c++-mode
+  '(nil)
+  13547
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radonsolver0_subtract.cpp"
+  "radonsolver0_subtract.cpp"
+  'c++-mode
+  '(nil)
+  2143
+  '(2337 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radonsolver0_mute.cpp"
+  "radonsolver0_mute.cpp"
+  'c++-mode
+  '(nil)
+  1
+  '(2022 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/mutemask.c"
+  "mutemask.c"
+  'c-mode
+  '(nil)
+  1163
+  '(1 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suinterpfk0.cpp"
+  "suinterpfk0.cpp"
+  'c++-mode
+  '(nil)
+  17918
+  '(17830 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesumutetest"
+  "Makesumutetest"
+  'fundamental-mode
+  '(nil)
+  572
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/mutetest.h"
+  "mutetest.h"
+  'c-mode
+  '(nil)
+  429
+  '(696 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonclass.cpp"
+  "suradonclass.cpp"
+  'c++-mode
+  '(nil)
+  2824
+  '(2378 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radonclass.cpp"
+  "radonclass.cpp"
+  'c++-mode
+  '(nil)
+  639
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/sumutetest.cpp"
+  "sumutetest.cpp"
+  'c++-mode
+  '(nil)
+  774
+  '(758 t)
+  nil
+  nil
+  '((overwrite-mode)))
+

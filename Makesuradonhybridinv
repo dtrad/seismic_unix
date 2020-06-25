@@ -1,0 +1,56 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/libdan.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm -ldan $(POSTLFLAGS)
+
+PROG=suradonhybridinv
+
+FLAG=-c -O3 -Wall 
+
+OBJ=  $(PROG).o radonhybridinv.o interpovv.o nmo.o  radon_matrix.o radon_param.o radoninv_2op.o \
+	radon_param_2op.o taper.o  getvelocities.o interval.o
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ) $L/libdan.a
+	g++ -g -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonhybridinv.o: $(LIBC)/radonhybridinv.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoninv_2op.o: $(LIBC)/radoninv_2op.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interpovv.o: $(LIBC)/interpovv.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nmo.o: $(LIBC)/nmo.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_matrix.o: $(LIBC)/radon_matrix.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param_2op.o: $(LIBC)/radon_param_2op.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+taper.o: $(LIBC)/taper.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+getvelocities.o: $(LIBC)/getvelocities.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interval.o: $(LIBC)/interval.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+
+
+
+
+
+
+

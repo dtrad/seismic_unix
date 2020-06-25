@@ -1,0 +1,2640 @@
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+NNAAMMEE
+       xterm - terminal emulator for X
+
+SSYYNNOOPPSSIISS
+       xxtteerrmm [-_t_o_o_l_k_i_t_o_p_t_i_o_n ...] [-option ...]
+
+DDEESSCCRRIIPPTTIIOONN
+       The  _x_t_e_r_m program is a terminal emulator for the X Window
+       System.  It provides DEC VT102/VT220 (VTxxx) and Tektronix
+       4014  compatible terminals for programs that can't use the
+       window system directly.  If the underlying operating  sys­
+       tem  supports terminal resizing capabilities (for example,
+       the SIGWINCH signal in systems derived from 4.3bsd), _x_t_e_r_m
+       will  use the facilities to notify programs running in the
+       window whenever it is resized.
+
+       The VT102 and Tektronix 4014 terminals each have their own
+       window so that you can edit text in one and look at graph­
+       ics in the other at the same time.  To maintain  the  cor­
+       rect  aspect ratio (height/width), Tektronix graphics will
+       be restricted to the largest  box  with  a  4014's  aspect
+       ratio that will fit in the window.  This box is located in
+       the upper left area of the window.
+
+       Although both windows may be displayed at the  same  time,
+       one  of  them  is  considered  the  ``active''  window for
+       receiving keyboard input and terminal output.  This is the
+       window  that  contains the text cursor.  The active window
+       can be chosen through escape sequences, the ``VT Options''
+       menu  in the VT102 window, and the ``Tek Options'' menu in
+       the 4014 window.
+
+EEMMUULLAATTIIOONNSS
+       The VT102 emulation is fairly complete, but does not  sup­
+       port  autorepeat.  Double-size and blinking characters are
+       partially implemented; the  emulation  is  functional  but
+       does  not  have the appearance of a real VT102.  The VT220
+       emulation does not support soft  fonts,  it  is  otherwise
+       complete.  _T_e_r_m_c_a_p(5) entries that work with _x_t_e_r_m include
+       ``xterm,'' ``vt102,'' ``vt100'' and  ``ansi,''  and  _x_t_e_r_m
+       automatically  searches the termcap file in this order for
+       these entries and then sets the ``TERM'' and  the  ``TERM­
+       CAP''  environment variables.  You may also use ``vt220,''
+       but must set the terminal emulation level with the ddeeccTTeerr­­
+       mmiinnaallIIDD resource.
+
+       Many  of  the special _x_t_e_r_m features may be modified under
+       program control through a set of escape sequences  differ­
+       ent  from  the  standard VT102 escape sequences.  (See the
+       _X_t_e_r_m _C_o_n_t_r_o_l _S_e_q_u_e_n_c_e_s document.)
+
+       The Tektronix 4014 emulation is also fairly good.  It sup­
+       ports  12-bit  graphics  addressing,  scaled to the window
+       size.  Four different font sizes and five different  lines
+
+
+
+X Version 11               Release 6.3                          1
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       types  are  supported.  There is no write-through or defo­
+       cused mode support.  The Tektronix text and graphics  com­
+       mands  are recorded internally by _x_t_e_r_m and may be written
+       to a file by sending the COPY escape sequence (or  through
+       the TTeekkttrroonniixx menu; see below).  The name of the file will
+       be ``CCOOPPYY_y_y_y_y--_M_M--_d_d.._h_h::_m_m::_s_s'''',, wwhheerree _y_y, _M_M, _d_d,  _h_h,  _m_m
+       and  _s_s  are the year, month, day, hour, minute and second
+       when the COPY was performed (the file is  created  in  the
+       directory _x_t_e_r_m is started in, or the home directory for a
+       login _x_t_e_r_m).
+
+OOTTHHEERR FFEEAATTUURREESS
+       _X_t_e_r_m automatically highlights the text  cursor  when  the
+       pointer  enters  the window (selected) and unhighlights it
+       when the pointer leaves the window (unselected).   If  the
+       window  is the focus window, then the text cursor is high­
+       lighted no matter where the pointer is.
+
+       In VT102 mode, there are escape sequences to activate  and
+       deactivate  an  alternate screen buffer, which is the same
+       size as the display area of the window.   When  activated,
+       the  current  screen is saved and replaced with the alter­
+       nate screen.  Saving of lines scrolled off the top of  the
+       window  is  disabled  until the normal screen is restored.
+       The _t_e_r_m_c_a_p(5) entry for _x_t_e_r_m allows  the  visual  editor
+       _v_i(1) to switch to the alternate screen for editing and to
+       restore the screen on exit.
+
+       In either  VT102  or  Tektronix  mode,  there  are  escape
+       sequences  to  change  the name of the windows.  Addition­
+       ally, in VT102 mode, _x_t_e_r_m implements the window-manipula­
+       tion  control  sequences from _d_t_t_e_r_m, such as resizing the
+       window, setting its location on the screen.
+
+
+       _X_t_e_r_m allows character-based applications to receive mouse
+       events  (currently  button-press  and  release events, and
+       button-motion events) as keyboard control sequences.   See
+       _X_t_e_r_m _C_o_n_t_r_o_l _S_e_q_u_e_n_c_e_s for details.
+
+
+OOPPTTIIOONNSS
+       The  _x_t_e_r_m terminal emulator accepts all of the standard X
+       Toolkit command line options as well as the following  (if
+       the  option begins with a `++' instead of a `--', the option
+       is restored to its default value).  The -version and -help
+       options are interpreted even if _x_t_e_r_m cannot open the dis­
+       play,  and  are  useful  for  testing  and   configuration
+       scripts:
+
+       --vveerrssiioonn
+               This causes _x_t_e_r_m to print a version number to the
+               standard output.
+
+
+
+
+X Version 11               Release 6.3                          2
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       --hheellpp   This causes _x_t_e_r_m to print out a  verbose  message
+               describing its options.  The message is written to
+               the standard error.
+
+       The other options are used to control the  appearance  and
+       behavior:
+
+       --113322    Normally,  the  VT102 DECCOLM escape sequence that
+               switches  between  80  and  132  column  mode   is
+               ignored.   This  option  causes the DECCOLM escape
+               sequence to be recognized, and  the  _x_t_e_r_m  window
+               will resize appropriately.
+
+       --aahh     This  option  indicates  that  _x_t_e_r_m should always
+               highlight the text cursor.  By default, _x_t_e_r_m will
+               display a hollow text cursor whenever the focus is
+               lost or the pointer leaves the window.
+
+       ++aahh     This option indicates that _x_t_e_r_m  should  do  text
+               cursor highlighting based on focus.
+
+       --aaii     This  option  disables active icon support if that
+               feature was compiled into xterm.  This is  equiva­
+               lent  to  setting the _v_t_1_0_0 resource aaccttiivveeIIccoonn to
+               FALSE.
+
+       ++aaii     This option enables active icon  support  if  that
+               feature  was compiled into xterm.  This is equiva­
+               lent to setting the _v_t_1_0_0 resource  aaccttiivveeIIccoonn  to
+               TRUE.
+
+       --aaww     This  option indicates that auto-wraparound should
+               be allowed.  This allows the cursor  to  automati­
+               cally  wrap to the beginning of the next line when
+               when it is at the rightmost position of a line and
+               text is output.
+
+       ++aaww     This  option indicates that auto-wraparound should
+               not be allowed.
+
+       --bb _n_u_m_b_e_r
+               This option specifies the size of the inner border
+               (the  distance between the outer edge of the char­
+               acters and the  window  border)  in  pixels.   The
+               default is 2.
+
+       --bbddcc    This  option  disables  the  display of characters
+               with bold attribute as color rather than bold.
+
+       ++bbddcc    This option enables the display of characters with
+               bold attribute as color rather than bold.
+
+       --ccbb     Set  the  _v_t_1_0_0  resource  ccuuttTTooBBeeggiinnnniinnggOOffLLiinnee to
+               FALSE.
+
+
+
+X Version 11               Release 6.3                          3
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       ++ccbb     Set the  _v_t_1_0_0  resource  ccuuttTTooBBeeggiinnnniinnggOOffLLiinnee  to
+               TRUE.
+
+       --cccc _c_h_a_r_a_c_t_e_r_c_l_a_s_s_r_a_n_g_e::_v_a_l_u_e[[,,......]]
+               This  sets  classes  indicated by the given ranges
+               for using in selecting by words.  See the  section
+               specifying character classes.
+
+       --ccmm     This  option  disables  recognition of ANSI color-
+               change escape sequences.
+
+       ++ccmm     This option enables  recognition  of  ANSI  color-
+               change escape sequences.
+
+       --ccnn     This  option indicates that newlines should not be
+               cut in line-mode selections.
+
+       ++ccnn     This option indicates that newlines should be  cut
+               in line-mode selections.
+
+       --ccrr _c_o_l_o_r
+               This  option  specifies  the color to use for text
+               cursor.  The default is to use the same foreground
+               color that is used for text.
+
+       --ccuu     This  option  indicates  that  _x_t_e_r_m  should  work
+               around a bug in the _m_o_r_e(1) program that causes it
+               to  incorrectly display lines that are exactly the
+               width of the window and are  followed  by  a  line
+               beginning  with  a  tab  (the leading tabs are not
+               displayed).  This option is so  named  because  it
+               was   originally  thought  to  be  a  bug  in  the
+               _c_u_r_s_e_s(3x) cursor motion package.
+
+       ++ccuu     This option indicates that _x_t_e_r_m should  not  work
+               around the _m_o_r_e(1) bug mentioned above.
+
+       --ddcc     This option disables the escape sequence to change
+               dynamic colors: the  vt100  foreground  and  back­
+               ground  colors,  the  text cursor color, the mouse
+               cursor foreground and background colors, the  Tek­
+               tronix  emulator foreground and background colors,
+               and highlight color.
+
+       ++ddcc     This option enables the escape sequence to  change
+               dynamic colors.
+
+       --ee _p_r_o_g_r_a_m [[ _a_r_g_u_m_e_n_t_s ...... ]]
+               This option specifies the program (and its command
+               line arguments) to be run in the _x_t_e_r_m window.  It
+               also sets the window title and icon name to be the
+               basename of the program being executed if  neither
+               _-_T  nor  _-_n  are  given on the command line.  TThhiiss
+               mmuusstt bbee tthhee llaasstt ooppttiioonn oonn tthhee ccoommmmaanndd lliinnee..
+
+
+
+X Version 11               Release 6.3                          4
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       --ffbb _f_o_n_t
+               This option specifies a font to be used when  dis­
+               playing  bold  text.   This  font must be the same
+               height and width as the normal font.  If only  one
+               of  the normal or bold fonts is specified, it will
+               be used as the normal font and the bold font  will
+               be   produced  by  overstriking  this  font.   The
+               default is to do overstriking of the normal  font.
+
+       --ffii     This option sets the font for active icons if that
+               feature was compiled into xterm.
+
+       --hhcc _c_o_l_o_r
+               This option specifies the color  to  use  for  the
+               background  of  selected  or otherwise highlighted
+               text.  If not specified, reverse video is used.
+
+       --iiee     Turn on the ppttyyIInniittiiaallEErraassee  resource,  i.e.,  use
+               the  pseudo-terminal's  sense  of  the  stty erase
+               value.
+
+       ++iiee     Turn off the ppttyyIInniittiiaallEErraassee resource,  i.e.,  set
+               the  stty erase value using the kkDD string from the
+               termcap entry as a reference, if available.
+
+       --iimm     Turn on the uusseeIInnsseerrttMMooddee resource.
+
+       ++iimm     Turn off the uusseeIInnsseerrttMMooddee resource.
+
+       --jj      This option indicates that _x_t_e_r_m  should  do  jump
+               scrolling.  Normally, text is scrolled one line at
+               a time; this option allows _x_t_e_r_m to move  multiple
+               lines  at  a  time  so that it doesn't fall as far
+               behind.  Its use is strongly recommended since  it
+               make _x_t_e_r_m much faster when scanning through large
+               amounts of text.  The VT100 escape  sequences  for
+               enabling  and  disabling  smooth scroll as well as
+               the ``VT Options'' menu can be used to  turn  this
+               feature on or off.
+
+       ++jj      This  option  indicates  that  _x_t_e_r_m should not do
+               jump scrolling.
+
+       --lleeffttbbaarr
+               Force scrollbar to the left side of VT100  screen.
+               This  is  the  default,  unless  you  have set the
+               rightScrollBar resource.
+
+       --llss     This option  indicates  that  the  shell  that  is
+               started  in the _x_t_e_r_m window will be a login shell
+               (i.e., the first character of argv[0]  will  be  a
+               dash,  indicating to the shell that it should read
+               the user's .login or .profile).
+
+
+
+
+X Version 11               Release 6.3                          5
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       ++llss     This option  indicates  that  the  shell  that  is
+               started  should not be a login shell (i.e. it will
+               be a normal ``subshell'').
+
+       --mmbb     This option indicates that  _x_t_e_r_m  should  ring  a
+               margin bell when the user types near the right end
+               of a line.  This option can be turned on  and  off
+               from the ``VT Options'' menu.
+
+       ++mmbb     This  option indicates that margin bell should not
+               be rung.
+
+       --mmcc mmiilllliisseeccoonnddss
+               This option specifies  the  maximum  time  between
+               multi-click selections.
+
+       --mmss _c_o_l_o_r
+               This option specifies the color to be used for the
+               pointer cursor.  The default is to use  the  fore­
+               ground color.
+
+       --nnbb _n_u_m_b_e_r
+               This  option  specifies  the  number of characters
+               from the right end of a line at which  the  margin
+               bell, if enabled, will ring.  The default is 10.
+
+       --nnuull    This option enables the display of underlining.
+
+       ++nnuull    This option disables the display of underlining.
+
+       --ppcc     This  option enables the PC-style use of bold col­
+               ors (see boldColors resource).
+
+       ++ppcc     This option disables the PC-style use of bold col­
+               ors.
+
+       --rriigghhttbbaarr
+               Force scrollbar to the right side of VT100 screen.
+
+       --rrww     This  option  indicates  that   reverse-wraparound
+               should be allowed.  This allows the cursor to back
+               up from the leftmost column of  one  line  to  the
+               rightmost  column  of  the previous line.  This is
+               very useful for editing long shell  command  lines
+               and  is  encouraged.  This option can be turned on
+               and off from the ``VT Options'' menu.
+
+       ++rrww     This  option  indicates  that   reverse-wraparound
+               should not be allowed.
+
+       --ss      This  option indicates that _x_t_e_r_m may scroll asyn­
+               chronously, meaning that the screen does not  have
+               to  be kept completely up to date while scrolling.
+               This allows  _x_t_e_r_m  to  run  faster  when  network
+
+
+
+X Version 11               Release 6.3                          6
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+               latencies  are  very  high and is typically useful
+               when running across a very large internet or  many
+               gateways.
+
+       ++ss      This  option  indicates  that  _x_t_e_r_m should scroll
+               synchronously.
+
+       --ssaammeennaammee
+               Doesn't send title and icon name  change  requests
+               when  the  request  would have no effect: the name
+               isn't changed.  This has the advantage of prevent­
+               ing  flicker  and the disadvantage of requiring an
+               extra round trip to the server  to  find  out  the
+               previous  value.  In practice this should never be
+               a problem.
+
+       ++ssaammeennaammee
+               Always send title and icon name change requests.
+
+       --ssbb     This option indicates that some  number  of  lines
+               that are scrolled off the top of the window should
+               be saved and that a scrollbar should be  displayed
+               so  that  those  lines can be viewed.  This option
+               may be turned on and off from the  ``VT  Options''
+               menu.
+
+       ++ssbb     This  option indicates that a scrollbar should not
+               be displayed.
+
+       --ssff     This option indicates that Sun Function Key escape
+               codes should be generated for function keys.
+
+       ++ssff     This  option  indicates  that  the standard escape
+               codes should be generated for function keys.
+
+       --ssii     This option indicates  that  output  to  a  window
+               should  not automatically reposition the screen to
+               the bottom of the scrolling region.   This  option
+               can  be  turned on and off from the ``VT Options''
+               menu.
+
+       ++ssii     This option indicates  that  output  to  a  window
+               should cause it to scroll to the bottom.
+
+       --sskk     This  option  indicates  that pressing a key while
+               using the scrollbar to review  previous  lines  of
+               text  should  cause  the window to be repositioned
+               automatically in the normal position at the bottom
+               of the scroll region.
+
+       ++sskk     This  option  indicates  that pressing a key while
+               using the scrollbar should not cause the window to
+               be repositioned.
+
+
+
+
+X Version 11               Release 6.3                          7
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       --ssll _n_u_m_b_e_r
+               This  option specifies the number of lines to save
+               that have been scrolled off the top of the screen.
+               The default is 64.
+
+       --sspp     This  option indicates that Sun/PC keyboard should
+               be assumed, providing mapping for  keypad  `+'  to
+               `,', and CTRL-F1 to F13, CTRL-F2 to F14, etc.
+
+       ++sspp     This  option  indicates  that  the standard escape
+               codes should be generated for keypad and  function
+               keys.
+
+       --tt      This  option  indicates that _x_t_e_r_m should start in
+               Tektronix  mode,  rather  than  in   VT102   mode.
+               Switching  between  the  two windows is done using
+               the ``Options'' menus.
+
+       ++tt      This option indicates that _x_t_e_r_m should  start  in
+               VT102 mode.
+
+       --ttmm _s_t_r_i_n_g
+               This option specifies a series of terminal setting
+               keywords followed by the characters that should be
+               bound to those functions, similar to the _s_t_t_y pro­
+               gram.  Allowable  keywords  include:  intr,  quit,
+               erase,  kill,  eof,  eol, swtch, start, stop, brk,
+               susp, dsusp, rprnt, flush, weras, and lnext.  Con­
+               trol characters may be specified as ^char (e.g. ^c
+               or ^u) and ^? may be used to indicate delete.
+
+       --ttnn _n_a_m_e
+               This option specifies the  name  of  the  terminal
+               type  to  be set in the TERM environment variable.
+               This terminal type must exist  in  the  _t_e_r_m_c_a_p_(_5_)
+               database and should have _l_i_# and _c_o_# entries.
+
+       --uullcc    This  option  disables  the  display of characters
+               with underline attribute as color rather than with
+               underlining.
+
+       ++uullcc    This option enables the display of characters with
+               underline attribute  as  color  rather  than  with
+               underlining.
+
+       --uutt     This option indicates that _x_t_e_r_m shouldn't write a
+               record into the the system log file _/_e_t_c_/_u_t_m_p.
+
+       ++uutt     This option indicates that _x_t_e_r_m  should  write  a
+               record into the system log file _/_e_t_c_/_u_t_m_p.
+
+       --vvbb     This  option  indicates that a visual bell is pre­
+               ferred over an audible one.   Instead  of  ringing
+               the   terminal   bell   whenever  a  Control-G  is
+
+
+
+X Version 11               Release 6.3                          8
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+               received, the window will be flashed.
+
+       ++vvbb     This option indicates that a  visual  bell  should
+               not be used.
+
+       --wwff     This  option  indicates that _x_t_e_r_m should wait for
+               the window to be  mapped  the  first  time  before
+               starting the subprocess so that the initial termi­
+               nal size settings and  environment  variables  are
+               correct.   It  is the application's responsibility
+               to catch subsequent terminal size changes.
+
+       ++wwff     This option indicates that  _x_t_e_r_m  show  not  wait
+               before starting the subprocess.
+
+       --zziiccoonnbbeeeepp _p_e_r_c_e_n_t
+               Same  as  zIconBeep  resource.  If percent is non-
+               zero, xterms that produce output  while  iconified
+               will  cause an XBell sound at the given volume and
+               have "***" prepened to their  icon  titles.   Most
+               window  managers  will  detect this change immedi­
+               ately, showing you which window  has  the  output.
+               (A similar feature was in x10 xterm.)
+
+       --CC      This  option  indicates  that  this  window should
+               receive console output.  This is not supported  on
+               all  systems.   To obtain console output, you must
+               be the owner of the console device, and  you  must
+               have read and write permission for it.  If you are
+               running X under _x_d_m on the console screen you  may
+               need  to  have  the session startup and reset pro­
+               grams explicitly change the ownership of the  con­
+               sole device in order to get this option to work.
+
+       --SS_c_c_n   This  option specifies the last two letters of the
+               name of a pseudo-terminal to use  in  slave  mode,
+               plus  the number of the inherited file descriptor.
+               The option  is  parsed  ``%c%c%d''.   This  allows
+               _x_t_e_r_m  to  be  used as an input and output channel
+               for an existing program and is sometimes  used  in
+               specialized applications.
+
+       The following command line arguments are provided for com­
+       patibility with older versions.  They may not be supported
+       in  the  next  release  as the X Toolkit provides standard
+       options that accomplish the same task.
+
+       %%_g_e_o_m   This option specifies the preferred size and posi­
+               tion of the Tektronix window.  It is shorthand for
+               specifying the ``_*_t_e_k_G_e_o_m_e_t_r_y'' resource.
+
+        ##_g_e_o_m  This option specifies the  preferred  position  of
+               the  icon  window.  It is shorthand for specifying
+               the ``_*_i_c_o_n_G_e_o_m_e_t_r_y'' resource.
+
+
+
+X Version 11               Release 6.3                          9
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       --TT _s_t_r_i_n_g
+               This option specifies the title for  _x_t_e_r_m's  win­
+               dows.  It is equivalent to --ttiittllee.
+
+       --nn _s_t_r_i_n_g
+               This  option  specifies  the icon name for _x_t_e_r_m's
+               windows.   It  is  shorthand  for  specifying  the
+               ``_*_i_c_o_n_N_a_m_e'' resource.  Note that this is not the
+               same as the toolkit option --nnaammee (see below).  The
+               default icon name is the application name.
+
+       --rr      This option indicates that reverse video should be
+               simulated by swapping  the  foreground  and  back­
+               ground colors.  It is equivalent to --rrvv.
+
+       --ww _n_u_m_b_e_r
+               This  option  specifies the width in pixels of the
+               border surrounding the window.  It  is  equivalent
+               to --bboorrddeerrwwiiddtthh or --bbww.
+
+       The  following  standard  X Toolkit command line arguments
+       are commonly used with _x_t_e_r_m:
+
+       --bbdd _c_o_l_o_r
+               This option specifies the color  to  use  for  the
+               border of the window.  The default is ``black.''
+
+       --bbgg _c_o_l_o_r
+               This  option  specifies  the  color to use for the
+               background  of  the  window.    The   default   is
+               ``white.''
+
+       --bbww _n_u_m_b_e_r
+               This  option  specifies the width in pixels of the
+               border surrounding the window.
+
+       --ddiissppllaayy _d_i_s_p_l_a_y
+               This option specifies the X server to contact; see
+               _X_(_1_).
+
+       --ffgg _c_o_l_o_r
+               This  option  specifies  the color to use for dis­
+               playing text.  The default is ``black.''
+
+       --ffnn _f_o_n_t
+               This option specifies the font to be used for dis­
+               playing normal text.  The default is _f_i_x_e_d.
+
+       --ggeeoommeettrryy _g_e_o_m_e_t_r_y
+               This option specifies the preferred size and posi­
+               tion of the VT102 window; see _X_(_1_).
+
+       --iiccoonniicc This option indicates that _x_t_e_r_m  should  ask  the
+               window  manager to start it as an icon rather than
+
+
+
+X Version 11               Release 6.3                         10
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+               as the normal window.
+
+       --nnaammee _n_a_m_e
+               This option specifies the application  name  under
+               which  resources  are  to be obtained, rather than
+               the default executable file name.  _N_a_m_e should not
+               contain ``.'' or ``*'' characters.
+
+       --rrvv     This option indicates that reverse video should be
+               simulated by swapping  the  foreground  and  back­
+               ground colors.
+
+       --ttiittllee _s_t_r_i_n_g
+               This  option  specifies  the  window title string,
+               which may be displayed by window managers  if  the
+               user so chooses.  The default title is the command
+               line specified after the --ee option, if any, other­
+               wise the application name.
+
+       --xxrrmm _r_e_s_o_u_r_c_e_s_t_r_i_n_g
+               This  option  specifies  a  resource  string to be
+               used.   This  is  especially  useful  for  setting
+               resources  that  do not have separate command line
+               options.
+
+RREESSOOUURRCCEESS
+       The program understands all of the core X Toolkit resource
+       names and classes as well as:
+
+       bbaacckkaarrrroowwKKeeyyIIssEErraassee ((class BBaacckkaarrrroowwKKeeyyIIssEErraassee))
+               Tie  the  VTxxx  bbaacckkaarrrroowwKKeeyy  and ppttyyIInniittiiaallEErraassee
+               resources together by  setting  the  DECBKM  state
+               according  to  whether  the  initial value of stty
+               erase is a backspace  or  delete  character.   The
+               default is ``false'', which disables this feature.
+
+       iiccoonnGGeeoommeettrryy ((class IIccoonnGGeeoommeettrryy))
+               Specifies the preferred size and position  of  the
+               application when iconified.  It is not necessarily
+               obeyed by all window managers.
+
+       iiccoonnNNaammee ((class IIccoonnNNaammee))
+               Specifies the  icon  name.   The  default  is  the
+               application name.
+
+       ppttyyIInniittiiaallEErraassee ((class PPttyyIInniittiiaallEErraassee))
+               If  ``true'', _x_t_e_r_m will use the pseudo-terminal's
+               sense of the  stty  erase  value.   If  ``false'',
+               _x_t_e_r_m  will  set the stty erase value to match its
+               own configuration, using the kkDD  string  from  the
+               termcap  entry  as  a reference, if available.  In
+               either case, the result is applied to the  TERMCAP
+               variable   which   _x_t_e_r_m  sets.   The  default  is
+               ``false''.
+
+
+
+X Version 11               Release 6.3                         11
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       ssaammeeNNaammee ((class SSaammeeNNaammee))
+               If the value of this  resource  is  "true",  xterm
+               doesn't  send  title and icon name change requests
+               when the request would have no  effect:  the  name
+               isn't changed.  This has the advantage of prevent­
+               ing flicker and the disadvantage of  requiring  an
+               extra  round  trip  to  the server to find out the
+               previous value.  In practice this should never  be
+               a problem.  The default is "true".
+
+       ssuunnFFuunnccttiioonnKKeeyyss ((class SSuunnFFuunnccttiioonnKKeeyyss))
+               Specifies  whether  or not Sun Function Key escape
+               codes  should  be  generated  for  function   keys
+               instead of standard escape sequences.
+
+       ssuunnKKeeyybbooaarrdd ((class SSuunnKKeeyybbooaarrdd))
+               Specifies  whether  or  not Sun/PC keyboard layout
+               should be assumed rather  than  DEC  VT220.   This
+               causes  the  keypad  `+' to be mapped to `,'.  and
+               CTRL-F1 to F13, CTRL-F2 to F14, etc.
+
+       tteerrmmNNaammee ((class TTeerrmmNNaammee))
+               Specifies the terminal type name to be set in  the
+               TERM environment variable.
+
+       ttiittllee ((class TTiittllee))
+               Specifies  a string that may be used by the window
+               manager when displaying this application.
+
+       ttttyyMMooddeess ((class TTttyyMMooddeess))
+               Specifies a  string  containing  terminal  setting
+               keywords  and  the characters to which they may be
+               bound.  Allowable keywords  include:  intr,  quit,
+               erase,  kill,  eof,  eol, swtch, start, stop, brk,
+               susp, dsusp, rprnt, flush, weras, and lnext.  Con­
+               trol characters may be specified as ^char (e.g. ^c
+               or ^u) and ^? may  be  used  to  indicate  Delete.
+               This  is  very  useful  for overriding the default
+               terminal settings without having  to  do  an  _s_t_t_y
+               every time an _x_t_e_r_m is started.
+
+       uusseeIInnsseerrttMMooddee ((class UUsseeIInnsseerrttMMooddee))
+               Force  use  of  insert  mode by adding appropriate
+               entries to the TERMCAP environment variable.  This
+               is  useful  if  the system termcap is broken.  The
+               default is ``false.''
+
+       uuttmmppIInnhhiibbiitt ((class UUttmmppIInnhhiibbiitt))
+               Specifies whether  or  not  _x_t_e_r_m  should  try  to
+               record the user's terminal in _/_e_t_c_/_u_t_m_p.
+
+       wwaaiittFFoorrMMaapp ((class WWaaiittFFoorrMMaapp))
+               Specifies whether or not _x_t_e_r_m should wait for the
+               initial window map before starting the subprocess.
+
+
+
+X Version 11               Release 6.3                         12
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+               The default is ``false.''
+
+       zzIIccoonnBBeeeepp ((class ZZIIccoonnBBeeeepp))
+               Same  as -ziconbeep command line argument.  If the
+               value of this resource is  non-zero,  xterms  that
+               produce output while iconified will cause an XBell
+               sound at the given volume and have "***"  prepened
+               to  their  icon titles.  Most window managers will
+               detect this change immediately, showing you  which
+               window  has the output.  (A similar feature was in
+               x10 xterm.)
+
+
+       The following resources are specified as part of the _v_t_1_0_0
+       widget (class _V_T_1_0_0):
+
+       aaccttiivveeIIccoonn ((class AAccttiivveeIIccoonn))
+               Specifies  whether  or not active icon windows are
+               to be used when the _x_t_e_r_m window is iconified,  if
+               this  feature  is compiled into xterm.  The active
+               icon is a miniature representation of the  content
+               of  the  window  and  will  update  as the content
+               changes.  Not all window managers necessarily sup­
+               port  application  icon windows.  Some window man­
+               agers will allow you to enter keystrokes into  the
+               active icon window.  The default is ``false.''
+
+       aalllloowwSSeennddEEvveennttss ((class AAlllloowwSSeennddEEvveennttss))
+               Specifies  whether or not synthetic key and button
+               events (generated using the X  protocol  SendEvent
+               request)  should be interpreted or discarded.  The
+               default is ``false'' meaning they  are  discarded.
+               Note  that  allowing  such  events  creates a very
+               large security hole.
+
+
+       aallwwaayyssHHiigghhlliigghhtt ((class AAllwwaayyssHHiigghhlliigghhtt))
+               Specifies whether or not _x_t_e_r_m should always  dis­
+               play  a  highlighted  text  cursor.  By default, a
+               hollow  text  cursor  is  displayed  whenever  the
+               pointer  moves  out  of  the  window or the window
+               loses the input focus.
+
+       aappppccuurrssoorrDDeeffaauulltt ((class AAppppccuurrssoorrDDeeffaauulltt))
+               If ``true,'' the  cursor  keys  are  initially  in
+               application mode.  The default is ``false.''
+
+       aappppkkeeyyppaaddDDeeffaauulltt ((class AAppppkkeeyyppaaddDDeeffaauulltt))
+               If  ``true,''  the  keypad  keys  are initially in
+               application mode.  The default is ``false.''
+
+       aauuttooWWrraapp ((class AAuuttooWWrraapp))
+               Specifies whether or not auto-wraparound should be
+               enabled.  The default is ``true.''
+
+
+
+X Version 11               Release 6.3                         13
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       aawwaaiittIInnppuutt ((class AAwwaaiittIInnppuutt))
+               Specifies  whether or not the xterm uses a 50 mil­
+               lisecond timeout to await input (i.e., to  support
+               the   Xaw3d  arrow  scrollbar).   The  default  is
+               ``false.''
+
+       bbaacckkaarrrroowwKKeeyy ((class BBaacckkaarrrroowwKKeeyy))
+               Specifies whether the backarrow  key  transmits  a
+               backspace  or  delete character.  This corresponds
+               to  the  DECBKM  control  sequence.   The  default
+               (backspace) is ``true.''  Pressing the control key
+               toggles this behavior.
+
+       bbaacckkggrroouunndd ((class BBaacckkggrroouunndd))
+               Specifies the color to use for the  background  of
+               the window.  The default is ``white.''
+
+       bbeellllSSuupppprreessssTTiimmee ((class BBeellllSSuupppprreessssTTiimmee))
+               Number  of  milliseconds  after  a bell command is
+               sent during which additional bells  will  be  sup­
+               pressed.   Default is 200.  If set non-zero, addi­
+               tional bells will also  be  suppressed  until  the
+               server  reports  that processing of the first bell
+               has been completed; this feature  is  most  useful
+               with the visible bell.
+
+       bboollddCCoolloorrss ((class CCoolloorrMMooddee))
+               Specifies  whether  to combine bold attribute with
+               colors like the IBM PC, i.e., map colors 0 through
+               7  to colors 8 through 15.  These normally are the
+               brighter versions of the  first  8  colors,  hence
+               bold.  The default is ``true.''
+
+       bboollddFFoonntt ((class BBoollddFFoonntt))
+               Specifies the name of the bold font to use instead
+               of overstriking.
+
+       cc113322 ((class CC113322))
+               Specifies whether or not the VT102 DECCOLM  escape
+               sequence   should  be  honored.   The  default  is
+               ``false.''
+
+       ccuuttNNeewwlliinnee ((class CCuuttNNeewwlliinnee))
+               If false, triple clicking to select  a  line  does
+               not  include  the  Newline at the end of the line.
+               If true, the Newline is selected.  The default  is
+               ``true.''
+
+       ccuuttTTooBBeeggiinnnniinnggOOffLLiinnee ((class CCuuttTTooBBeeggiinnnniinnggOOffLLiinnee))
+               If false, triple clicking to select a line selects
+               only from the current word forward.  If true,  the
+               entire line is selected.  The default is ``true.''
+
+
+
+
+
+X Version 11               Release 6.3                         14
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       cchhaarrCCllaassss ((class CChhaarrCCllaassss))
+               Specifies comma-separated lists of character class
+               bindings  of the form [_l_o_w-]_h_i_g_h:_v_a_l_u_e.  These are
+               used  in  determining  which  sets  of  characters
+               should  be  treated  the  same  when doing cut and
+               paste.  See the section  on  specifying  character
+               classes.
+
+       ccuurrsseess ((class CCuurrsseess))
+               Specifies  whether  or  not the last column bug in
+               _m_o_r_e(1) should be  worked  around.   See  the  --ccuu
+               option for details.  The default is ``false.''
+
+       ccoolloorrAAttttrrMMooddee ((class CCoolloorrMMooddee))
+               Specifies  whether  ``colorBD'',  ``colorBL''  and
+               ``colorUL'' should override ANSI colors.  If  not,
+               these  are displayed only when no ANSI colors have
+               been set  for  the  corresponding  position.   The
+               default is ``false.''
+
+       ccoolloorrMMooddee ((class CCoolloorrMMooddee))
+               Specifies  whether or not recognition of ANSI (ISO
+               6429) color  change  escape  sequences  should  be
+               enabled.  The default is ``true.''
+
+       ccoolloorrBBDDMMooddee ((class CCoolloorrMMooddee))
+               Specifies   whether   characters   with  the  bold
+               attribute should be displayed in color or as  bold
+               characters.   Note  that setting ``colorMode'' off
+               disables all colors, including bold.
+
+       ccoolloorrBBLLMMooddee ((class CCoolloorrMMooddee))
+               Specifies  whether  characters  with   the   blink
+               attribute should be displayed in color.  Note that
+               setting ``colorMode''  off  disables  all  colors,
+               including this.
+
+       ccoolloorrUULLMMooddee ((class CCoolloorrMMooddee))
+               Specifies  whether  characters  with the underline
+               attribute should  be  displayed  in  color  or  as
+               underlined characters.  Note that setting ``color­
+               Mode'' off disables all colors,  including  under­
+               lining.
+
+       ccoolloorr00 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr11 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr22 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr33 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr44 ((class FFoorreeggrroouunndd))
+
+
+
+
+X Version 11               Release 6.3                         15
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       ccoolloorr55 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr66 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr77 ((class FFoorreeggrroouunndd))
+               These  specify  the colors for the ISO 6429 exten­
+               sion.  The defaults are, respectively, black, red,
+               green, yellow, blue, magenta, cyan, and white.
+
+       ccoolloorr88 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr99 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr1100 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr1111 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr1122 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr1133 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr1144 ((class FFoorreeggrroouunndd))
+
+       ccoolloorr1155 ((class FFoorreeggrroouunndd))
+               These  specify  the colors for the ISO 6429 exten­
+               sion if the bold attribute is also  enabled.   The
+               defaults  are,  respectively,  black,  red, green,
+               yellow, blue, magenta, cyan, and white.
+
+       ccoolloorrBBDD ((class FFoorreeggrroouunndd))
+               This specifies the color to use  to  display  bold
+               characters  if  the  ``colorBDMode''  resource  is
+               enabled.
+
+       ccoolloorrBBLL ((class FFoorreeggrroouunndd))
+               This specifies the color to use to  display  blink
+               characters  if  the  ``colorBLMode''  resource  is
+               enabled.
+
+       ccoolloorrUULL ((class FFoorreeggrroouunndd))
+               This specifies the color to use to display  under­
+               lined  characters  if the ``colorULMode'' resource
+               is enabled.
+
+       ccuurrssoorrCCoolloorr ((class FFoorreeggrroouunndd))
+               Specifies the color to use for  the  text  cursor.
+               The default is ``black.''
+
+       hhiigghhlliigghhttCCoolloorr ((class FFoorreeggrroouunndd))
+               Specifies  the  color to use for the background of
+               selected or otherwise highlighted  text.   If  not
+               specified, reverse video is used.
+
+
+
+
+
+X Version 11               Release 6.3                         16
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       ddeeccTTeerrmmiinnaallIIDD ((class DDeeccTTeerrmmiinnaallIIDD))
+               Specifies    the   emulation   level   (100=VT100,
+               220=VT220, etc.), used to determine  the  type  of
+               response to a DA control sequence.  The default is
+               100.
+
+       ddyynnaammiiccCCoolloorrss ((class DDyynnaammiiccCCoolloorrss))
+               Specifies  whether  or  not  escape  sequences  to
+               change colors assigned to different attributes are
+               recognized.
+
+       eeiigghhttBBiittCCoonnttrrooll ((class EEiigghhttBBiittCCoonnttrrooll)
+               Specifies whether or not control sequences sent by
+               the  terminal  should  be  eight-bit characters or
+               escape sequences.  The default is ``false.''
+
+       eeiigghhttBBiittIInnppuutt ((class EEiigghhttBBiittIInnppuutt)
+               If true, Meta characters input from  the  keyboard
+               are  presented  as  a  single  character  with the
+               eighth bit turned on.  If false,  Meta  characters
+               are  converted  into a two-character sequence with
+               the character itself preceded by ESC.  The default
+               is ``true.''
+
+       eeiigghhttBBiittOOuuttppuutt ((class EEiigghhttBBiittOOuuttppuutt)
+               Specifies whether or not eight-bit characters sent
+               from the host should be accepted as is or stripped
+               when printed.  The default is ``true.''
+
+       ffoonntt ((class FFoonntt))
+               Specifies  the  name  of  the  normal  font.   The
+               default is ``fixed.''
+
+       ffoonntt11 ((class FFoonntt11))
+               Specifies the name of the first alternative  font.
+
+       ffoonntt22 ((class FFoonntt22))
+               Specifies the name of the second alternative font.
+
+       ffoonntt33 ((class FFoonntt33))
+               Specifies the name of the third alternative  font.
+
+       ffoonntt44 ((class FFoonntt44))
+               Specifies the name of the fourth alternative font.
+
+       ffoonntt55 ((class FFoonntt55))
+               Specifies the name of the fifth alternative  font.
+
+       ffoonntt66 ((class FFoonntt66))
+               Specifies  the name of the sixth alternative font.
+
+       ffoorreeggrroouunndd ((class FFoorreeggrroouunndd))
+               Specifies the color to use for displaying text  in
+               the window.  Setting the class name instead of the
+
+
+
+X Version 11               Release 6.3                         17
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+               instance name is an easy way  to  have  everything
+               that  would  normally  appear  in  the  text color
+               change color.  The default is ``black.''
+
+       ggeeoommeettrryy ((class GGeeoommeettrryy))
+               Specifies the preferred size and position  of  the
+               VT102 window.
+
+       hhiigghhlliigghhttSSeelleeccttiioonn ((class HHiigghhlliigghhttSSeelleeccttiioonn))
+               If  false, selecting with the mouse highlights all
+               positions on the screen between the  beginning  of
+               the  selection and the current position.  If true,
+               _x_t_e_r_m highlights only the positions  that  contain
+               text   that  can  be  selected.   The  default  is
+               ``false.''
+
+       hhppLLoowweerrlleeffttBBuuggCCoommppaatt ((class HHppLLoowweerrlleeffttBBuuggCCoommppaatt))
+               Specifies whether to work around  a  bug  in  HP's
+               _x_d_b,  which ignores termcap and always sends ESC F
+               to move to the lower left corner.  ``true'' causes
+               _x_t_e_r_m  to  interpret ESC F as a request to move to
+               the lower left corner of the screen.  The  default
+               is ``false.''
+
+       iiccoonnBBoorrddeerrCCoolloorr ((class BBoorrddeerrCCoolloorr))
+               Specifies  the  border  color  for the active icon
+               window if this feature  is  compiled  into  xterm.
+               Not  all window managers will make the icon border
+               visible.
+
+       iiccoonnBBoorrddeerrWWiiddtthh ((class BBoorrddeerrWWiiddtthh))
+               Specifies the border width  for  the  active  icon
+               window  if  this  feature  is compiled into xterm.
+               The default is 0 (no border).  Not all window man­
+               agers will make the border visible.
+
+       iiccoonnFFoonntt ((class IIccoonnFFoonntt))
+               Specifies  the  font for the miniature active icon
+               window, if this feature is  compiled  into  xterm.
+               The default is "nil2".
+
+       iinntteerrnnaallBBoorrddeerr ((class BBoorrddeerrWWiiddtthh))
+               Specifies the number of pixels between the charac­
+               ters and the window border.  The default is 2.
+
+       jjuummppSSccrroollll ((class JJuummppSSccrroollll))
+               Specifies whether or not  jump  scroll  should  be
+               used.  The default is ``true.''
+
+       llooggiinnSShheellll ((class LLooggiinnSShheellll))
+               Specifies  whether  or  not the shell to be run in
+               the window should be started  as  a  login  shell.
+               The default is ``false.''
+
+
+
+
+X Version 11               Release 6.3                         18
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       mmaarrggiinnBBeellll ((class MMaarrggiinnBBeellll))
+               Specifies  whether  or  not the bell should be run
+               when the user types near the  right  margin.   The
+               default is ``false.''
+
+       mmuullttiiCClliicckkTTiimmee ((class MMuullttiiCClliicckkTTiimmee))
+               Specifies the maximum time in milliseconds between
+               multi-click select events.   The  default  is  250
+               milliseconds.
+
+       mmuullttiiSSccrroollll ((class MMuullttiiSSccrroollll))
+               Specifies  whether or not scrolling should be done
+               asynchronously.  The default is ``false.''
+
+       nnMMaarrggiinnBBeellll ((class CCoolluummnn))
+               Specifies the number of characters from the  right
+               margin  at  which  the margin bell should be rung,
+               when enabled.
+
+       oollddXXtteerrmmFFKKeeyyss ((class OOllddXXtteerrmmFFKKeeyyss))
+               If  true,  xterm  will   use   old-style   control
+               sequences for function keys F1 to F4, for compati­
+               bility with X  Consortium  xterm.   Otherwise,  it
+               uses  the  VT100-style  codes for PF1 to PF4.  The
+               default is ``false.''
+
+       ppooiinntteerrCCoolloorr ((class FFoorreeggrroouunndd))
+               Specifies the foreground  color  of  the  pointer.
+               The default is ``XtDefaultForeground.''
+
+       ppooiinntteerrCCoolloorrBBaacckkggrroouunndd ((class BBaacckkggrroouunndd))
+               Specifies  the  background  color  of the pointer.
+               The default is ``XtDefaultBackground.''
+
+       ppooiinntteerrSShhaappee ((class CCuurrssoorr))
+               Specifies the name of the shape  of  the  pointer.
+               The default is ``xterm.''
+
+       pprriinnttAAttttrriibbuutteess ((class PPrriinnttAAttttrriibbuutteess))
+               Specifies  whether  to  print  graphic  attributes
+               along with the text.  A real  DEC  VTxxx  terminal
+               will  print  the underline, highlighting codes but
+               your printer may not handle these.  A  ``0''  dis­
+               ables  the  attributes.  A ``1'' prints the normal
+               set of attributes (bold,  underline,  inverse  and
+               blink)  as VT100-style control sequences.  A ``2''
+               prints ANSI color attributes as well.  The default
+               is ``1.''
+
+       pprriinntteerrAAuuttooCClloossee ((class PPrriinntteerrAAuuttooCClloossee))
+               If  true,  xterm  will  close the printer (a pipe)
+               when the application switches the printer  offline
+               with   a  Media  Copy  command.   The  default  is
+               ``false.''
+
+
+
+X Version 11               Release 6.3                         19
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       pprriinntteerrCCoommmmaanndd ((class PPrriinntteerrCCoommmmaanndd))
+               Specifies a shell command to which _x_t_e_r_m will open
+               a  pipe  when the first MC (Media Copy) command is
+               initiated.  The default is ``lpr.''
+
+       pprriinntteerrCCoonnttrroollMMooddee ((class PPrriinntteerrCCoonnttrroollMMooddee))
+               Specifies  the  printer  control  mode.   A  ``1''
+               selects  autoprint  mode,  which  causes  _x_t_e_r_m to
+               print a line from the screen  when  you  move  the
+               cursor  off  that line with a line feed, form feed
+               or vertical tab character, or an autowrap  occurs.
+               Autoprint mode is overridden by printer controller
+               mode (a ``2''), which causes all of the output  to
+               be directed to the printer.  The default is ``0.''
+
+       pprriinntteerrEExxtteenntt ((class PPrriinntteerrEExxtteenntt))
+               Controls whether a print page function will  print
+               the  entire  page  (true), or only the the portion
+               within the scrolling margins (false).  The default
+               is ``false.''
+
+       pprriinntteerrFFoorrmmFFeeeedd ((class PPrriinntteerrFFoorrmmFFeeeedd))
+               Controls  whether  a  form  feed  is  sent  to the
+               printer at the end of a print page function.   The
+               default is ``false.''
+
+       rreessiizzeeGGrraavviittyy ((class RReessiizzeeGGrraavviittyy))
+               Affects the behavior when the window is resized to
+               be taller or shorter.   NNoorrtthhWWeesstt  specifies  that
+               the top line of text on the screen stay fixed.  If
+               the window is made shorter, lines are dropped from
+               the  bottom;  if  the window is made taller, blank
+               lines are added at the bottom.  This is compatible
+               with  the behavior in R4.  SSoouutthhWWeesstt (the default)
+               specifies that the bottom  line  of  text  on  the
+               screen  stay fixed.  If the window is made taller,
+               additional saved lines will be scrolled down  onto
+               the  screen;  if the window is made shorter, lines
+               will be scrolled off the top of  the  screen,  and
+               the top saved lines will be dropped.
+
+       rreevveerrsseeVViiddeeoo ((class RReevveerrsseeVViiddeeoo))
+               Specifies  whether  or not reverse video should be
+               simulated.  The default is ``false.''
+
+       rreevveerrsseeWWrraapp ((class RReevveerrsseeWWrraapp))
+               Specifies whether or not reverse-wraparound should
+               be enabled.  The default is ``false.''
+
+       rriigghhttSSccrroollllBBaarr ((class RRiigghhttSSccrroollllBBaarr))
+               Specifies  whether  or not the scrollbar should be
+               displayed on the right rather than the left.   The
+               default is ``false.''
+
+
+
+
+X Version 11               Release 6.3                         20
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       ssaavveeLLiinneess ((class SSaavveeLLiinneess))
+               Specifies  the  number of lines to save beyond the
+               top of the screen when a scrollbar is  turned  on.
+               The default is 64.
+
+       ssccrroollllBBaarr ((class SSccrroollllBBaarr))
+               Specifies  whether  or not the scrollbar should be
+               displayed.  The default is ``false.''
+
+       ssccrroollllKKeeyy ((class SSccrroollllCCoonndd))
+               Specifies whether or not  pressing  a  key  should
+               automatically  cause  the  scrollbar  to go to the
+               bottom of the scrolling region.   The  default  is
+               ``false.''
+
+       ssccrroollllLLiinneess ((class SSccrroollllLLiinneess))
+               Specifies the number of lines that the _s_c_r_o_l_l_-_b_a_c_k
+               and _s_c_r_o_l_l_-_f_o_r_w actions should use as  a  default.
+               The default value is 1.
+
+       ssccrroollllTTttyyOOuuttppuutt ((class SSccrroollllCCoonndd))
+               Specifies  whether  or  not output to the terminal
+               should automatically cause the scrollbar to go  to
+               the  bottom  of the scrolling region.  The default
+               is ``true.''
+
+       ssiiggnnaallIInnhhiibbiitt ((class SSiiggnnaallIInnhhiibbiitt))
+               Specifies whether or not the entries in the ``Main
+               Options'' menu for sending signals to _x_t_e_r_m should
+               be disallowed.  The default is ``false.''
+
+       tteekkGGeeoommeettrryy ((class GGeeoommeettrryy))
+               Specifies the preferred size and position  of  the
+               Tektronix window.
+
+       tteekkIInnhhiibbiitt ((class TTeekkIInnhhiibbiitt))
+               Specifies  whether  or  not the escape sequence to
+               enter  Tektronix  mode  should  be  ignored.   The
+               default is ``false.''
+
+       tteekkSSmmaallll ((class TTeekkSSmmaallll))
+               Specifies whether or not the Tektronix mode window
+               should start in its smallest size if  no  explicit
+               geometry  is  given.   This is useful when running
+               _x_t_e_r_m on displays with small screens.  The default
+               is ``false.''
+
+       tteekkSSttaarrttuupp ((class TTeekkSSttaarrttuupp))
+               Specifies  whether or not _x_t_e_r_m should start up in
+               Tektronix mode.  The default is ``false.''
+
+       ttiitteeIInnhhiibbiitt ((class TTiitteeIInnhhiibbiitt))
+               Specifies  whether  or  not  _x_t_e_r_m  should  remove
+               remove  _t_i  and _t_e termcap entries (used to switch
+
+
+
+X Version 11               Release 6.3                         21
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+               between  alternate  screens  on  startup  of  many
+               screen-oriented programs) from the TERMCAP string.
+               If set, _x_t_e_r_m also ignores the escape sequence  to
+               switch to the alternate screen.
+
+       ttrraannssllaattiioonnss ((class TTrraannssllaattiioonnss))
+               Specifies  the  key and button bindings for menus,
+               selections,  ``programmed  strings,''  etc.    See
+               AACCTTIIOONNSS below.
+
+       uunnddeerrLLiinnee ((class UUnnddeerrLLiinnee))
+               This specifies whether or not text with the under­
+               line attribute should be underlined.   It  may  be
+               desirable  to  disable  underlining  when color is
+               being used for the underline attribute.
+
+       vviissuuaallBBeellll ((class VViissuuaallBBeellll))
+               Specifies whether or  not  a  visible  bell  (i.e.
+               flashing)  should  be  used  instead of an audible
+               bell when Control-G is received.  The  default  is
+               ``false.''
+
+
+       The  following  resources  are  specified  as  part of the
+       _t_e_k_4_0_1_4 widget (class _T_e_k_4_0_1_4):
+
+       ffoonntt22 ((class FFoonntt))
+               Specifies font number 2 to use  in  the  Tektronix
+               window.
+
+       ffoonntt33 ((class FFoonntt))
+               Specifies  font  number  3 to use in the Tektronix
+               window.
+
+       ffoonnttLLaarrggee ((class FFoonntt))
+               Specifies the large font to use in  the  Tektronix
+               window.
+
+       ffoonnttSSmmaallll ((class FFoonntt))
+               Specifies  the  small font to use in the Tektronix
+               window.
+
+       ggiinnTTeerrmmiinnaattoorr ((class GGiinnTTeerrmmiinnaattoorr))
+               Specifies what character(s) should  follow  a  GIN
+               report  or  status  report.  The possibilities are
+               ``none,'' which sends no  terminating  characters,
+               ``CRonly,''  which sends CR, and ``CR&EOT,'' which
+               sends both CR and EOT.  The default is ``none.''
+
+       hheeiigghhtt ((class HHeeiigghhtt))
+               Specifies the height of the  Tektronix  window  in
+               pixels.
+
+
+
+
+
+X Version 11               Release 6.3                         22
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       iinniittiiaallFFoonntt ((class IInniittiiaallFFoonntt))
+               Specifies which of the four Tektronix fonts to use
+               initially.  Values are the same as  for  the  _s_e_t_-
+               _t_e_k_-_t_e_x_t action.  The default is ``large.''
+
+       wwiiddtthh ((class WWiiddtthh))
+               Specifies  the  width  of  the Tektronix window in
+               pixels.
+
+
+       The resources that may be specified for the various  menus
+       are  described in the documentation for the Athena SSiimmppllee­­
+       MMeennuu widget.  The name and classes of the entries in  each
+       of the menus are listed below.
+
+       The _m_a_i_n_M_e_n_u has the following entries:
+
+       sseeccuurreekkbbdd ((class SSmmeeBBSSBB))
+               This entry invokes the sseeccuurree(()) action.
+
+       aalllloowwsseennddss ((class SSmmeeBBSSBB))
+               This  entry  invokes the aallllooww--sseenndd--eevveennttss((ttooggggllee))
+               action.
+
+       llooggggiinngg ((class SSmmeeBBSSBB))
+               This entry invokes the llooggggiinngg((ttooggggllee)) action.
+
+       pprriinntt ((class SSmmeeBBSSBB))
+               This entry invokes the pprriinntt(()) action.
+
+       rreeddrraaww ((class SSmmeeBBSSBB))
+               This entry invokes the rreeddrraaww(()) action.
+
+       lliinnee11 ((class SSmmeeLLiinnee))
+               This is a separator.
+
+       88--bbiitt--ccoonnttrrooll ((class SSmmeeBBSSBB))
+               This entry invokes  the  sseett--88--bbiitt--ccoonnttrrooll((ttooggggllee))
+               action.
+
+       bbaacckkaarrrrooww kkeeyy ((class SSmmeeBBSSBB))
+               This   entry   invokes  the  sseett--bbaacckkaarrrrooww((ttooggggllee))
+               action.
+
+       ssuunn ffuunnccttiioonn--kkeeyyss ((class SSmmeeBBSSBB))
+               This entry invokes  the  ssuunn ffuunnccttiioonn--kkeeyyss((ttooggggllee))
+               action.
+
+       ssuunn kkeeyybbooaarrdd ((class SSmmeeBBSSBB))
+               This   entry   invokes   the  ssuunn kkeeyybbooaarrdd((ttooggggllee))
+               action.
+
+       lliinnee22 ((class SSmmeeLLiinnee))
+               This is a separator.
+
+
+
+X Version 11               Release 6.3                         23
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       ssuussppeenndd ((class SSmmeeBBSSBB))
+               This entry invokes the sseenndd--ssiiggnnaall((ttssttpp)) action on
+               systems that support job control.
+
+       ccoonnttiinnuuee ((class SSmmeeBBSSBB))
+               This entry invokes the sseenndd--ssiiggnnaall((ccoonntt)) action on
+               systems that support job control.
+
+       iinntteerrrruupptt ((class SSmmeeBBSSBB))
+               This entry invokes the sseenndd--ssiiggnnaall((iinntt)) action.
+
+       hhaanngguupp ((class SSmmeeBBSSBB))
+               This entry invokes the sseenndd--ssiiggnnaall((hhuupp)) action.
+
+       tteerrmmiinnaattee ((class SSmmeeBBSSBB))
+               This entry invokes the sseenndd--ssiiggnnaall((tteerrmm)) action.
+
+       kkiillll ((class SSmmeeBBSSBB))
+               This entry invokes the sseenndd--ssiiggnnaall((kkiillll)) action.
+
+       lliinnee33 ((class SSmmeeLLiinnee))
+               This is a separator.
+
+       qquuiitt ((class SSmmeeBBSSBB))
+               This entry invokes the qquuiitt(()) action.
+
+
+       The _v_t_M_e_n_u has the following entries:
+
+       ssccrroollllbbaarr ((class SSmmeeBBSSBB))
+               This  entry  invokes   the   sseett--ssccrroollllbbaarr((ttooggggllee))
+               action.
+
+       jjuummppssccrroollll ((class SSmmeeBBSSBB))
+               This   entry  invokes  the  sseett--jjuummppssccrroollll((ttooggggllee))
+               action.
+
+       rreevveerrsseevviiddeeoo ((class SSmmeeBBSSBB))
+               This entry invokes  the  sseett--rreevveerrssee--vviiddeeoo((ttooggggllee))
+               action.
+
+       aauuttoowwrraapp ((class SSmmeeBBSSBB))
+               This   entry   invokes   the  sseett--aauuttoowwrraapp((ttooggggllee))
+               action.
+
+       rreevveerrsseewwrraapp ((class SSmmeeBBSSBB))
+               This  entry  invokes  the  sseett--rreevveerrsseewwrraapp((ttooggggllee))
+               action.
+
+       aauuttoolliinneeffeeeedd ((class SSmmeeBBSSBB))
+               This  entry  invokes  the sseett--aauuttoolliinneeffeeeedd((ttooggggllee))
+               action.
+
+
+
+
+
+X Version 11               Release 6.3                         24
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       aappppccuurrssoorr ((class SSmmeeBBSSBB))
+               This  entry  invokes   the   sseett--aappppccuurrssoorr((ttooggggllee))
+               action.
+
+       aappppkkeeyyppaadd ((class SSmmeeBBSSBB))
+               This   entry   invokes  the  sseett--aappppkkeeyyppaadd((ttooggggllee))
+               action.
+
+       ssccrroollllkkeeyy ((class SSmmeeBBSSBB))
+               This entry invokes  the  sseett--ssccrroollll--oonn--kkeeyy((ttooggggllee))
+               action.
+
+       ssccrroollllttttyyoouuttppuutt ((class SSmmeeBBSSBB))
+               This   entry  invokes  the  sseett--ssccrroollll--oonn--ttttyy--oouutt­­
+               ppuutt((ttooggggllee)) action.
+
+       aallllooww113322 ((class SSmmeeBBSSBB))
+               This  entry   invokes   the   sseett--aallllooww113322((ttooggggllee))
+               action.
+
+       ccuurrsseesseemmuull ((class SSmmeeBBSSBB))
+               This   entry  invokes  the  sseett--ccuurrsseesseemmuull((ttooggggllee))
+               action.
+
+       vviissuuaallbbeellll ((class SSmmeeBBSSBB))
+               This  entry  invokes  the   sseett--vviissuuaallbbeellll((ttooggggllee))
+               action.
+
+       mmaarrggiinnbbeellll ((class SSmmeeBBSSBB))
+               This   entry  invokes  the  sseett--mmaarrggiinnbbeellll((ttooggggllee))
+               action.
+
+       aallttssccrreeeenn ((class SSmmeeBBSSBB))
+               This  entry  invokes   the   sseett--aallttssccrreeeenn((ttooggggllee))
+               action.
+
+       aaccttiivveeiiccoonn ((class SSMMeeBBSSBB))
+               This entry toggles active icons on and off if this
+               feature was compiled into _x_t_e_r_m.   It  is  enabled
+               only  if  _x_t_e_r_m  was started with the command line
+               option +ai  or  the  aaccttiivveeIIccoonn  resource  set  to
+               ``True.''
+
+       lliinnee11 ((class SSmmeeLLiinnee))
+               This is a separator.
+
+       ssooffttrreesseett ((class SSmmeeBBSSBB))
+               This entry invokes the ssoofftt--rreesseett(()) action.
+
+       hhaarrddrreesseett ((class SSmmeeBBSSBB))
+               This entry invokes the hhaarrdd--rreesseett(()) action.
+
+       cclleeaarrssaavveeddlliinneess ((class SSmmeeBBSSBB))
+               This entry invokes the cclleeaarr--ssaavveedd--lliinneess(()) action.
+
+
+
+X Version 11               Release 6.3                         25
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       lliinnee22 ((class SSmmeeLLiinnee))
+               This is a separator.
+
+       tteekksshhooww ((class SSmmeeBBSSBB))
+               This entry invokes the  sseett--vviissiibbiilliittyy((tteekk,,ttooggggllee))
+               action.
+
+       tteekkmmooddee ((class SSmmeeBBSSBB))
+               This   entry  invokes  the  sseett--tteerrmmiinnaall--ttyyppee((tteekk))
+               action.
+
+       vvtthhiiddee ((class SSmmeeBBSSBB))
+               This  entry  invokes  the   sseett--vviissiibbiilliittyy((vvtt,,ooffff))
+               action.
+
+
+       The _f_o_n_t_M_e_n_u has the following entries:
+
+       ffoonnttddeeffaauulltt ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--vvtt--ffoonntt((dd)) action.
+
+       ffoonntt11 ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--vvtt--ffoonntt((11)) action.
+
+       ffoonntt22 ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--vvtt--ffoonntt((22)) action.
+
+       ffoonntt33 ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--vvtt--ffoonntt((33)) action.
+
+       ffoonntt44 ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--vvtt--ffoonntt((44)) action.
+
+       ffoonntt55 ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--vvtt--ffoonntt((55)) action.
+
+       ffoonntt66 ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--vvtt--ffoonntt((66)) action.
+
+       ffoonntteessccaappee ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--vvtt--ffoonntt((ee)) action.
+
+       ffoonnttsseell ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--vvtt--ffoonntt((ss)) action.
+
+
+       The _t_e_k_M_e_n_u has the following entries:
+
+       tteekktteexxttllaarrggee ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--tteekk--tteexxtt((ll)) action.
+
+       tteekktteexxtt22 ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--tteekk--tteexxtt((22)) action.
+
+
+
+
+X Version 11               Release 6.3                         26
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       tteekktteexxtt33 ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--tteekk--tteexxtt((33)) action.
+
+       tteekktteexxttssmmaallll ((class SSmmeeBBSSBB))
+               This entry invokes the sseett--tteekk--tteexxtt((ss)) action.
+
+       lliinnee11 ((class SSmmeeLLiinnee))
+               This is a separator.
+
+       tteekkppaaggee ((class SSmmeeBBSSBB))
+               This entry invokes the tteekk--ppaaggee(()) action.
+
+       tteekkrreesseett ((class SSmmeeBBSSBB))
+               This entry invokes the tteekk--rreesseett(()) action.
+
+       tteekkccooppyy ((class SSmmeeBBSSBB))
+               This entry invokes the tteekk--ccooppyy(()) action.
+
+       lliinnee22 ((class SSmmeeLLiinnee))
+               This is a separator.
+
+       vvttsshhooww ((class SSmmeeBBSSBB))
+               This  entry  invokes the sseett--vviissiibbiilliittyy((vvtt,,ttooggggllee))
+               action.
+
+       vvttmmooddee ((class SSmmeeBBSSBB))
+               This  entry  invokes   the   sseett--tteerrmmiinnaall--ttyyppee((vvtt))
+               action.
+
+       tteekkhhiiddee ((class SSmmeeBBSSBB))
+               This  entry invokes the sseett--vviissiibbiilliittyy((tteekk,,ttooggggllee))
+               action.
+
+
+       The following resources are useful when specified for  the
+       Athena Scrollbar widget:
+
+       tthhiicckknneessss ((class TThhiicckknneessss))
+               Specifies the width in pixels of the scrollbar.
+
+       bbaacckkggrroouunndd ((class BBaacckkggrroouunndd))
+               Specifies  the  color to use for the background of
+               the scrollbar.
+
+       ffoorreeggrroouunndd ((class FFoorreeggrroouunndd))
+               Specifies the color to use for the  foreground  of
+               the  scrollbar.  The ``thumb'' of the scrollbar is
+               a simple checkerboard pattern  alternating  pixels
+               for foreground and background color.
+
+PPOOIINNTTEERR UUSSAAGGEE
+       Once  the  VT102  window  is  created, _x_t_e_r_m allows you to
+       select text and copy it within the same or other  windows.
+
+
+
+
+X Version 11               Release 6.3                         27
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       The  selection functions are invoked when the pointer but­
+       tons are used with no modifiers, and when  they  are  used
+       with  the  ``shift'' key.  The assignment of the functions
+       described below to keys and buttons may be changed through
+       the resource database; see AACCTTIIOONNSS below.
+
+       Pointer  button  one  (usually  left) is used to save text
+       into the cut buffer.  Move the cursor to beginning of  the
+       text,  and then hold the button down while moving the cur­
+       sor to the end of the region  and  releasing  the  button.
+       The  selected  text  is  highlighted  and  is saved in the
+       global cut buffer and made the PRIMARY selection when  the
+       button  is  released.   Double-clicking  selects by words.
+       Triple-clicking selects by lines.  Quadruple-clicking goes
+       back  to characters, etc.  Multiple-click is determined by
+       the time from button up to button down, so you can  change
+       the  selection unit in the middle of a selection.  Logical
+       words and lines selected by double- or triple-clicking may
+       wrap  across  more  than  one  screen  line  if lines were
+       wrapped by _x_t_e_r_m itself rather  than  by  the  application
+       running in the window.  If the key/button bindings specify
+       that an X selection is to be made, _x_t_e_r_m  will  leave  the
+       selected  text highlighted for as long as it is the selec­
+       tion owner.
+
+       Pointer button two (usually middle) `types'  (pastes)  the
+       text  from  the  PRIMARY selection, if any, otherwise from
+       the cut buffer, inserting it as keyboard input.
+
+       Pointer button three (usually right) extends  the  current
+       selection.   (Without  loss  of  generality,  you can swap
+       ``right'' and ``left'' everywhere  in  the  rest  of  this
+       paragraph.)   If pressed while closer to the right edge of
+       the selection than  the  left,  it  extends/contracts  the
+       right  edge  of the selection.  If you contract the selec­
+       tion past the left edge of the  selection,  _x_t_e_r_m  assumes
+       you  really  meant  the  left  edge, restores the original
+       selection, then extends/contracts the  left  edge  of  the
+       selection.   Extension  starts  in the selection unit mode
+       that the last selection or extension was performed in; you
+       can multiple-click to cycle through them.
+
+       By cutting and pasting pieces of text without trailing new
+       lines, you can take text from several places in  different
+       windows  and  form a command to the shell, for example, or
+       take output  from  a  program  and  insert  it  into  your
+       favorite  editor.  Since the cut buffer is globally shared
+       among different applications, you should regard  it  as  a
+       `file' whose contents you know.  The terminal emulator and
+       other text programs should be treating it as if it were  a
+       text file, i.e., the text is delimited by new lines.
+
+       The scroll region displays the position and amount of text
+       currently showing in the window (highlighted) relative  to
+
+
+
+X Version 11               Release 6.3                         28
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       the  amount of text actually saved.  As more text is saved
+       (up to the maximum), the  size  of  the  highlighted  area
+       decreases.
+
+       Clicking  button one with the pointer in the scroll region
+       moves the adjacent line to the top of the display  window.
+
+       Clicking  button  three  moves the top line of the display
+       window down to the pointer position.
+
+       Clicking button two moves the display to a position in the
+       saved  text  that corresponds to the pointer's position in
+       the scrollbar.
+
+       Unlike the VT102 window, the  Tektronix  window  does  not
+       allow  the  copying  of text.  It does allow Tektronix GIN
+       mode, and in this mode the  cursor  will  change  from  an
+       arrow to a cross.  Pressing any key will send that key and
+       the current coordinate of the cross cursor.  Pressing but­
+       ton  one,  two, or three will return the letters `l', `m',
+       and `r', respectively.  If the `shift' key is pressed when
+       a  pointer button is pressed, the corresponding upper case
+       letter is sent.  To distinguish a pointer  button  from  a
+       key, the high bit of the character is set (but this is bit
+       is normally stripped unless the terminal mode is RAW;  see
+       _t_t_y(4) for details).
+
+MMEENNUUSS
+       _X_t_e_r_m  has  four  menus, named _m_a_i_n_M_e_n_u, _v_t_M_e_n_u, _f_o_n_t_M_e_n_u,
+       and _t_e_k_M_e_n_u.  Each menu pops up under the correct combina­
+       tions  of  key and button presses.  Most menus are divided
+       into two section, separated by a horizontal line.  The top
+       portion  contains  various  modes  that can be altered.  A
+       check mark appears  next  to  a  mode  that  is  currently
+       active.   Selecting  one of these modes toggles its state.
+       The bottom  portion  of  the  menu  are  command  entries;
+       selecting one of these performs the indicated function.
+
+       The  xxtteerrmm  menu  pops  up  when  the  ``control'' key and
+       pointer button one are pressed in a window.  The  _m_a_i_n_M_e_n_u
+       contains  items that apply to both the VT102 and Tektronix
+       windows.  The SSeeccuurree KKeeyybbooaarrdd mode is be used when  typing
+       in  passwords or other sensitive data in an unsecure envi­
+       ronment; see SSEECCUURRIITTYY below.  Notable entries in the  com­
+       mand section of the menu are the CCoonnttiinnuuee, SSuussppeenndd, IInntteerr­­
+       rruupptt, HHaanngguupp, TTeerrmmiinnaattee and KKiillll which sends the  SIGCONT,
+       SIGTSTP,  SIGINT,  SIGHUP,  SIGTERM  and  SIGKILL signals,
+       respectively, to the process group of the process  running
+       under _x_t_e_r_m (usually the shell).  The CCoonnttiinnuuee function is
+       especially useful if the user has accidentally typed CTRL-
+       Z, suspending the process.
+
+       The  _v_t_M_e_n_u sets various modes in the VT102 emulation, and
+       is popped up when the ``control'' key and  pointer  button
+
+
+
+X Version 11               Release 6.3                         29
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       two  are pressed in the VT102 window.  In the command sec­
+       tion of this menu, the soft reset entry will reset  scroll
+       regions.   This  can  be  convenient when some program has
+       left the scroll regions set incorrectly (often  a  problem
+       when  using  VMS  or  TOPS-20).  The full reset entry will
+       clear the screen, reset tabs to every eight  columns,  and
+       reset  the terminal modes (such as wrap and smooth scroll)
+       to their initial states just after _x_t_e_r_m has finished pro­
+       cessing the command line options.
+
+       The  _f_o_n_t_M_e_n_u  sets the font used in the VT102 window.  In
+       addition to the default font and a number of  alternatives
+       that are set with resources, the menu offers the font last
+       specified by the Set Font escape sequence (see  the  docu­
+       ment _X_t_e_r_m _C_o_n_t_r_o_l _S_e_q_u_e_n_c_e_s) and the current selection as
+       a font name (if the PRIMARY selection is owned).
+
+       The _t_e_k_M_e_n_u sets various modes in the Tektronix emulation,
+       and is popped up when the ``control'' key and pointer but­
+       ton two are pressed in the Tektronix window.  The  current
+       font  size  is  checked  in the modes section of the menu.
+       The PPAAGGEE entry in the command section clears the Tektronix
+       window.
+
+SSEECCUURRIITTYY
+       X  environments  differ  in  their security consciousness.
+       Most servers, run  under  _x_d_m,  are  capable  of  using  a
+       ``magic  cookie''  authorization scheme that can provide a
+       reasonable level of security for  many  people.   If  your
+       server  is  only  using  a host-based mechanism to control
+       access to the server (see _x_h_o_s_t_(_1_)), then  if  you  enable
+       access  for  a  host and other users are also permitted to
+       run clients on that same host, there is every  possibility
+       that  someone  can  run  an  application that will use the
+       basic services of the X protocol to snoop on your  activi­
+       ties, potentially capturing a transcript of everything you
+       type at the keyboard.  This is of particular concern  when
+       you  want  to  type in a password or other sensitive data.
+       The best solution to this  problem  is  to  use  a  better
+       authorization  mechanism  that  host-based  control, but a
+       simple mechanism exists for protecting keyboard  input  in
+       _x_t_e_r_m.
+
+       The  xxtteerrmm  menu  (see MMEENNUUSS above) contains a SSeeccuurree KKeeyy­­
+       bbooaarrdd entry which, when enabled, ensures that all keyboard
+       input  is  directed  _o_n_l_y to _x_t_e_r_m (using the GrabKeyboard
+       protocol request).  When an application prompts you for  a
+       password  (or other sensitive data), you can enable SSeeccuurree
+       KKeeyybbooaarrdd using the menu, type in the data, and  then  dis­
+       able  SSeeccuurree  KKeeyybbooaarrdd  using  the menu again.  Only one X
+       client at a time can secure  the  keyboard,  so  when  you
+       attempt  to  enable  SSeeccuurree KKeeyybbooaarrdd it may fail.  In this
+       case, the bell will sound.  If the  SSeeccuurree  KKeeyybbooaarrdd  suc­
+       ceeds,  the  foreground  and  background  colors  will  be
+
+
+
+X Version 11               Release 6.3                         30
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       exchanged (as if you selected the RReevveerrssee VViiddeeoo  entry  in
+       the  MMooddeess  menu);  they  will be exchanged again when you
+       exit secure mode.  If the colors do _n_o_t switch,  then  you
+       should  be _v_e_r_y suspicious that you are being spoofed.  If
+       the application you are running displays a  prompt  before
+       asking for the password, it is safest to enter secure mode
+       _b_e_f_o_r_e the prompt gets displayed, and to  make  sure  that
+       the  prompt  gets displayed correctly (in the new colors),
+       to minimize the probability of  spoofing.   You  can  also
+       bring  up  the  menu again and make sure that a check mark
+       appears next to the entry.
+
+       SSeeccuurree KKeeyybbooaarrdd mode will  be  disabled  automatically  if
+       your   xterm   window   becomes  iconified  (or  otherwise
+       unmapped), or if you start up a reparenting window manager
+       (that  places  a  title bar or other decoration around the
+       window) while in SSeeccuurree KKeeyybbooaarrdd mode.  (This is a feature
+       of  the  X  protocol not easily overcome.)  When this hap­
+       pens,  the  foreground  and  background  colors  will   be
+       switched back and the bell will sound in warning.
+
+CCHHAARRAACCTTEERR CCLLAASSSSEESS
+       Clicking the middle mouse button twice in rapid succession
+       will cause all characters of the same class (e.g. letters,
+       white space, punctuation) to be selected.  Since different
+       people have  different  preferences  for  what  should  be
+       selected  (for  example, should filenames be selected as a
+       whole or only the separate subnames), the default  mapping
+       can  be overridden through the use of the _c_h_a_r_C_l_a_s_s (class
+       _C_h_a_r_C_l_a_s_s) resource.
+
+       This  resource  is  a   series   of   comma-separated   of
+       _r_a_n_g_e:_v_a_l_u_e pairs.  The _r_a_n_g_e is either a single number or
+       _l_o_w-_h_i_g_h in the range of 0 to 127,  corresponding  to  the
+       ASCII code for the character or characters to be set.  The
+       _v_a_l_u_e is arbitrary, although the default  table  uses  the
+       character  number  of the first character occurring in the
+       set.
+
+       The default table is
+
+               static int charClass[128] = {
+               /* NUL  SOH  STX  ETX  EOT  ENQ  ACK  BEL */
+                   32,   1,   1,   1,   1,   1,   1,   1,
+               /*  BS   HT   NL   VT   NP   CR   SO   SI */
+                    1,  32,   1,   1,   1,   1,   1,   1,
+               /* DLE  DC1  DC2  DC3  DC4  NAK  SYN  ETB */
+                    1,   1,   1,   1,   1,   1,   1,   1,
+               /* CAN   EM  SUB  ESC   FS   GS   RS   US */
+                    1,   1,   1,   1,   1,   1,   1,   1,
+               /*  SP    !    "    #    $    %    &    ' */
+                   32,  33,  34,  35,  36,  37,  38,  39,
+               /*   (    )    *    +    ,    -    .    / */
+                   40,  41,  42,  43,  44,  45,  46,  47,
+
+
+
+X Version 11               Release 6.3                         31
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+               /*   0    1    2    3    4    5    6    7 */
+                   48,  48,  48,  48,  48,  48,  48,  48,
+               /*   8    9    :    ;    <    =    >    ? */
+                   48,  48,  58,  59,  60,  61,  62,  63,
+               /*   @    A    B    C    D    E    F    G */
+                   64,  48,  48,  48,  48,  48,  48,  48,
+               /*   H    I    J    K    L    M    N    O */
+                   48,  48,  48,  48,  48,  48,  48,  48,
+               /*   P    Q    R    S    T    U    V    W */
+                   48,  48,  48,  48,  48,  48,  48,  48,
+               /*   X    Y    Z    [    \    ]    ^    _ */
+                   48,  48,  48,  91,  92,  93,  94,  48,
+               /*   `    a    b    c    d    e    f    g */
+                   96,  48,  48,  48,  48,  48,  48,  48,
+               /*   h    i    j    k    l    m    n    o */
+                   48,  48,  48,  48,  48,  48,  48,  48,
+               /*   p    q    r    s    t    u    v    w */
+                   48,  48,  48,  48,  48,  48,  48,  48,
+               /*   x    y    z    {    |    }    ~  DEL */
+                   48,  48,  48, 123, 124, 125, 126,   1};
+
+       For  example,  the  string  ``33:48,37:48,45-47:48,64:48''
+       indicates  that  the exclamation mark, percent sign, dash,
+       period, slash, and ampersand characters should be  treated
+       the  same  way  as characters and numbers.  This is useful
+       for cutting and pasting electronic mailing  addresses  and
+       filenames.
+
+AACCTTIIOONNSS
+       It  is  possible  to rebind keys (or sequences of keys) to
+       arbitrary strings for input, by changing the  translations
+       for  the  vt100 or tek4014 widgets.  Changing the transla­
+       tions for events other than key and button events  is  not
+       expected, and will cause unpredictable behavior.  The fol­
+       lowing actions are provided for using within the _v_t_1_0_0  or
+       _t_e_k_4_0_1_4 ttrraannssllaattiioonnss resources:
+
+       aallllooww--sseenndd--eevveennttss((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This  action  set  or  toggles the aalllloowwSSeennddEEvveennttss
+               resource and is also  invoked  by  the  aalllloowwsseennddss
+               entry in _m_a_i_n_M_e_n_u.
+
+       bbeellll(([[_p_e_r_c_e_n_t]]))
+               This  action rings the keyboard bell at the speci­
+               fied percentage above or below the base volume.
+
+       cclleeaarr--ssaavveedd--lliinneess(())
+               This action does hhaarrdd--rreesseett(()) (see above) and also
+               clears  the  history of lines saved off the top of
+               the  screen.   It  is  also   invoked   from   the
+               cclleeaarrssaavveeddlliinneess entry in _v_t_M_e_n_u.
+
+       ccrreeaattee--mmeennuu((_m_/_v_/_f_/_t))
+               This  action  creates  one  of  the  menus used by
+
+
+
+X Version 11               Release 6.3                         32
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+               _x_t_e_r_m, if it has not been previously created.  The
+               parameter  values  are  the  menu names: _m_a_i_n_M_e_n_u,
+               _v_t_M_e_n_u, _f_o_n_t_M_e_n_u, _t_e_k_M_e_n_u, respectively.
+
+       ddiirreedd--bbuuttttoonn(())
+               Handles a  button  event  (other  than  press  and
+               release)  by  echoing  the event's position (i.e.,
+               character line and column) in the  following  for­
+               mat:
+
+                       ^X ESC G <line+' '> <col+' '>
+
+       hhaarrdd--rreesseett(())
+               This  action  resets  the  scrolling region, tabs,
+               window  size,  and  cursor  keys  and  clears  the
+               screen.   It  is  also  invoked from the hhaarrddrreesseett
+               entry in _v_t_M_e_n_u.
+
+       iiggnnoorree(())
+               This action ignores the event but checks for  spe­
+               cial pointer position escape sequences.
+
+       iinnsseerrtt(())
+               This  action inserts the character or string asso­
+               ciated with the key that was pressed.
+
+       iinnsseerrtt--eeiigghhtt--bbiitt(())
+               This action inserts an eight-bit (Meta) version of
+               the  character  or  string associated with the key
+               that was pressed.  The exact action depends on the
+               value of the eeiigghhttBBiittIInnppuutt resource.
+
+       iinnsseerrtt--sseelleeccttiioonn((_s_o_u_r_c_e_n_a_m_e [[,, ......]]))
+               This action inserts the string found in the selec­
+               tion  or  cutbuffer   indicated   by   _s_o_u_r_c_e_n_a_m_e.
+               Sources  are  checked  in the order given (case is
+               significant) until one  is  found.   Commonly-used
+               selections  include: _P_R_I_M_A_R_Y, _S_E_C_O_N_D_A_R_Y, and _C_L_I_P_­
+               _B_O_A_R_D.    Cut   buffers   are   typically    named
+               _C_U_T___B_U_F_F_E_R_0 through _C_U_T___B_U_F_F_E_R_7.
+
+       iinnsseerrtt--sseevveenn--bbiitt(())
+               This action is a synonym for iinnsseerrtt(())
+
+       kkeeyymmaapp((_n_a_m_e))
+               This  action dynamically defines a new translation
+               table whose resource name is _n_a_m_e with the  suffix
+               _K_e_y_m_a_p  (case  is  significant).   The  name  _N_o_n_e
+               restores the original translation table.
+
+       ppooppuupp--mmeennuu((_m_e_n_u_n_a_m_e))
+               This action displays  the  specified  popup  menu.
+               Valid  names (case is significant) include:  _m_a_i_n_­
+               _M_e_n_u, _v_t_M_e_n_u, _f_o_n_t_M_e_n_u, and _t_e_k_M_e_n_u.
+
+
+
+X Version 11               Release 6.3                         33
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       pprriinntt(()) This action prints the window and is also  invoked
+               by the _p_r_i_n_t entry in _m_a_i_n_M_e_n_u.
+
+       qquuiitt(())  This  action  sends a SIGHUP to the subprogram and
+               exits.  It is also invoked by the  qquuiitt  entry  in
+               _m_a_i_n_M_e_n_u.
+
+       rreeddrraaww(())
+               This action redraws the window and is also invoked
+               by the _r_e_d_r_a_w entry in _m_a_i_n_M_e_n_u.
+
+       ssccrroollll--bbaacckk((_c_o_u_n_t [[,,_u_n_i_t_s]]))
+               This action scrolls the text  window  backward  so
+               that text that had previously scrolled off the top
+               of the screen is now visible.  The _c_o_u_n_t  argument
+               indicates  the number of _u_n_i_t_s (which may be _p_a_g_e,
+               _h_a_l_f_p_a_g_e, _p_i_x_e_l, or _l_i_n_e) by which to scroll.
+
+       ssccrroollll--ffoorrww((_c_o_u_n_t [[,,_u_n_i_t_s]]))
+               This action  scrolls  is  similar  to  ssccrroollll--bbaacckk
+               except that it scrolls the other direction.
+
+       sseeccuurree(())
+               This  action  toggles  the  _S_e_c_u_r_e  _K_e_y_b_o_a_r_d  mode
+               described in the section named  SSEECCUURRIITTYY,  and  is
+               invoked from the sseeccuurreekkbbdd entry in _m_a_i_n_M_e_n_u.
+
+       sseelleecctt--ccuurrssoorr--eenndd((_d_e_s_t_n_a_m_e [[,, ......]]))
+               This  action  is similar to sseelleecctt--eenndd except that
+               it should be used with sseelleecctt--ccuurrssoorr--ssttaarrtt.
+
+       sseelleecctt--ccuurrssoorr--ssttaarrtt(())
+               This action is similar to sseelleecctt--ssttaarrtt except that
+               it begins the selection at the current text cursor
+               position.
+
+       sseelleecctt--eenndd((_d_e_s_t_n_a_m_e [[,, ......]]))
+               This action puts the currently selected text  into
+               all  of  the selections or cutbuffers specified by
+               _d_e_s_t_n_a_m_e.
+
+       sseelleecctt--eexxtteenndd(())
+               This action tracks the  pointer  and  extends  the
+               selection.   It  should  only  be  bound to Motion
+               events.
+
+       sseelleecctt--sseett(())
+               This action stores text that  corresponds  to  the
+               current selection, without affecting the selection
+               mode.
+
+       sseelleecctt--ssttaarrtt(())
+               This action begins text selection at  the  current
+               pointer  location.   See  the  section  on PPOOIINNTTEERR
+
+
+
+X Version 11               Release 6.3                         34
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+               UUSSAAGGEE for information on making selections.
+
+       sseenndd--ssiiggnnaall((_s_i_g_n_a_m_e))
+               This action sends the signal named by  _s_i_g_n_a_m_e  to
+               the  _x_t_e_r_m subprocess (the shell or program speci­
+               fied with the _-_e command line option) and is  also
+               invoked   by  the  ssuussppeenndd,  ccoonnttiinnuuee,  iinntteerrrruupptt,
+               hhaanngguupp, tteerrmmiinnaattee, and kkiillll entries  in  _m_a_i_n_M_e_n_u.
+               Allowable  signal  names are (case is not signifi­
+               cant): _t_s_t_p (if supported by  the  operating  sys­
+               tem),  _s_u_s_p_e_n_d  (same as _t_s_t_p), _c_o_n_t (if supported
+               by the operating system), _i_n_t,  _h_u_p,  _t_e_r_m,  _q_u_i_t,
+               _a_l_r_m, _a_l_a_r_m (same as _a_l_r_m) and _k_i_l_l.
+
+       sseett--aallllooww113322((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This  action toggles the cc113322 resource and is also
+               invoked from the aallllooww113322 entry in _v_t_M_e_n_u.
+
+       sseett--aallttssccrreeeenn((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This action toggles between the alternate and cur­
+               rent screens.
+
+       sseett--aappppccuurrssoorr((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This  action toggles the handling Application Cur­
+               sor Key mode and is also invoked by the  aappppccuurrssoorr
+               entry in _v_t_M_e_n_u.
+
+       sseett--aappppkkeeyyppaadd((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This  action  toggles  the handling of Application
+               Keypad mode and is also invoked by  the  aappppkkeeyyppaadd
+               entry in _v_t_M_e_n_u.
+
+       sseett--aauuttoolliinneeffeeeedd((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This  action  toggles automatic insertion of line­
+               feeds and is  also  invoked  by  the  aauuttoolliinneeffeeeedd
+               entry in _v_t_M_e_n_u.
+
+       sseett--aauuttoowwrraapp((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This  action  toggles  automatic  wrapping of long
+               lines and is also invoked by the aauuttoowwrraapp entry in
+               _v_t_M_e_n_u.
+
+       sseett--ccuurrsseesseemmuull((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This  action  toggles  the  ccuurrsseess resource and is
+               also invoked from the ccuurrsseesseemmuull entry in  _v_t_M_e_n_u.
+
+       sseett--jjuummppssccrroollll((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This action toggles the jjuummppssccrroollll resource and is
+               also invoked by the jjuummppssccrroollll entry in _v_t_M_e_n_u.
+
+       sseett--llooggggiinngg(())
+               This action  toggles  the  state  of  the  logging
+               option.
+
+
+
+
+X Version 11               Release 6.3                         35
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       sseett--mmaarrggiinnbbeellll((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This action toggles the mmaarrggiinnBBeellll resource and is
+               also invoked from the mmaarrggiinnbbeellll entry in  _v_t_M_e_n_u.
+
+       sseett--rreevveerrssee--vviiddeeoo((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This  action toggles the _r_e_v_e_r_s_e_V_i_d_e_o resource and
+               is also  invoked  by  the  rreevveerrsseevviiddeeoo  entry  in
+               _v_t_M_e_n_u.
+
+       sseett--rreevveerrsseewwrraapp((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This  action  toggles the rreevveerrsseeWWrraapp resource and
+               is  also  invoked  by  the  rreevveerrsseewwrraapp  entry  in
+               _v_t_M_e_n_u.
+
+       sseett--ssccrroollll--oonn--kkeeyy((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This  action toggles the ssccrroollllKKeeyy resource and is
+               also invoked from the ssccrroollllkkeeyy entry in _v_t_M_e_n_u.
+
+       sseett--ssccrroollll--oonn--ttttyy--oouuttppuutt((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This action toggles the  ssccrroollllTTttyyOOuuttppuutt  resource
+               and is also invoked from the ssccrroollllttttyyoouuttppuutt entry
+               in _v_t_M_e_n_u.
+
+       sseett--ssccrroollllbbaarr((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This action toggles the ssccrroollllbbaarr resource and  is
+               also invoked by the ssccrroollllbbaarr entry in _v_t_M_e_n_u.
+
+       sseett--tteekk--tteexxtt((_l_a_r_g_e_/_2_/_3_/_s_m_a_l_l))
+               This action sets font used in the Tektronix window
+               to the value of the resources  tteekktteexxttllaarrggee,  tteekk­­
+               tteexxtt22, tteekktteexxtt33, and tteekktteexxttssmmaallll according to the
+               argument.  It is also by the entries of  the  same
+               names as the resources in _t_e_k_M_e_n_u.
+
+       sseett--tteerrmmiinnaall--ttyyppee((_t_y_p_e))
+               This action directs output to either the _v_t or _t_e_k
+               windows, according to the _t_y_p_e string.  It is also
+               invoked  by  the  tteekkmmooddee  entry in _v_t_M_e_n_u and the
+               vvttmmooddee entry in _t_e_k_M_e_n_u.
+
+       sseett--vviissiibbiilliittyy((_v_t_/_t_e_k,,_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This action controls whether or not the _v_t or  _t_e_k
+               windows  are visible.  It is also invoked from the
+               tteekksshhooww and  vvtthhiiddee  entries  in  _v_t_M_e_n_u  and  the
+               vvttsshhooww and tteekkhhiiddee entries in _t_e_k_M_e_n_u.
+
+       sseett--vviissuuaall--bbeellll((_o_n_/_o_f_f_/_t_o_g_g_l_e))
+               This action toggles the vviissuuaallBBeellll resource and is
+               also invoked by the vviissuuaallbbeellll entry in _v_t_M_e_n_u.
+
+       sseett--vvtt--ffoonntt((_d_/_1_/_2_/_3_/_4_/_5_/_6_/_e_/_s [[,,_n_o_r_m_a_l_f_o_n_t [[,, _b_o_l_d_f_o_n_t]]]]))
+               This action sets the font or fonts currently being
+               used in the VT102 window.  The first argument is a
+               single character that specifies  the  font  to  be
+
+
+
+X Version 11               Release 6.3                         36
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+               used:  _d  or _D indicate the default font (the font
+               initially used when _x_t_e_r_m was started), _1  through
+               _6  indicate  the  fonts  specified  by  the  _f_o_n_t_1
+               through _f_o_n_t_6 resources, _e or _E indicate the  nor­
+               mal  and  bold  fonts  that  have been set through
+               escape codes (or specified as the second and third
+               action  arguments, respectively), and _s or _S indi­
+               cate the font selection (as made by programs  such
+               as  _x_f_o_n_t_s_e_l_(_1_))  indicated  by  the second action
+               argument.
+
+       ssoofftt--rreesseett(())
+               This action resets the  scrolling  region  and  is
+               also invoked from the ssooffttrreesseett entry in _v_t_M_e_n_u.
+
+       ssttaarrtt--eexxtteenndd(())
+               This action is similar to sseelleecctt--ssttaarrtt except that
+               the selection is extended to the  current  pointer
+               location.
+
+       ssttaarrtt--ccuurrssoorr--eexxtteenndd(())
+               This  action  is  similar  to sseelleecctt--eexxtteenndd except
+               that the selection is extended to the current text
+               cursor position.
+
+       ssttrriinngg((_s_t_r_i_n_g))
+               This  action  inserts the specified text string as
+               if it had been typed.  Quotation is  necessary  if
+               the string contains whitespace or non-alphanumeric
+               characters.  If the string  argument  begins  with
+               the  characters ``0x'', it is interpreted as a hex
+               character constant.
+
+       tteekk--ccooppyy(())
+               This action copies the escape codes used to gener­
+               ate  the  current window contents to a file in the
+               current directory beginning with  the  name  COPY.
+               It  is also invoked from the _t_e_k_c_o_p_y entry in _t_e_k_­
+               _M_e_n_u.
+
+       tteekk--ppaaggee(())
+               This action clears the  Tektronix  window  and  is
+               also invoked by the tteekkppaaggee entry in _t_e_k_M_e_n_u.
+
+       tteekk--rreesseett(())
+               This  action  resets  the  Tektronix window and is
+               also invoked by the _t_e_k_r_e_s_e_t entry in _t_e_k_M_e_n_u.
+
+       vvii--bbuuttttoonn(())
+               Handles a  button  event  (other  than  press  and
+               release)  by  echoing  a control sequence computed
+               from the event's line number in the  screen  rela­
+               tive to the current line:
+
+
+
+
+X Version 11               Release 6.3                         37
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+                       ESC ^P
+               or
+                       ESC ^N
+
+               according to whether the event is before, or after
+               the current line, respectively.  The ^N (or ^P) is
+               repeated once for each line that the event differs
+               from the current line.  The  control  sequence  is
+               omitted  altogether  if the button event is on the
+               current line.
+
+       vviissuuaall--bbeellll(())
+               This action flashes the window quickly.
+
+       The Tektronix window also has the following action:
+
+       ggiinn--pprreessss((_l_/_L_/_m_/_M_/_r_/_R))
+               This action sends  the  indicated  graphics  input
+               code.
+
+       The default bindings in the VT102 window are:
+
+                     Shift <KeyPress> Prior:scroll-back(1,halfpage) \n\
+                      Shift <KeyPress> Next:scroll-forw(1,halfpage) \n\
+                    Shift <KeyPress> Select:select-cursor-start() \
+                                                   select-cursor-end(PRIMARY, CUT_BUFFER0) \n\
+                    Shift <KeyPress> Insert:insert-selection(PRIMARY, CUT_BUFFER0) \n\
+                            ~Meta<KeyPress>:insert-seven-bit() \n\
+                             Meta<KeyPress>:insert-eight-bit() \n\
+                           !Ctrl <Btn1Down>:popup-menu(mainMenu) \n\
+                      !Lock Ctrl <Btn1Down>:popup-menu(mainMenu) \n\
+            !Lock Ctrl @Num_Lock <Btn1Down>:popup-menu(mainMenu) \n\
+                ! @Num_Lock Ctrl <Btn1Down>:popup-menu(mainMenu) \n\
+                           ~Meta <Btn1Down>:select-start() \n\
+                         ~Meta <Btn1Motion>:select-extend() \n\
+                           !Ctrl <Btn2Down>:popup-menu(vtMenu) \n\
+                      !Lock Ctrl <Btn2Down>:popup-menu(vtMenu) \n\
+            !Lock Ctrl @Num_Lock <Btn2Down>:popup-menu(vtMenu) \n\
+                ! @Num_Lock Ctrl <Btn2Down>:popup-menu(vtMenu) \n\
+                     ~Ctrl ~Meta <Btn2Down>:ignore() \n\
+                       ~Ctrl ~Meta <Btn2Up>:insert-selection(PRIMARY, CUT_BUFFER0) \n\
+                           !Ctrl <Btn3Down>:popup-menu(fontMenu) \n\
+                      !Lock Ctrl <Btn3Down>:popup-menu(fontMenu) \n\
+            !Lock Ctrl @Num_Lock <Btn3Down>:popup-menu(fontMenu) \n\
+                ! @Num_Lock Ctrl <Btn3Down>:popup-menu(fontMenu) \n\
+                     ~Ctrl ~Meta <Btn3Down>:start-extend() \n\
+                         ~Meta <Btn3Motion>:select-extend() \n\
+                                    <BtnUp>:select-end(PRIMARY, CUT_BUFFER0) \n\
+                                  <BtnDown>:bell(0)
+
+
+       The default bindings in the Tektronix window are:
+
+                           ~Meta<KeyPress>: insert-seven-bit() \n\
+
+
+
+X Version 11               Release 6.3                         38
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+                            Meta<KeyPress>: insert-eight-bit() \n\
+                          !Ctrl <Btn1Down>: popup-menu(mainMenu) \n\
+                     !Lock Ctrl <Btn1Down>: popup-menu(mainMenu) \n\
+           !Lock Ctrl @Num_Lock <Btn1Down>:popup-menu(mainMenu) \n\
+                !Ctrl @Num_Lock <Btn1Down>:popup-menu(mainMenu) \n\
+                          !Ctrl <Btn2Down>: popup-menu(tekMenu) \n\
+                     !Lock Ctrl <Btn2Down>: popup-menu(tekMenu) \n\
+           !Lock Ctrl @Num_Lock <Btn2Down>:popup-menu(tekMenu) \n\
+                !Ctrl @Num_Lock <Btn2Down>:popup-menu(tekMenu) \n\
+                     Shift ~Meta<Btn1Down>:gin-press(L) \n\
+                           ~Meta<Btn1Down>:gin-press(l) \n\
+                     Shift ~Meta<Btn2Down>:gin-press(M) \n\
+                           ~Meta<Btn2Down>:gin-press(m) \n\
+                     Shift ~Meta<Btn3Down>:gin-press(R) \n\
+                           ~Meta<Btn3Down>:gin-press(r)
+
+
+       Below  is  a  sample how of the kkeeyymmaapp(()) action is used to
+       add special keys for entering commonly-typed works:
+
+           *VT100.Translations: #override <Key>F13: keymap(dbx)
+           *VT100.dbxKeymap.translations: \
+                <Key>F14: keymap(None) \n\
+                <Key>F17: string("next") string(0x0d) \n\
+                <Key>F18: string("step") string(0x0d) \n\
+                <Key>F19: string("continue") string(0x0d) \n\
+                <Key>F20: string("print ") insert-selection(PRIMARY, CUT_BUFFER0)
+
+
+EENNVVIIRROONNMMEENNTT
+       _X_t_e_r_m sets the environment variables ``TERM'' and  ``TERM­
+       CAP''  properly  for the size window you have created.  It
+       also uses and sets the environment variable ``DISPLAY'' to
+       specify  which bit map display terminal to use.  The envi­
+       ronment variable ``WINDOWID'' is set to the  X  window  id
+       number of the _x_t_e_r_m window.
+
+SSEEEE AALLSSOO
+       resize(1), X(1), pty(4), tty(4)
+       _X_t_e_r_m _C_o_n_t_r_o_l _S_e_q_u_e_n_c_e_s (this is the file ctlseqs.ms).
+
+BBUUGGSS
+       Large  pastes  do not work on some systems.  This is not a
+       bug in _x_t_e_r_m; it is a bug in the pseudo terminal driver of
+       those  systems.   _x_t_e_r_m feeds large pastes to the pty only
+       as fast as the pty will accept data, but some pty  drivers
+       do  not return enough information to know if the write has
+       succeeded.
+
+       Many of the options are not resettable after _x_t_e_r_m starts.
+
+       This  program  still  needs to be rewritten.  It should be
+       split into very modular sections, with the various  emula­
+       tors  being  completely  separate  widgets that don't know
+
+
+
+X Version 11               Release 6.3                         39
+
+
+
+
+
+XTERM(1)                                                 XTERM(1)
+
+
+       about each other.  Ideally, you'd like to be able to  pick
+       and  choose  emulator widgets and stick them into a single
+       control widget.
+
+       There needs to be a dialog box to allow entry of  the  Tek
+       COPY file name.
+
+AAUUTTHHOORRSS
+       Far too many people, including:
+
+       Loretta  Guarino  Reid (DEC-UEG-WSL), Joel McCormack (DEC-
+       UEG-WSL), Terry Weissman (DEC-UEG-WSL), Edward Moy (Berke­
+       ley),  Ralph R. Swick (MIT-Athena), Mark Vandevoorde (MIT-
+       Athena), Bob McNamara (DEC-MAD), Jim Gettys  (MIT-Athena),
+       Bob  Scheifler  (MIT X Consortium), Doug Mink (SAO), Steve
+       Pitschke (Stellar), Ron Newman  (MIT-Athena),  Jim  Fulton
+       (MIT  X  Consortium),  Dave  Serisky (HP), Jonathan Kamens
+       (MIT-Athena), Jason Bacon <acadix@execpc.com>, David  Wex­
+       elblat, and Thomas Dickey (XFree86 Project).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+X Version 11               Release 6.3                         40
+
+

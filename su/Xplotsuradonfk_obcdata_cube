@@ -1,0 +1,89 @@
+#!/bin/sh
+# Plot result from suradonfk_cube with obc data
+######################################################################
+# Author: Daniel Trad- November 2001
+
+# Some shortcuts for plots
+set -x
+
+
+METHOD='RFK' # Radon fk (equiv to LSFK so far)
+sufix=${METHOD}
+sufix2="${METHOD}2"
+FILE=obcdata1c.su; clip=  #clip corresponding to perc=97
+
+FILEN=$FILE
+
+FILERAD=${FILEN}'rad'${sufix}
+FILERAD0=${FILEN}'rad0'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILERES=$FILEN'res'${sufix}
+
+FILERAD2=${FILEN}'rad'${sufix2}
+FILEREC2=$FILEN'rec'${sufix2}
+FILEREC2=$FILEN'rec'${sufix2}
+FILERES2=$FILEN'res'${sufix2}
+
+#PLOTX="suximage perc=98 hbox=800 wbox=600 clip=2.4 legend=1 label2=\"Trace Number\" label2=\"Time (s)\" &"
+PLOTX="suximage perc=98 hbox=800 wbox=600 clip=2.4 label2=Trace label1=Time labelfont=Rom28 titlefont=28 blockinterp=1 & "
+
+#First pass
+if [ 1 -eq 1 ]; then
+    cp xiter.su $FILERAD
+    $PLOTX < $FILE title=Data xbox=0 &
+    $PLOTX < $FILERAD title=ASRT xbox=620 &
+    $PLOTX < $FILEREC title="Predicted Noise" xbox=1240 &
+    suadapdiff $FILE $FILEREC > $FILERES
+    $PLOTX < $FILERES  title="Difference" xbox=1860&
+    
+fi
+
+# Second pass:
+if [ 0 -eq 1 ]; then
+
+    $PLOTX < $FILERAD2 title=$FILERAD2 xbox=0 &
+    $PLOTX < $FILERES title=$FILEREC xbox=620 &
+    $PLOTX < $FILEREC2 title=$FILEREC2 xbox=1240 &
+    suop2 $FILERES $FILEREC2 > $FILERES2
+    $PLOTX < $FILERES2  title=$FILERES2 xbox=1860&
+ 
+fi
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,35 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=sukmig2
+
+FLAG=-c -O -Wall
+
+OBJ=  $(PROG).o kmig2.o rjwfilter.o Complex.o filt.o
+
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+kmig2.o: $(LIBC)/kmig2.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rjwfilter.o: $(LIBC)/rjwfilter.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Complex.o: $(LIBC)/Complex.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+filt.o: $(LIBC)/filt.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+

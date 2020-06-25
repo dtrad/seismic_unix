@@ -1,0 +1,18 @@
+#! /bin/sh
+set -x
+
+FILE=data_asymtx
+
+FILE1=$FILE'.su'
+FILE2=$FILE'.surad'
+FILE3=$FILE'.surec'
+FILE4=$FILE'.sures'
+
+
+cp datains.su $FILE1
+cp xiter.su $FILE2 
+cp dp.su $FILE3
+cp riter.su $FILE4
+
+
+

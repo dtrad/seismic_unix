@@ -1,0 +1,61 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a ../bin/libdan.a
+
+LFLAGS= $(PRELFLAGS) -L$L -L../bin -lsu -lpar -lcwp -lm -ldan $(POSTLFLAGS)
+
+PROG=suradonwtcgls
+
+FLAG=-c -O3 -Wall -g
+
+OBJ=  $(PROG).o  modelweight.o  radonwtcgls0.o radonsolver.o wtcgls_solvers.o \
+		 radon_matrix.o radon_param.o interval.o taper.o  \
+		 nmo.o interpovv.o getvelocities.o radoninv.o \
+	       	 radon_cgfft.o radon_toeplitz.o		
+		 
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ) $L/libdan.a
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_matrix.o: $(LIBC)/radon_matrix.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interval.o: $(LIBC)/interval.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+taper.o: $(LIBC)/taper.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonwtcgls0.o: $(LIBC)/radonwtcgls0.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonsolver.o: $(LIBC)/radonsolver.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wtcgls_solvers.o: $(LIBC)/wtcgls_solvers.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nmo.o: $(LIBC)/nmo.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interpovv.o: $(LIBC)/interpovv.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+getvelocities.o: $(LIBC)/getvelocities.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoninv.o: $(LIBC)/radoninv.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_cgfft.o: $(LIBC)/radon_cgfft.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_toeplitz.o: $(LIBC)/radon_toeplitz.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+
+

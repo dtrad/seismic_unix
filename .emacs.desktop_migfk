@@ -1,0 +1,554 @@
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Fri Feb  8 11:00:20 2002
+;; Emacs version 20.7.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring '("ascale" "modelfile" "buf" "vmig" "option==1" "zero" "option==" "stolt" "plot2" "plot" "dh" "epsfft" "FLS" "dftls" "FLS" "FLS2"))
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+
+;; Buffer section:
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xcreate_asym_data"
+  "Xcreate_asym_data"
+  'sh-mode
+  '(nil)
+  897
+  '(20 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makelibdan2"
+  "Makelibdan2"
+  'fundamental-mode
+  '(nil)
+  457
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/file_functions.cpp"
+  "file_functions.cpp"
+  'c++-mode
+  '(nil)
+  206
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/read_ascii_file.cpp"
+  "read_ascii_file.cpp"
+  'c++-mode
+  '(nil)
+  289
+  '(194 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonlinetd.cpp"
+  "suradonlinetd.cpp"
+  'c++-mode
+  '(nil)
+  14375
+  '(9562 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radontd_win2.h"
+  "radontd_win2.h"
+  'c-mode
+  '(nil)
+  4604
+  '(4339 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuinterpfk3"
+  "Makesuinterpfk3"
+  'fundamental-mode
+  '(nil)
+  1645
+  '(1583 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/adjteststoltz2.cpp"
+  "adjteststoltz2.cpp"
+  'c++-mode
+  '(nil)
+  942
+  '(1 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radontd_win.cpp"
+  "radontd_win.cpp"
+  'c++-mode
+  '(nil)
+  11647
+  '(9497 t)
+  nil
+  nil
+  '((overwrite-mode . overwrite-mode-textual)))
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/contran.cpp"
+  "contran.cpp"
+  'c++-mode
+  '(nil)
+  1027
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/plotwindow"
+  "plotwindow"
+  'sh-mode
+  '(nil)
+  87
+  '(3 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suinterpfk3.cpp"
+  "suinterpfk3.cpp"
+  'c++-mode
+  '(nil)
+  8091
+  '(4422 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stoltzop3.cpp"
+  "stoltzop3.cpp"
+  'c++-mode
+  '(nil)
+  2733
+  '(2067 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/convgather.cpp"
+  "convgather.cpp"
+  'c++-mode
+  '(nil)
+  1207
+  '(434 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonlinetd"
+  "Makesuradonlinetd"
+  'fundamental-mode
+  '(nil)
+  327
+  '(318 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonline"
+  "Makesuradonline"
+  'fundamental-mode
+  '(nil)
+  1398
+  '(1674 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stopcriteria.cpp"
+  "stopcriteria.cpp"
+  'c++-mode
+  '(nil)
+  1
+  '(790 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stoltz_wtcgls2.cpp"
+  "stoltz_wtcgls2.cpp"
+  'c++-mode
+  '(nil)
+  7426
+  '(7118 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radon_cgfft2.cpp"
+  "radon_cgfft2.cpp"
+  'c++-mode
+  '(nil)
+  3205
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xstack"
+  "Xstack"
+  'sh-mode
+  '(nil)
+  844
+  '(836 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xsuinterpfk_sparse_data"
+  "Xsuinterpfk_sparse_data"
+  'sh-mode
+  '(nil)
+  1121
+  '(1236 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xmixshots2"
+  "Xmixshots2"
+  'sh-mode
+  '(nil)
+  523
+  '(515 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makefile"
+  "Makefile"
+  'makefile-mode
+  '(nil)
+  232
+  '(269 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xplotsuinterpfk_sx0ext0"
+  "Xplotsuinterpfk_sx0ext0"
+  'sh-mode
+  '(nil)
+  2106
+  '(927 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xradon_interp_cdpw"
+  "Xradon_interp_cdpw"
+  'sh-mode
+  '(nil)
+  5666
+  '(723 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xplotsuinterpfk_cdpwr"
+  "Xplotsuinterpfk_cdpwr"
+  'sh-mode
+  '(nil)
+  1
+  '(2344 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/pp"
+  "pp"
+  'fundamental-mode
+  '(nil)
+  1
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonline.cpp"
+  "suradonline.cpp"
+  'c++-mode
+  '(nil)
+  2515
+  '(1483 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stretching2.cpp"
+  "stretching2.cpp"
+  'c++-mode
+  '(nil)
+  1887
+  '(41 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/cwp/src/Complex/lib/Complex.cc"
+  "Complex.cc"
+  'c++-mode
+  '(nil)
+  1367
+  '(1 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/Dcomplex.cpp"
+  "Dcomplex.cpp"
+  'c++-mode
+  '(nil)
+  1425
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/cwp/include/cwp.h"
+  "cwp.h"
+  'c-mode
+  '(nil)
+  2096
+  '(1716 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makelibdan"
+  "Makelibdan"
+  'fundamental-mode
+  '(nil)
+  524
+  '(1599 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/cwp/include/Dcomplex.h"
+  "Dcomplex.h"
+  'c-mode
+  '(nil)
+  1541
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/dftls.cpp"
+  "dftls.cpp"
+  'c++-mode
+  '(nil)
+  521
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/FTmatrix.cpp"
+  "FTmatrix.cpp"
+  'c++-mode
+  '(nil)
+  3
+  '(2 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stoltop_one_trace.cpp"
+  "stoltop_one_trace.cpp"
+  'c++-mode
+  '(nil)
+  684
+  '(5245 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stoltzop5.cpp"
+  "stoltzop5.cpp"
+  'c++-mode
+  '(nil)
+  8521
+  '(924 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/get_wavelet.cpp"
+  "get_wavelet.cpp"
+  'c++-mode
+  '(nil)
+  116
+  '(67 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuinterpfk0"
+  "Makesuinterpfk0"
+  'fundamental-mode
+  '(nil)
+  488
+  '(441 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stoltz_wtcgls3.cpp"
+  "stoltz_wtcgls3.cpp"
+  'c++-mode
+  '(nil)
+  2789
+  '(2658 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/interpfk.h"
+  "interpfk.h"
+  'c-mode
+  '(nil)
+  4774
+  '(3464 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/fft2_zeropad.cpp"
+  "fft2_zeropad.cpp"
+  'c++-mode
+  '(nil)
+  3366
+  '(620 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/plotgather.cpp"
+  "plotgather.cpp"
+  'c++-mode
+  '(nil)
+  2138
+  '(2301 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/save_vector.cpp"
+  "save_vector.cpp"
+  'c++-mode
+  '(nil)
+  1514
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/save_gather_freq.cpp"
+  "save_gather_freq.cpp"
+  'c++-mode
+  '(nil)
+  373
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suinterpfk0.cpp"
+  "suinterpfk0.cpp"
+  'c++-mode
+  '(nil)
+  12891
+  '(12970 t)
+  nil
+  nil
+  '((overwrite-mode) (case-fold-search . t)))
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xplotsuinterpfk_padding"
+  "Xplotsuinterpfk_padding"
+  'sh-mode
+  '(nil)
+  894
+  '(1528 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xsuinterpfk4_sparse_data"
+  "Xsuinterpfk4_sparse_data"
+  'sh-mode
+  '(nil)
+  429
+  '(1211 t)
+  nil
+  nil
+  nil)
+

@@ -1,0 +1,33 @@
+#! /bin/sh
+# PLOTS 
+# add a small ps
+# Daniel Trad- UBC Nov 1999
+EXAMPLE="enmo_gap"
+FILE="${HOME}/ps/pp.ps"  
+FILE1="${HOME}/ps/fig2hyprad_LI1_metric.ps"
+
+
+#FILE1="${HOME}/ps/fig1hyprad_after.ps"
+#FILE1="${HOME}/ps/fig1bhyprad.ps"
+
+# PLot model
+
+psmerge in=~/ps/number2.ps in=~/ps/number3.ps in=${FILE1}  scale=0.25,0.25 scale=0.25,0.25 scale=1,1 translate=6.35,9.96 translate=6.18,9.96  translate=0,0  > $FILE
+
+# Fig1 and 2
+#psmerge in=~/ps/number.ps in=~/ps/number.ps in=${FILE1}  scale=0.25,0.25 scale=0.25,0.25 scale=1,1 translate=6.35,9.96 translate=6.18,9.96  translate=0,0  > $FILE
+
+
+
+gv $FILE &
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,25 @@
+#! /bin/sh
+# Create data from linear velocity models 
+susynlv > data.zo.su nt=251 dt=0.04 nxo=1 \
+                  nxm=101 dxm=0.05 fxm=0.0 er=1 ob=1 \
+                  ref="1:0,1;10,7"  \
+                  v00=2.0 dvdz=0 dvdx=0 verbose=1 smooth=1 \
+                  tmin=0.33
+sugazmig < data.zo.su > pp vmig=2 tmig=0
+
+
+#segyhdrs < data.su 
+#segywrite < data.su tape=data.segy 
+
+#sushw < data.su key=sx a=130.5 b=0 c=1.0 d=0 j=60 |
+#sushw key=offset a=-1475 b=50 j=60 |
+#sushw key=gx a=101 b=1 c=1 d=0 j=60 |
+#suchw key1=cdp key2=gx key3=sx a=-1 b=1 c=1 |
+#susort > data.geom.cdp.su cdp offset # CMPs
+             
+#suwind key=offset min=1000 max=1070 <  data.geom.cdp.su cdp |
+#suwind key=cdp min=280 max=400 |
+#susort cdp > data0.su 
+
+
+

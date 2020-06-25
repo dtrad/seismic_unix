@@ -1,0 +1,60 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=suradon1
+
+FLAG=-c -O -Wno-sign-compare -Wno-write-strings -Wno-unused-variable
+
+OBJ=  $(PROG).o contran.o radint_sparse4.o dot.o  \
+	radon.o radsparse2.o wpcgnr2.o save_vector.o modelweight.o \
+	irregaxis.o findgaps.o mytaper.o testadjop.o smoothing.o sethflag.o plotgather.o 
+
+	
+
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+radint_sparse4.o: $(LIBC)/radint_sparse4.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dot.o: $(LIBC)/dot.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon.o: $(LIBC)/radon.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radsparse2.o: $(LIBC)/radsparse2.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wpcgnr2.o: $(LIBC)/wpcgnr2.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_vector.o: $(LIBC)/save_vector.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+irregaxis.o: $(LIBC)/irregaxis.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+findgaps.o: $(LIBC)/findgaps.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+mytaper.o: $(LIBC)/mytaper.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+testadjop.o: $(LIBC)/testadjop.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+smoothing.o: $(LIBC)/smoothing.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+sethflag.o: $(LIBC)/sethflag.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+plotgather.o: $(LIBC)/plotgather.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+contran.o: $(LIBC)/contran.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+

@@ -1,0 +1,94 @@
+#! /bin/sh
+# 
+# Use the linear RT to study ground roll
+# Input is the ground roll from Yilmaz data, oz25 
+# Following Mc Mechan and Yedlin (1981),
+# ground roll has a simple signature in the frequency-slope 
+# linear RT space. 
+# The goal of this code is to check this with real data
+# and try to write a code for generating ground roll
+# and testing denoising methods.
+# 
+# 
+# 
+# 
+######################################################################
+# Author: Daniel Trad- November 2001
+
+# Some shortcuts for plots
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=94"
+
+set -x
+
+sufix='lrt'
+
+FILE=oz25b.noise.su; clip=  #clip corresponding to perc=97
+
+FILEN=$FILE
+FILETEMP=pp
+FILETEMP2=ppp
+offsetfile=$FILE'off'
+FILERAD=${FILEN}'rad'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+par=stkvel.$FILE
+# Options
+# None
+
+scale=1.0
+
+############################*****
+perc=100
+
+cp $FILE $FILETEMP
+
+cdpmin=1
+cdpmax=1
+dxcdp=1
+
+
+
+suradonfreq < $FILE  nhmax=200 cdpmin=$cdpmin cdpmax=$cdpmax dxcdp=$dxcdp par=$par  eps2=9e-3 eps1=9e-3 nq=200 verbose=1 qmin=-2e-3 factor=4 solver=toep rtmethod=1 modelfile=$FILERAD mute=0 fmax=50 > $FILEREC
+suxwigb key=f2 < $FILERAD perc=98 &
+ 
+
+
+sufft < $FILERAD  | suamp | suximage perc=98 &
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

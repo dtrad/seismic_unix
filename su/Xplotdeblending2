@@ -1,0 +1,70 @@
+#! /bin/sh
+# Xplotdeblending2
+# Deblending using Stotl Radon (non apex centered Radon Transform).
+######################################################################
+# Author: Daniel Trad- Last update: Jun 2011
+
+set -x
+
+case $1 in
+1*)
+
+suximage < pp1 xbox=0    ybox=0 legend=1 wbox=500 hbox=750 curve="fb1" npair=100 &
+suximage < pp2 xbox=500  ybox=0 legend=1 wbox=500 hbox=750 curve="fb2" npair=100 &
+suximage < pp3 xbox=1000 ybox=0 legend=1 wbox=500 hbox=750 curve="fb3" npair=100 &
+suximage < pp4 xbox=1500 ybox=0 legend=1 wbox=500 hbox=750 curve="fb4" npair=100 &
+suximage < pp5 xbox=2000 ybox=0 legend=1 wbox=500 hbox=750 curve="fb5" npair=100 &
+;;
+2*)
+suximage < noise1 xbox=0    ybox=800 legend=1 wbox=500 hbox=750 title="Shot1" & 
+suximage < noise2 xbox=500  ybox=800 legend=1 wbox=500 hbox=750 title="Shot2" &
+suximage < noise3 xbox=1000 ybox=800 legend=1 wbox=500 hbox=750 title="Shot3" &
+suximage < noise4 xbox=1500 ybox=800 legend=1 wbox=500 hbox=750 title="Shot4" & 
+suximage < noise5 xbox=2000 ybox=800 legend=1 wbox=500 hbox=750 title="Shot5" &
+;;
+3*)
+suximage < asrt1.su xbox=0    ybox=0 legend=1 wbox=500 hbox=750 title="Shot1" curve="mute1" npair=5 & 
+suximage < asrt2.su xbox=500  ybox=0 legend=1 wbox=500 hbox=750 title="Shot2" curve="mute2" npair=5 &
+suximage < asrt3.su xbox=1000 ybox=0 legend=1 wbox=500 hbox=750 title="Shot3" curve="mute3" npair=5 &
+suximage < asrt4.su xbox=1500 ybox=0 legend=1 wbox=500 hbox=750 title="Shot4" curve="mute4" npair=5 & 
+suximage < asrt5.su xbox=2000 ybox=0 legend=1 wbox=500 hbox=750 title="Shot5" curve="mute5" npair=5 &
+;;
+esac
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

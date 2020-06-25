@@ -1,0 +1,39 @@
+#!/bin/sh
+# Change velocities in a par file and look at them in an image
+#
+# Xchange_velocities 0.3  1.7
+file1=line77b.rest.su
+file2=line77b.rest.stack.su
+perc=97
+parfile=stkvel.line77.su
+newparfile=stkvel.line77.change.su
+velimage=line77.vel.su
+newvelimage=line77.change.vel.su
+# Original velimage
+suximage < $velimage perc=97 legend=1 title=$velimage f2=300 d2=10 cmap=hsv1 & 
+
+# Apply a change in the par file coded up in the sureadwritepar program.
+sureadwritepar par=$parfile factor=$1 thorizon=$2 > $newparfile
+# Remove white spaces
+tr -d [:blank:] < $newparfile > ppp; mv ppp $newparfile
+# Generate image of velocities. 
+sureadveli par=$newparfile > $newvelimage cdpmin=300 cdpmax=818 nt=1001
+
+suximage < $newvelimage perc=97 legend=1 title=$newvelimage f2=300 d2=10 cmap=hsv1 xbox=600 & 
+
+# If this image looks good apply nmo and stack otherwise exit 
+echo  "Velocities OK? (y/n) "  | tr -d "\012" >/dev/tty
+read response
+
+if [ $response = 'y' ]; then
+sunmo < $file1 par=$parfile | sustack key=cdp > $file2
+sunmo < $file1 par=$newparfile | sustack key=cdp > $file2'test'
+Xsetntr $file2
+Xsetntr $file2'test'
+
+suximage  <  $file2 title=$file2 perc=$perc f2=300 &
+suximage < $file2'test' title=$file2'test' perc=$perc f2=259 xbox=600  &
+
+fi
+
+

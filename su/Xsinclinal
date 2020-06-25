@@ -1,0 +1,108 @@
+#! /bin/sh
+# Run GBmod with Xwindow Graphics
+#------------------------------------------------
+# RUN THIS SHELL WITH MASTER SHELL Xdemo
+#------------------------------------------------
+name="sinclinal"
+fileout=$name".su"
+filestack=$name".stack.su"
+modelfile=${data}model.data
+
+##### Built syncline model (Figure 14)
+
+trimodel xmin=-1 zmin=0 xmax=5.0 zmax=2.0 maxangle=10 \
+1	xedge=-1,0,1,2,3,4,5 \
+	zedge=0,0,0,0,0,0,0 \
+	sedge=0,0,0,0,0,0,0 \
+2       xedge=-1,0,0.5,1.0,1.5,2,2.5,3,4,5 \
+        zedge=1,1.1,1.2,1.5,1.7,1.5,1.2,1.1,1,1  \
+        sedge=0,0,0,0,0,0,0,0,0,0 \
+3	xedge=-1,0,1,2,3,4,5 \
+	zedge=2,2,2,2,2,2,2 \
+	sedge=0,0,0,0,0,0,0 \
+	sfill=1,0.5,0,0,0.2,0,0 \
+	sfill=1,1.8,0,0,0.1,0,0 \
+	kedge=1,2,3 \
+	> $modelfile
+
+sxplot < $modelfile -geom 650x300+670+0 \
+        label1="Depth (km)" label2="Distance (km)" \
+	tricolor=yellow title="Syncline Model"&
+
+
+set -x
+##### Generate Finite-Offset section
+fgrel=100
+
+nangle=130 nxz=401 fangle=-65 langle=65
+nt=512 dt=0.004 bw=0 ft=0.0
+ng=200
+dg=0.01
+
+# dg in meters
+dgm=`bc -l <<END
+		$dg * 1000
+END`
+
+fsimin=0
+fsimax=2000
+dfsi=20
+fsi=$fsimin
+rm $fileout
+while [ $fsi -le $fsimax ]
+do
+
+# calculate position of source in km
+       fs=`bc -l <<END
+		$fsi / 1000
+END`
+    echo $fs
+# calculate position of first receiver in km
+       fgi=`bc -l <<END
+		$fsi + $fgrel
+END`
+       fg=`bc -l <<END
+		$fgi / 1000
+END`
+    echo $fg
+
+
+#### create zero offset section
+triseis <$modelfile  xs=0,4 zs=0,0 xg=0,4 zg=0,0 \
+	nangle=$nangle fangle=$fangle langle=$langle \
+	kreflect=2 krecord=1 fpeak=25 lscale=0.5 \
+	ns=1 fs=$fs ds=0.0 dgds=1 bw=$bw \
+        ng=$ng fg=$fg dg=$dg nt=$nt dt=$dt ft=$ft > temp
+
+suaddhead ns=$nt < temp | sushw key=dt a=4000 | sushw key=sx a=$fsi | sushw key=gx a=$fgi b=$dgm > temp2
+
+
+cat temp2 >> $fileout
+
+#xwigb < temp  n1=$nt d1=$dt f1=$ft x1end=4.5 n2=$ng d2=$dg f2=0 grid1=none perc=100 xcur=1.0 title="common source data" hbox=300 wbox=650 xbox=670 ybox=660 label1="Time (sec)" label2="Offset (km)" &
+
+       fsi=`bc -l <<END
+		$fsi + $dfsi
+END`
+
+done
+
+suchw< $fileout key1=offset,cdp key2=gx,gx key3=sx,sx  b=1,1 c=-1,1 d=1,2 > temp
+mv temp $fileout
+
+zap xgraph
+zap xwigb
+zap sxplot
+
+susort +cdp < $fileout > pp; mv pp $fileout
+sunmo vnmo=2400 < $fileout | sustack key=cdp > $filestack; 
+Xsetntr $fileout
+Xsetntr $filestack
+suximage < $filestack &
+
+exit 0
+
+
+
+
+

@@ -1,0 +1,342 @@
+#! /bin/sh
+# Xsuinterpmig_ken --- Interpolation of apex shifted hyperbolas  
+# by using the non apex centered Radon Transform.
+# Data contain multiples of diffractions. 
+#
+# data preprocessing:
+# Althouth the data is a real data set, for this example we need to take a
+# window, and make the data to look symmetric 
+# from  kencmpsnonmo.su take cdp 5300 and window from 5.5s to end.
+# Data name kencmpwin0.su
+# then make the data symmetric by 
+# suchw key1=offset key2=offset b=-1 < kencmpwin0.su > pp
+# cat pp kencmpwin0.su > kencmpwin.su
+# sushw key=delrt a=0 < kencmpwin.su > pp
+# susort +offset < pp >  kencmpwin.su
+# Xsetntr kencmpwin.su
+######################################################################
+# Author: Daniel Trad- August 2002
+
+# Some shortcuts for plots
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=94"
+
+set -x
+
+METHOD='SOL'
+METHOD='TD'
+METHOD='TX'
+METHOD='FK'
+#METHOD=$1
+RADONFORW='y'
+
+sufix=${METHOD}
+echo $METHOD
+
+if [ ${METHOD} = 'SOL' ]; then
+    sufix="${1}"
+else
+    sufix="FK"
+fi
+
+FILE=kencmp1win.su; clip=  #clip corresponding to perc=97
+
+FILEN=$FILE
+FILEGAP=$FILE'gap'
+FILETEMP=pp
+FILETEMP2=ppp
+
+offsetfile=$FILE'off'
+
+FILERAD=${FILEN}'rad'${sufix}
+FILERAD2=${FILEN}'rad'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILEREC2=$FILEN'recb'${sufix}
+FILEMIX=$FILEN'mix'${sufix}
+FILERES=$FILEN'res'${sufix}
+FILERESAMP=$FILE'resamp'${sufix}
+RESAMPLE='n'
+PAR="stkvel.shotpc.su"
+par=$PAR
+
+# Options
+SETNTR='y'
+GETH='y'
+FILT='n'
+TAPER='n'
+OPTIONGAP='y'
+
+# PASS BAND FILTER
+F=1,10,70,80
+AMPS=0,1,1,0
+# RADON
+#***Freq############################ 
+
+VERBOSE=1
+fold=1
+buffer=10; 
+iter_end=4
+sinc=0;
+parmute=3e-9
+parmute=22e-9
+nq=90
+under=0.999
+over=1.001
+qmin=-2e-9
+factor=1.1
+fmax=100
+
+if [ $METHOD = 'TD' ]; then
+    eps1=1e-3
+    eps2=1e-3
+    PROGRAM=suradontd1
+    eps=0.01
+    dperv=0.03;
+    dperv=0.03;
+    pervmin=0.5e-9;
+    centralq=30
+    nq=100
+    perc=100
+    step=0.9
+    itercg=5
+    iter_end=3
+    smoothf=0
+    smoothi=0
+    testadj=0
+    filtout=0
+    restart=1
+    LI=1
+    t0=0
+    clip=63 #clip corresponding to perc=100
+    norm=1
+    nw=21
+    fpeak=25
+    nw=0
+    dtres=0.008
+    ntres=875
+elif [ $METHOD = 'TX' ]; then
+    eps1=1e-3
+    eps2=1e-3
+    PROGRAM=suinterptx
+    eps=0.01
+    dperv=0.03;
+    dperv=0.03;
+    pervmin=0.5e-9;
+    centralq=30
+    nq=70
+    perc=100
+    step=0.9
+    itercg=5
+    iter_end=1
+    smoothf=0
+    smoothi=0
+    filtout=0
+    restart=1
+    LI=0
+    t0=0
+    clip= #clip corresponding to perc=100
+    norm=1
+    nw=21
+    fpeak=25
+    nw=0
+    dtres=0.008
+    ntres=875
+elif [ $METHOD = 'FK' ]; then
+    eps1=1e-3
+    eps2=1e-3
+    PROGRAM=suradonfkcube
+    eps=0.01
+    dperv=0.03;
+    dperv=0.03;
+    pervmin=0.5e-9;
+    centralq=30
+    nq=70
+    perc=100
+    step=0.9
+    itercg=5
+    iter_end=1
+    smoothf=0
+    smoothi=0
+    filtout=0
+    restart=1
+    LI=0
+    t0=0
+    clip= #clip corresponding to perc=100
+    norm=1
+    nw=21
+    fpeak=25
+    nw=0
+    dtres=0.008
+    ntres=875
+
+else 
+    PROGRAM=donothing
+fi
+
+scale=1.0
+CDPMIN=5300
+DXCDP=1
+CDPMAX=5300
+
+if [ $RADONFORW = 'n' ]; then
+    PROGRAM="skipforward"
+fi
+
+############################*****
+perc=100
+
+cp $FILE $FILETEMP
+
+if [ $OPTIONGAP = 'y' ]; then
+    #reject1=-4904,-4854,-4804,-4754,-4704,-4654,-4604,-4554
+    #reject1=-2605,-2555,-2505,-2455,-2405,-2355,-2305,-2255,-2205,-2155,-2105
+    reject1=1105,1155,1205,1255,1305,1355,1405
+    reject1=2555,2605,2654,2704,2754,2804,-2555,-2605,-2654,-2704,-2754,-2804
+    suwind key=offset abs=1 min=0 < $FILETEMP | suwind key=offset abs=1 reject=$reject1 > $FILETEMP2  
+    #suwind j=2 < $FILETEMP > $FILETEMP2
+    #reject=$reject1 accept=$accept1 
+    #suwind key=offset j=2   
+    Xsetntr  $FILETEMP2
+    cp $FILETEMP2 $FILETEMP
+    cp $FILETEMP  $FILEGAP
+
+    $PLOTX perc=$perc < $FILETEMP title=$FILETEMP &
+    
+fi
+
+
+if [ $SETNTR = 'y' ]; then 
+    Xsetntr $FILETEMP
+fi
+
+if [ $FILT = 'y' ]; then
+    sufilter f=$F amps=$AMPS < $FILETEMP > $FILETEMP2;
+    cp  $FILETEMP2 $FILETEMP
+fi
+
+# Fill with zero traces and save offset for interpolation
+if [ $GETH = 'y' ]; then
+    sufill < $FILE | susetntr | sugethw key=offset output=geom  > $offsetfile    
+fi
+
+if [ $TAPER = 'y' ]; then
+    sutaper < $FILETEMP > $FILETEMP2; cp $FILETEMP2 $FILETEMP
+fi
+
+if [ $RESAMPLE = 'y' ]; then
+    suresamp < $FILETEMP dt=$dtres nt=$ntres > $FILETEMP2
+    cp $FILETEMP2 $FILETEMP
+    cp $FILETEMP2 $FILERESAMP
+fi
+
+
+case $PROGRAM in
+suradontd1*)
+    suradontd1 eps1=$eps1 eps2=$eps2 iter_end=$iter_end itercg=$itercg eps=$eps \
+    step=$step  smooth=0 testadj=$testadj verbose=$verbose par=$PAR \
+    modelfile=$FILERAD  norm=$norm nw=$nw fpeak=$fpeak centralq=$centralq \
+    dperv=$dperv pervmin=$pervmin nq=$nq \
+    filtout=$filtout restart=$restart LI=$LI t0=$t0 < $FILETEMP > $FILEREC
+;;
+suinterptx*)
+    suinterptx eps1=1e-1 eps2=1e-1 iter_end=3 itercg=10 eps=1e-3 \
+    step=0.97  smooth=0 verbose=1 par="stkvel.shotpc.su" \
+    modelfile=$FILERAD offsetfile=$offsetfile norm=$norm \
+    LI=0 t0=0 nw=0 < $FILETEMP > $FILEREC
+;;
+suradonfkcube*)
+#   Three options to fill the gaps and interpolate 
+#    sushw key=trid a=0 < $FILEGAP > pp;
+ #   mv pp $FILEGAP
+    sufill < $FILEGAP dhnew=25 |  sufilter amps=1,0 f=80,100 | susetntr > $FILETEMP
+#    suinterpm dx=50 < $FILEGAP | sufilter amps=1,0 f=40,60 | susetntr > $FILETEMP
+#    sufill < $FILEGAP offsetf
+ile=kencmp0win.suoff option=1 | susetntr > $FILETEMP
+    sudipfilt < $FILETEMP dx=50  bias=0 amps=0.0,1,0.0 slopes=-0.0003,0,0.0003  > $FILE'zero'  
+    cp $FILE'zero' $FILETEMP
+    suradonfkcube < $FILETEMP  vmig=3400,3400 tmig=0,2  plot=0 \
+    itercg=5 iter_end=3 step=0.98 testadj=0 eps1=9e-1 eps2=9e-1 modelfile=$FILERAD \
+    ascale=1 fpeak=20 nw=0 typewav=2 option=3 mute=0  nv=1 dv=1500 lstaper=25 lbtaper=100 > $FILEREC
+
+    suop2 $FILEREC $FILE'zero' > $FILERES
+    Xplotseg02 $FILETEMP 1.5
+    Xplotseg02 $FILEREC 1.5
+    Xplotseg02 $FILE 1.5
+
+
+;;
+skipforward*)
+echo "Skipping forward model.................................."
+echo "........................................................"
+;;
+esac
+PLOTXX="suximage perc=98 hbox=900 wbox=700   &"
+
+$PLOTXX < $FILETEMP xbox=0 &
+$PLOTXX < $FILEREC xbox=600 &
+
+exit 0
+
+
+suadapdiff $FILE $FILEREC > $FILERES
+
+sushw key=delrt a=5500 < $FILERES > pp; mv pp $FILERES
+
+$PLOTXX < $FILE xbox=0 x2beg=120 &
+$PLOTXX < $FILERES xbox=600 x2beg=120 &
+
+
+#$PLOTX perc=$perc < $FILERAD title="Radon transform"  perc=97 &
+#$PLOTX clip=$clip < $FILEREC title="Reconstructed data from ${PROGRAM} " &
+
+exit 0
+
+susort +offset < $FILEREC | sugain tpow=1 > $FILEREC2
+susort +offset < $FILERAD > pp; mv $FILETEMP $FILERAD
+
+
+sumixgathers  $FILEGAP $FILEREC2 | susort +offset > $FILEMIX
+Xsetntr $FILEMIX
+suop2 $FILE $FILEMIX op=diff > $FILERES
+
+
+supswigp < $FILEREC2 perc=99 x1beg=1.85 x1end=4 title=$FILEREC2 | gv - &
+supswigp < $FILEMIX perc=99 x1beg=1.85 x1end=4 title=$FILEMIX | gv - &
+supswigp < $FILERAD perc=99 x1beg=1.85 x1end=4 title=$FILERAD | gv - &
+
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

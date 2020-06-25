@@ -1,0 +1,28 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+
+IDIR=-I$(CWPROOT)/include  -I$(HOME)/seismic/clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a 
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=sutemplate1
+
+FLAG=-c -O -Wall -g
+
+OBJ=  $(PROG).o 
+
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -g -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+file1=$1
+file2=$2
+file3=$3
+ns=$4
+
+sustrip < $file1 head=header > /dev/null
+supaste < $file2 head=header > $file3 ns=$ns
+
+

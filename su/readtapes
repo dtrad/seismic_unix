@@ -1,0 +1,5 @@
+
+mt -f /dev/rmt/0n rewind
+mt -f /dev/rmt/0n stat
+segyread tape=/dev/rmt/0n trmin=1 trmax=100 > pp
+mt -f /dev/rmt/0n eom

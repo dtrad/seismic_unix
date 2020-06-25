@@ -1,0 +1,185 @@
+#! /bin/sh
+#  Automatic velocity analysis in CSP gathers 
+# April 11 -2002
+# Daniel Trad - UBC
+
+set -x
+
+METHOD="${1}"
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+
+NAME=sinclinal3_ray.CSP # Test data 
+#NAME=sinclinal3_rayN # Test data 
+FILE=$NAME'.su'
+FILEOUT="${NAME}.${METHOD}.su"
+PAR=stkvel.$FILE  
+
+#PAR=stkvel.sinclinal3_ray_prim.su 
+
+PAR=stkvel.sinclinal3_ray.CSP.su;factor=3 
+#PAR=stkvel.sinclinal3_rayN.susel;factor=1 
+
+CDPMIN=50
+CDPMAX=3050
+
+ncsp=31        # Number of CSPs computed simultaneously
+tests=2
+dxcdp=200
+ntrmax=100000000   # For fast tests use only few traces.
+    
+######################################
+t0=0;
+CDPMIN=500;CDPMAX=4500;
+dxcdp=200
+VERBOSE=1
+
+if [ $METHOD = "SOL" ]; then
+
+qmin=-16e-8
+parmute=3e-8
+#factor=3
+rtmethod=2
+mute=1
+solver=toep
+
+
+parmute=-10e-7
+#TEST with rtmethod=3
+#parmute=1e-4
+#rtmethod=3
+#depth=500
+#qmin=-4e-4
+#factor=2
+
+
+suradonfreq < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp par=$PAR itercg=25 iter_end=3 eps2=1e-1 eps1=1e-1 nq=110 verbose=$VERBOSE ntrmax=$ntrmax norm=0 t0=$t0 smute=$smute mute=$mute  parmute=$parmute qmin=$qmin factor=$factor fmax=80 solver=$solver t0mute=0 nmofactor=1 depth=$depth rtmethod=$rtmethod modelfile=${FILE}rad > $FILEOUT
+elif [ $METHOD = "TD" ]; then
+mute=1
+parmute=-6.5e-7 
+qmin=-1e-8
+t0=0
+smute=2
+#PAR=stkvel.cte
+centralq=25
+suradoneom < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp par=$PAR  itercg=20 iter_end=2 eps2=8e-1 eps1=8e-1 nq=110 verbose=0 ntrmax=$ntrmax norm=0 t0=$t0 smute=$smute mute=$mute  parmute=$parmute qmin=$qmin plot=0 pervmin=0.5e-8 dperv=0 centralq=$centralq LI=0 nw=0 filtout=0  dataprec=0 outputmodel=1 modelfile=${FILE}rad > $FILEOUT
+
+elif [ $METHOD = "STK" ]; then
+
+suradonline_stack < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp nhcdp=$nhcdp par=$PAR nq=110 verbose=$VERBOSE ntrmax=$ntrmax smute=$smute parmute=$parmute qmin=-3.5e-8 factor=1.2 fmax=80 nmofactor=1 offsetfile="${NAME}.suoff" tests=1 eps=1e-1 > $FILEOUT
+
+else
+itercg=100
+suradoncgfft_tfd2 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp nhcdp=$nhcdp par=$PAR itercg=$itercg iter_end=3 eps2=5e-2 eps1=5e-2 nq=110 verbose=$VERBOSE ntrmax=$ntrmax tmpdir='./' norm=0 buffer=$buffer t0=$t0 smute=$smute mute=$mute  parmute=1.5e-9 qmin=-3.5e-8 factor=1.5 fmax=80  t0mute=$t0mute  > $FILEOUT
+fi
+
+
+Xsetntr $FILEOUT
+Xsetntr ${FILE}rad
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

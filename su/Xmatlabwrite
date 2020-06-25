@@ -1,0 +1,55 @@
+#!/bin/sh
+set -x
+
+file0=ozdata25r.su
+nt=128
+#suresamp < ozdata25.su > dt=0.004 nt=1024 ozdata25r.su
+
+file1=$1 
+
+
+file1=ozdata0win
+tmin=0
+suresamp < ${file0} tmin=$tmin nt=$nt  > ${file1}".su"
+sustrip  < ${file1}".su"  > ${file1}".bin"
+
+file1=ozdata1win
+tmin=0.5
+suresamp < ${file0} tmin=$tmin nt=$nt  > ${file1}".su"
+sustrip  < ${file1}".su"  > ${file1}".bin"
+
+
+file1=ozdata2win
+tmin=1
+suresamp < ${file0} tmin=$tmin nt=$nt  > ${file1}".su"
+sustrip  < ${file1}".su"  > ${file1}".bin"
+
+file1=ozdata3win
+tmin=1.5
+suresamp < ${file0} tmin=$tmin nt=$nt  > ${file1}".su"
+sustrip  < ${file1}".su"  > ${file1}".bin"
+
+
+file1=ozdata4win
+tmin=2.0
+suresamp < ${file0} tmin=$tmin nt=$nt  > ${file1}".su"
+sustrip  < ${file1}".su"  > ${file1}".bin"
+
+file1=ozdata5win
+tmin=2.5
+suresamp < ${file0} tmin=$tmin nt=$nt  > ${file1}".su"
+sustrip  < ${file1}".su"  > ${file1}".bin"
+
+file1=ozdata6win
+tmin=3.0
+suresamp < ${file0} tmin=$tmin nt=$nt  > ${file1}".su"
+sustrip  < ${file1}".su"  > ${file1}".bin"
+
+file1=ozdata7win
+tmin=3.5
+suresamp < ${file0} tmin=$tmin nt=$nt  > ${file1}".su"
+sustrip  < ${file1}".su"  > ${file1}".bin"
+
+
+
+exit 0

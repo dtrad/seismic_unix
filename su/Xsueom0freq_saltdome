@@ -1,0 +1,216 @@
+#! /bin/sh
+#  EOM migration test of a sinclinal
+# Feb 21 -2002
+# Daniel Trad - UBC
+
+set -x
+
+METHOD="${1}"
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+
+NAME=saltdome # Test data 
+
+FILE=$NAME'.su'
+FILEOUT=$NAME'.eom.demul.su'
+PAR=stkvel.$FILE 
+#PAR=stkvel.line159ar.cte.su
+
+CDPMIN=151
+CDPMAX=3150
+# Test parameters
+#CDPMIN=600
+#CDPMAX=600
+
+ncsp=300        # Number of CSPs computed simultaneously
+tests=2
+dxcdp=10
+ntrmax=100000000   # For fast tests use only few traces.
+
+######################################
+# Radon parameters
+
+#t0=1.5;
+t0=0;
+VERBOSE=1
+mute=0        
+t0mute=6
+parmute=5e-8
+smute=1.6
+parmute=1.2e-8
+PLOTOPT='XPLOT3'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+if [ $METHOD = "EOM" ]; then
+scalefold=0
+BETA=60;
+TESTHE=2; # equivalent offset computing method
+HMAX=2000  # CSP geometry equal to original geometry
+#HMAX=5000
+HMIN=0      # 
+nh=100 # Original geometry
+#nh=90
+VERBOSE=1
+fold=1
+buffer=10;    # Size of filter along time for velocity correction
+mute=1        
+scale=0.75
+cdpspace=1
+aper=3000
+qmin=-13e-8
+
+sueomig0freq < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=3  beta=$BETA hmin=$HMIN hmax=$HMAX nh=$nh par=$PAR testhe=$TESTHE  eps=0.1 nq=110 fold=$fold  ncsp=$ncsp cdpspace=$cdpspace ntrmax=$ntrmax buffer=$buffer t0=$t0  mute1=1 mute2=1 parmute1=-1e-8 parmute2=$parmute aper=$aper scalefold=$scalefold qmin=-3.5e-8 factor=1.2 fmax=80  tests=$tests smute=1.6 nmofactor=1 compute=0 scale=$scale > "${FILEOUT}${cdpspace}"
+suximage < "${FILEOUT}${cdpspace}"  title=${FILEOUT}"scale=${cdpspace}"  &
+
+# Test: examine the csp gather.
+sushw key=cdp a=600 < before | suchw key1=offset key2=offset b=-1 | susort +offset > csp600c.su
+
+elif [ $METHOD = "STK" ]; then
+
+suradonline_stack < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp nhcdp=$nhcdp par=$PAR nq=110 verbose=$VERBOSE ntrmax=$ntrmax smute=$smute parmute=$parmute qmin=-3.5e-8 factor=1.2 fmax=80 nmofactor=1 offsetfile="${NAME}.suoff" tests=1 eps=1e-1 > $FILEOUT
+elif [ $METHOD = "SOL" ]; then
+#parmute=1.5e-9
+suradonline < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp nhcdp=$nhcdp par=$PAR itercg=30 iter_end=3 eps2=1e-1 eps1=1e-1 nq=110 verbose=$VERBOSE ntrmax=$ntrmax tmpdir='./' norm=0 buffer=$buffer t0=$t0 smute=$smute mute=$mute  parmute=$parmute qmin=-3.5e-8 factor=1.2 fmax=120 solver="$2" t0mute=$t0mute nmofactor=1 > $FILEOUT
+else
+itercg=100
+suradoncgfft_tfd2 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp nhcdp=$nhcdp par=$PAR itercg=$itercg iter_end=3 eps2=5e-2 eps1=5e-2 nq=110 verbose=$VERBOSE ntrmax=$ntrmax tmpdir='./' norm=0 buffer=$buffer t0=$t0 smute=$smute mute=$mute  parmute=1.5e-9 qmin=-3.5e-8 factor=1.5 fmax=80  t0mute=$t0mute  > $FILEOUT
+fi
+
+
+
+################################################################
+
+case $PLOTOPT in
+    PSPLOT*)
+    ;;
+
+    XPLOT2*)
+    
+    cdp=$CDPMIN
+      
+    while [ $cdp -le $CDPMAX ]
+    do
+    title=$cdp' CDP'
+    suwind key=cdp min=$cdp max=$cdp  < $FILEOUT | $PLOTX  title=$title &
+    suwind key=cdp min=$cdp max=$cdp  < model.su | $PLOTR  title=$title &
+
+cdp=`bc -l <<END
+		$cdp + $DXCDP
+END`
+
+
+    done
+    ;;
+esac
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

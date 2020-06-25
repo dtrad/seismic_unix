@@ -1,0 +1,5 @@
+#!/bin/sh
+# Count fold for a su file
+set -x
+sugethw < "$1" key=cdp output=geom | sort -g > pp
+uniq -c < pp > $1"fold"

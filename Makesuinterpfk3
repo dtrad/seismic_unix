@@ -1,0 +1,64 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a 
+
+LFLAGS= $(PRELFLAGS) -L$L -L../bin -lsu -lpar -lcwp -lm -ldan $(POSTLFLAGS)
+
+PROG=suinterpfk3
+
+FLAG=-c -O3 -Wall
+
+OBJ=  $(PROG).o  stoltz_wtcgls2.o stoltzop3.o interpfk2.o \
+	save_gather_freq.o modelweight.o axbcomplex.o dftls.o \
+	FTmatrix.o adjteststoltz2.o get_wavelet.o contran.o convgather.o
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ) $(CWPROOT)/lib/libdan.a
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+interpfk2.o: $(LIBC)/interpfk2.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+stoltzop3.o: $(LIBC)/stoltzop3.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+adjteststoltz2.o: $(LIBC)/adjteststoltz2.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+stoltz_wtcgls2.o: $(LIBC)/stoltz_wtcgls2.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_gather_freq.o: $(LIBC)/save_gather_freq.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+axbcomplex.o: $(LIBC)/axbcomplex.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)	
+dftls.o: $(LIBC)/dftls.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+FTmatrix.o: $(LIBC)/FTmatrix.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+contran.o: $(LIBC)/contran.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+getvelocities.o: $(LIBC)/getvelocities.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+convgather.o: $(LIBC)/convgather.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

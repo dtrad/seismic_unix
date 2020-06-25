@@ -1,0 +1,36 @@
+SHELL= /bin/sh
+OPTC= -O
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG= sutest
+
+FLAG=-c -O 
+
+OBJ=  $(PROG).o
+
+LIB=./flibrary
+
+# dependence 
+$(PROG): $(PROG).o 
+	gcc -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).c
+	gcc -c $(OPTC) $(ENDIANFLAG) $(PROG).c -Wall
+
+
+
+
+
+
+
+
+
+
+
+
+
+

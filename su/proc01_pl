@@ -1,0 +1,14 @@
+#! /bin/csh
+#
+echo "ploting "$1".dt1"
+
+# put correct values for plotting (d2 not set on trace headers)
+# wagc choosen by chance. Good values are between 0.0001 and 0.00005
+
+echo -n "INPUT x1end: "
+set x1end=$<
+
+sugain <$1.su agc=1 wagc=0.07 qclip=.95 pbal=1 | suxwigb d1=1.6 d2=1 clip=4 wbox=800 hbox=350 title=$1 mpicks=$1.pck &
+
+sugain <$1.su agc=1 wagc=0.07 qclip=.95 pbal=1 | suximage d1=1.6 d2=1 wbox=800 hbox=350 label1="       (ns)" x1end=$x1end title=$1 mpicks=$1.pck &
+

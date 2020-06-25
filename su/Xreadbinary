@@ -1,0 +1,21 @@
+#!/bin/sh
+# It reads a matlab binary file from matlab and adds a header
+# Usage Xreadbinary filename nt 
+#
+# Daniel Trad - Jun 2011
+
+
+set -x
+
+file1=$1 
+
+filematlab="${1}.bin"
+filesu="${1}.su"
+nt="${2}"
+offset=10 # for example
+
+suaddhead < ${filematlab} ns=${nt} | sushw key=dt a=4000 | susetntr > $filesu
+
+sushw key=offset a=0 b=${offset} < $filesu > pp;
+mv pp $filesu
+

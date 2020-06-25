@@ -1,0 +1,120 @@
+#! /bin/sh
+# shell for Kirchhoff modeling for linear v(x,z)
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+NAME=miss2
+FILE=$NAME'g.su'
+FILEOUT=$NAME'.eom.su'
+FILECSP=$NAME'.csp.su'
+FILERAD=$NAME'.rad.su'
+FILEREC=$NAME'.rec.su'
+FILEOFF=$NAME'.eom.off'
+#FILEOUT=$NAME'.mig.su'
+FILECSP1=$NAME'.csp1.su'
+FILECSP2=$NAME'.csp2.su'
+FILECSP3=$NAME'.csp3.su'
+FILECSP4=$NAME'.csp4.su'
+
+CDPMIN=1028
+CDPMAX=1250
+NX=50
+OUTPUT=1
+HEMAX=2500
+OPTION='RAD'
+OPTION='CSP'
+#OPTION='MIG'
+#OPTION='KIR'
+OPTION='LSM'
+
+PLOTOPT='XPLOT'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+case $OPTION in
+MIG*)
+sueomig3 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX nx=50 output=1 hemax=2500  hemin=0 nhcsp=50 par=stkvel.$NAME  > $FILEOUT
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEOUT &
+;;
+
+KIR*)
+sukmig2 < $FILE  cdpmin=100 cdpmax=2600 nx=50 time=0.2885,1.461,1.969  vel=2137,2758,3128 > $FILEOUT
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEOUT &
+;;
+
+
+LSM*)
+sueomig3 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX nx=10 output=3 hemax=2500 hemin=0 nhcsp=50 nq=5 qmin=-50 qmax=50 par=stkvel.$NAME itercg=10 iter_end=1 eps2=1e-5 eps1=1e-5  > $FILEOUT
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEOUT &
+;;
+
+
+# PLOT CSP gathers
+
+CSP*) 
+
+#sueomig3 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX nx=4 output=0 hemax=10000 hemin=0 nhcsp=100 par=stkvel.$NAME  > $FILECSP
+sueomig3 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX nx=4 output=4 \
+hemax=10000 hemin=0 nhcsp=50 par=stkvel.$NAME itercg=5 iter_end=1 \
+eps2=1e-2 eps1=1e-2  testadj=1 smoothing=1 nq=4 qmin=-50 qmax=50 > $FILECSP
+
+suwind key=cdp min=1028 max=1028 < $FILECSP > $FILECSP1 &
+suwind key=cdp min=1102 max=1102 < $FILECSP > $FILECSP2 &
+suwind key=cdp min=1176 max=1176 < $FILECSP > $FILECSP3 &
+suwind key=cdp min=1250 max=1250 < $FILECSP > $FILECSP4 &
+
+;;
+
+
+# Compute Radon for CSP gathers
+RAD*)  
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILECSP > $FILEOFF
+
+suradtd method=2 iter_end=2 step=.9 eps=0.01 eps1=1e-3 eps2=1e-3 qmin=-1e-7. qmax=4e-7 nq=32 itercg=10 thres=0.3  < $FILECSP | sufilter  f=5,10,60,70 amps=1,1,1,0  > $FILERAD
+
+supswigp key=f2 < $FILERAD | gv - &
+
+suradtdi offsetfile=$FILEOFF  < $FILERAD | sufilter  f=5,10,60,70 amps=1,1,1,0   > $FILEREC
+
+supswigp key=offset < $FILEREC | gv - &
+;;
+
+esac
+
+case $OPTION in
+CSP*)
+case $PLOTOPT in
+    PSPLOT*)
+    PLOTPS="supswigp key=offset label1=$LABELT label2=$LABELO perc=100"
+    suwind key=cdp min=500  max=500  < $FILECSP | $PLOTPS title="CSP gather for cdp=500"  > $FILECSP'.500.ps' &
+    suwind key=cdp min=1000 max=1000 < $FILECSP | $PLOTPS title="CSP gather for cdp=1000" > $FILECSP'.1000.ps' &
+    suwind key=cdp min=1500 max=1500 < $FILECSP | $PLOTPS title="CSP gather for cdp=1500" > $FILECSP'.1500.ps' &
+    suwind key=cdp min=2000 max=2000 < $FILECSP | $PLOTPS title="CSP gather for cdp=2000" > $FILECSP'.2000.ps' &
+    ;;
+    XPLOT*)
+    suwind key=cdp min=1028  max=1028  < $FILECSP | $PLOTX  title="CSP gather for cdp=500"  &
+    suwind key=cdp min=1102 max=1102 < $FILECSP | $PLOTX  title="CSP gather for cdp=1000" &
+    suwind key=cdp min=1176 max=1176 < $FILECSP | $PLOTX  title="CSP gather for cdp=1500" &
+    suwind key=cdp min=1250 max=1250 < $FILECSP | $PLOTX  title="CSP gather for cdp=2000" &
+    
+    ;;
+esac
+;;
+esac
+
+
+
+
+
+
+

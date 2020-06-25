@@ -1,0 +1,19 @@
+#! /bin/sh
+# shell for sufill1d
+set -x
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+FILTER=4
+LFILTER=10
+NTRAINING=10
+FILE=traces.su
+LAG=0
+GAP1=0
+GAPN=3
+NITER=20
+
+sufill1d filter=$FILTER lfilter=$LFILTER  ntraining=$NTRAINING \
+niter=$NITER gap1=$GAP1 gapn=$GAPN lag=$LAG < $FILE | $PLOTX &

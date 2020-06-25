@@ -1,0 +1,117 @@
+#! /bin/sh
+# Xsuradonfk_ken --- Attenuation of multiples in Kenwincmp
+# Normal (apex centered) Radon Transform.
+# Data contain multiples of diffractions.
+# This data set will be used later for testing interpolation
+# with suradonfk. Since the normal multiples are giving problems
+# they wil be removed in this code as a preprocessing. 
+#
+# data preprocessing:
+# Althouth the data is a real data set, for this example we need to take a
+# window, and make the data to look symmetric 
+# from  kencmpsnonmo.su take cdp 5300 and window from 5.5s to end.
+# Data name kencmpwin0.su
+# then make the data symmetric by 
+# suchw key1=offset key2=offset b=-1 < kencmpwin0.su > pp
+# cat pp kencmpwin0.su > kencmpwin.su
+# sushw key=delrt a=0 < kencmpwin.su > pp
+# susort +offset < pp >  kencmpwin.su
+# Xsetntr kencmpwin.su
+######################################################################
+# Author: Daniel Trad- November 2001
+
+# Some shortcuts for plots
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=94"
+suxx="suximage perc=98 hbox=900 wbox=700 xbox=$2   curve=curve1 npair=5 & "
+
+set -x
+
+METHOD='FREQ'
+RADONFORW='y'
+
+sufix=${METHOD}
+
+FILE=kencmp0int.su; clip=  #clip corresponding to perc=97
+
+FILEN=$FILE
+FILETEMP=pp
+FILETEMP2=ppp
+offsetfile=$FILE'off'
+FILERAD=${FILEN}'rad'${sufix}
+FILERAD0=${FILEN}'rad0'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILERES=$FILEN'res'${sufix}
+par=stkvel.$FILE
+# Options
+# None
+
+scale=1.0
+
+############################*****
+perc=100
+
+cp $FILE $FILETEMP
+
+cdpmin=5300
+cdpmax=5300
+dxcdp=1
+
+
+if [ $METHOD = "FREQ" ]; then
+mute="tmin_m=5.0 tmax_m=10.2 ihmin_m=90 ihmax_m=115 thres_m=0 slope_m=0"
+mute="tmin_m=5.0 tmax_m=10.2 ihmin_m=90 ihmax_m=115 thres_m=0 slope_m=0"
+suradonfreq < $FILE  nhmax=300 cdpmin=$cdpmin cdpmax=$cdpmax dxcdp=$dxcdp par=$par itercg=30 iter_end=3 eps2=9e-1 eps1=9e-1 nq=150 verbose=1 mute=1 qmin=-2.25e-8 factor=1.5 solver=cgfft modelfile=$FILERAD $mute > $FILEREC
+else
+# Use other tests here
+    exit 0
+fi
+
+cp $FILEREC kencmp1.su
+Velan1 kencmp1.su 5300 5300 1  0.05
+
+Xpreprocessken kencmp1
+cp cdp5300.su kencmp1win.su
+
+sufilter < kencmp1win.su  f=80,100 amps=1,0  > pp
+cp pp kencmp1win.su
+
+suop2 kencmp0win.su kencmp1win.su | suximage perc=98 &
+sufft < model1 | suamp | suximage perc=98 &
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

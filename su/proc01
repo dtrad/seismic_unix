@@ -1,0 +1,35 @@
+#! /bin/csh
+#
+/bin/rm $1.su
+/bin/rm temp.su
+echo "reading and converting "$1".dt1"
+echo "This assumes dt=0.8ns, i.e., is done for Almada 2001"
+head $1.HD
+# As the apparent dt is set to 0.8 ms (Actual dt is 0.8 nanosecs) then
+# using TRUE DISTANCES, this scales velocity and frequency by a factor of 1e(-6)
+# This makes 1 m/ns become 100m/s (apparent for su)
+
+dt1tosu <$1.DT1 dt=.8 verbose=1 list=1 >$1.su 
+echo "trace #10=> " `suwind <$1.su key=tracl min=10 max=10 |sugethw key=ns`
+#suximage <$1.su d1=.8 d2=.25 wbox=800 hbox=350
+
+echo "set cdp values in headers. Change cdp field"
+# O cdp e' totalmente arbitrario, qualquer sequencia de numeros serve.
+# Tipicamente e' uma sequencia crescente de 1 em 1, comecando em qualquer valor
+# como 1 mesmo. Dados de GPR sao zero offset, faca o cdp ao numero do traco.
+
+echo "Set number of cdpm x to number of traces"
+#set cdpmax=`surange <$1.su |grep tracl= |cut -c11-13`
+set cdpmax=`surange <$1.su |grep tracl= |cut -c11-12`
+echo $cdpmax
+
+echo "Shows the first 5 values of cdp"
+sushw key=cdp a=1 c=1 d=0 j=1 <$1.su |tee temp.su |sugethw key=cdp |head
+mv temp.su $1.su
+
+# put correct values for plotting (d2 not set on trace headers)
+# suximage <$1.su d1=.8 d2=.25 clip=4 wbox=800 hbox=350 title=$1"not gained, clipped to 4" &
+# suxwigb <$1.su d1=.8 d2=.25 clip=4 wbox=800 hbox=350 title=$1"not gained, clipped to 4" &
+# wagc choosen by chance. Good values are between 0.0001 and 0.00005
+sugain <$1.su agc=1 wagc=0.07 qclip=.95 pbal=1 | suximage d1=.8 d2=.25 clip=4 wbox=800 hbox=350 title=$1"AGC gained 0.07, clipped to 4" &
+

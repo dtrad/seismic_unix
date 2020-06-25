@@ -1,0 +1,185 @@
+#! /bin/sh
+# Xradon --- Example of interpolation with high resolution radon.
+######################################################################
+# This example needs sudata1 generated with Xsusyn0
+# No extra files are needed.
+# method 1 and 2 stands for Usual Radon and High resolution RT.
+# First the header of full offset data are saved in file=headers 
+# and offset in sudata1.off
+# The sudata1.off file is  used by suhrrti to create data at given offsets 
+# from the model.
+# The headers file is used after suhrrti to put back the header.
+# The suwind is used to create gaps that are filled with suhrrtf and suhrrti
+# Main purpose of the program is to compare gap filling capabilities of
+# HRRT (method=2) with the usual RT (method=1).
+# If you change the data check the values at the beginning.
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+NT=512 
+NH=64
+NP=120
+DT=4000
+VNMO=1150,1700,2000
+TNMO=0.5,1,1.2
+SMUTE=3
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+FILE=sudata1
+FILEN=sudata1CG
+FILETEMP=$FILEN'temp'
+FILERAD=$FILEN'rad'
+FILEREC=$FILEN'rec'
+FILEOFF=$FILEN'off'
+FILERADOFF=$FILEN'radoff'
+FILERAD2=$FILEN'radb'
+FILEREC2=$FILEN'recb'
+FILEOFF2=$FILEOFF  # Final offset in which data will be resampled 
+GAPS='n'
+NMO='n'
+TSQ='n'
+RAD='y'
+REM='y'
+
+FMAX=50
+METHOD=2
+RTMETHOD=3
+EPS1=1
+QMIN=-2.5e-4
+if [ $RTMETHOD -eq 2 ];
+then QMIN=0
+echo $QMIN
+fi
+NQ=70
+DEPTH=800;
+COSTFLAG=0
+ITERCG=20
+EPS=0
+STEP=.9
+NORM=1
+FACTOR=3
+
+if [ $RTMETHOD -eq 2 ];
+then FACTOR=1
+echo $FACTOR
+fi
+
+NITER=1
+TAPER=0
+BAD='bad=32,33,34,35,36'
+BAD=''
+
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILE > $FILEOFF
+#suxwigb < $FILE   key=offset wbox=550 hbox=650 & 
+
+
+#Create Gaps
+#suwind reject=800  key=offset  < $FILE > $FILEGAP 
+#ntr=`surange < $FILEGAP | sed 1q | sed 's/traces://'`
+#cp $FILEGAP pp
+#sushw key=ntr a=$ntr < pp > $FILEGAP 
+
+cp $FILE $FILETEMP
+
+case $GAPS in
+y*)
+sukill min=32 count=5 < $FILETEMP > pp; cp pp $FILETEMP
+;;
+esac
+
+
+case $NMO in
+y*)
+sunmo smute=$SMUTE vnmo=$VNMO tnmo=$TNMO < $FILETEMP > pp; cp pp $FILETEMP 
+$PLOTX < $FILETEMP &
+;;
+esac
+
+case $TSQ in
+y*)
+sutsqm flag=1  < $FILETEMP > pp; cp pp $FILETEMP 
+$PLOTX < $FILETEMP &
+;;
+esac
+
+
+#Forward  Radon transform
+
+case $RAD in
+y*)
+suhrrtf $BAD  method=$METHOD eps1=$EPS1 iter_end=$NITER qmin=$QMIN nq=$NQ freq=$FMAX rtmethod=$RTMETHOD costflag=$COSTFLAG itercg=$ITERCG eps=$EPS step=$STEP   norm=$NORM factor=$FACTOR taper=$TAPER testadj=0 depth=$DEPTH < $FILETEMP  > $FILERAD 
+;;
+esac
+
+#xgraph d1=1 style=normal n=$NITER x1beg=0 x1end=$NITER < Jtottemp &
+
+# For gap example: 
+# method=2 eps1=0.1 iter_end=10  itercg=25 eps=1e-10 
+# method=10 eps=1e-4 method=7 eps=1e-7
+# method=4 eps=1e-4 
+
+suxwigb < $FILERAD   key=f2 wbox=550 hbox=650 &
+#sumute < $FILERAD > $FILERAD2 key=f2 xmute=4e-7,8e-7 tmute=2,2
+
+#Inverse Radon Transform
+suhrrti rtmethod=$RTMETHOD offsetfile=$FILEOFF depth=$DEPTH fmax=$FMAX < $FILERAD  > $FILEREC
+#suxwigb < $FILEREC   key=offset  wbox=550 hbox=650  &
+#sufft < $FILEREC | suamp | suxwigb key=offset  wbox=550 hbox=650  &
+
+suxwigb < $FILEREC   key=offset  wbox=550 hbox=650  &
+
+case $TSQ in
+y*)
+sutsqm flag=-1 dtout=0.004  < $FILEREC > $FILEREC2;
+suxwigb < $FILEREC2 &
+;;
+esac
+
+case $NMO in
+y*)
+#inverse NMO in recovered data
+sunmo smute=$SMUTE vnmo=$VNMO tnmo=$TNMO  invert=1 < $FILEREC  > $FILEREC2 
+suxwigb < $FILEREC2   key=offset  wbox=550 hbox=650  &
+;;
+esac
+
+case $REM in
+y*)
+rm $FILETEMP
+rm $FILERAD
+rm $FILEREC
+rm $FILEREC2
+;;
+esac
+
+
+#binary file with radon parameter  
+#cp myfile $FILERADOFF
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

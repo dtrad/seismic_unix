@@ -1,0 +1,210 @@
+#! /bin/sh
+# Multiple attenuation by RT along a line
+# February 13 -2002
+# Daniel Trad - UBC
+
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+set -x
+
+METHOD="SOL"
+METHOD="TD"
+solver="cgfft"
+
+#NAME=misscn_red_gain_cdp # reduced data set with all cdps
+NAME="line77sp" # Complete data
+#NAME="cdp700b"
+PAR=stkvel.line77sp.su
+#PAR=stkvel.line77.const.su
+FILE=$NAME'.su'
+FILEOUT=$NAME'.HRT.su'
+
+CDPMIN=300
+CDPMAX=800
+
+#CDPMIN=350
+#CDPMAX=750
+
+dxcdp=1
+ntrmax=100000000   # For fast tests.
+
+######################################
+# Radon parameters
+
+t0=0;
+VERBOSE=0
+mute=1        
+t0mute=1.5
+parmute=1.5e-8  # non agressive filter
+parmute=1e-8 # agressive filter 
+smute=1.6
+nhcdp=1000
+qmin=-7.75e-8
+ 
+PLOTOPT='XPLOT3'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+if [ $METHOD = "SOL" ]; then
+#parmute=1.5e-9
+suradonline < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp nhcdp=$nhcdp par=$PAR itercg=30 iter_end=3 eps2=5e-1 eps1=5e-1 nq=200 verbose=$VERBOSE ntrmax=$ntrmax tmpdir='./' norm=0 buffer=$buffer t0=$t0 smute=$smute mute=$mute  parmute=$parmute qmin=$qmin factor=2.5 fmax=80 solver=$solver t0mute=$t0mute > $FILEOUT
+elif [ $METHOD = "TFD" ]; then
+itercg=100
+suradonlinetfd < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp nhcdp=$nhcdp par=$PAR itercg=$itercg iter_end=3 eps2=8e-1 eps1=8e-1 nq=110 verbose=$VERBOSE ntrmax=$ntrmax tmpdir='./' norm=0 buffer=$buffer t0=$t0 smute=$smute mute=1  parmute=1.5e-9 qmin=-0.25e-8 factor=1.5 fmax=80  t0mute=$t0mute stopc=1 typewav=1 > $FILEOUT
+elif [ $METHOD = "TD" ]; then
+centralq=10
+#centralq=50
+dperv=0.0
+iter_end=1
+itercg=15
+nq=110
+pervmin=0.15e-8
+pervmin=0.22e-8
+plot=1 # Radon and primaries
+plot=2 # muted Radon and multiples
+plot=0 # No plot
+parmute=3.5e-7
+t0=1
+mute=1
+suradonlinetd < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp nhcdp=$nhcdp par=$PAR itercg=$itercg iter_end=$iter_end eps2=8e-1 eps1=8e-1 nq=$nq verbose=$VERBOSE ntrmax=$ntrmax tmpdir='./' norm=0 t0=$t0 mute=$mute  parmute=$parmute testadj=$testadj  LI=$LI nw=$nw centralq=$centralq dperv=$dperv pervmin=$pervmin filtout=$filtout restart=$restart  tm=$tm plot=$plot  outputmodel=$outputmodel smute=1.5 > $FILEOUT
+fi
+
+sunmo par=$PAR < $FILEOUT | sustack key=cdp > $FILEOUT".stack" 
+suximage  < $FILEOUT".stack" perc=97  title=$FILEOUT"stack"  &
+
+exit 0
+
+################################################################
+
+case $PLOTOPT in
+    PSPLOT*)
+    ;;
+
+    XPLOT2*)
+    
+    cdp=$CDPMIN
+      
+    while [ $cdp -le $CDPMAX ]
+    do
+    title=$cdp' CDP'
+    suwind key=cdp min=$cdp max=$cdp  < $FILEOUT | $PLOTX  title=$title &
+    suwind key=cdp min=$cdp max=$cdp  < model.su | $PLOTR  title=$title &
+
+cdp=`bc -l <<END
+		$cdp + $DXCDP
+END`
+
+
+    done
+    ;;
+esac
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

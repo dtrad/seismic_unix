@@ -1,0 +1,6 @@
+#!/bin/sh
+set -x
+for FILE in $@
+do
+    suswapbytes < "$FILE" > pp ; mv pp "$FILE"
+done

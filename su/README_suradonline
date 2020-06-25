@@ -1,0 +1,135 @@
+README
+Multiple removal with Radon transform
+
+There are many versions or high resolution RTs in directory
+
+/home/dtrad/seismic
+
+The most common are:
+
+suradonline.cpp   (freq domain)
+suradonlinetd.cpp (time domain)
+
+Two newer simplified versions are:
+suradonfreq.cpp (freq domain)
+suradontx.cpp   (time domain)
+
+All these codes input a 2D line of data and output the multiple attenuated same line:
+
+Usually they do the following:
+1) apply nmo
+2) predict the Radon space
+3) mute some are of the RT space
+4) predict multiples
+5) subtract from the data with least squares scaling
+6) apply inverse nmo
+
+The simples to use is suradonfreq.
+Typing suradonfreq without arguments returns the following help
+
+SURADONFREQ - Frequency domain Radon Transform                      
+                                                                     
+           
+ suradonfreq < stdin > stdout [optional parameters]       
+                                                                     
+ IMPORTANT:****************************************                  
+ Input must be sort by cdp and offset, for example                   
+                   susort cdp offset < input | .....                 
+                                                                     
+ It removes This program is intended to input a line of data sort    
+ by cdps and, every cdp by offset.                                   
+                                                                     
+ Notes:                                                              
+ Most parameters have reasonable default values. The most important  
+ parameters to set (for which there is no default for every data set 
+ are: cdpmin, cdpmax, par and qmin.                                  
+ solver defines whether to have high resolution RT (cgfft)          
+ or standard RT (toep).                                              
+ rtmethod defines if working with linear (1) , parabolic (2) o       
+ pseudohyperbolic RT (3). In this last case need to set also depth   
+ (see Foster and Mosher,)                                            
+                                                                     
+                                                                     
+                                                                     
+ cdpmin=0        Fisrt CDP in meters                                 
+ cdpmax=100      Last CDP 
+ dxcdp=1         Interval of cdps to process                         
+ par=            file with cdp numeber, stacking velocities and time 
+                 as obtained  from Velan (standard PARFILE in SU)    
+ rtmethod=2      shape of integration surface                        
+                 =1 linear                                           
+                 =2 parabolic                                        
+                 =3 Pseudohyperbolic (Foster and Mosher)             
+ solver=cgfft    Method to solve the system of equations             
+                 =cgfft very fast cg with fft                        
+                 =toep  Toeplitz                                     
+                 =adj Simple adjoint                                 
+ nhmax=200       Maximum number of traces for cdp                     
+ qmin= -5e-9     Minimum q parameter for the RT space                
+ nq=100          number of traces in the RT space                    
+ itercg=50       Internal iterations for CG                          
+ iter_end=3      External iterations for IRLS                        
+ eps1=5e-1       Numerator hyperparameter for Wd (quantil of data)   
+ eps2=5e-1       Denominator  hyperparameter for Wm (quantil of model)
+ fmax=0.8/(2*dt) Maximum frequency to preserve in the transform      
+                 =0 Nyquist (1/2*dt)                                 
+ norm=0          model weights derivated from Cauchy norm            
+                 =1 model weights derivated from L1 norm             
+ mute=0          =1 mute multiples                                   
+ verbose=0       =1  verbose output                                  
+ t0=0            First useful time                                   
+ smute=2         stretch greater than smutex100 % is muted
+ nmofactor=1     nmofactor * offset is used for NMO                     
+ quantil=1       filter for large data outliers                      
+                                                                     
+ mute parameters :                                                   
+ tmin_m=0        min time for pass mute window                       
+ tmax_m=nt*dt    max time for pass mute window                       
+ ihmin_m=nq/2+2  first trace for pass mute window                    
+ ihmax_m=nq      last trace number for pass mute window              
+ thres_m=0.2    values less than threshold are removed inside window 
+ slope_m=3      slope in pass mute window (ih top / ih bottom) 
+
+
+This is the most flexible of all because of the options for muting.
+
+It is easier to design the mute with suradonline.
+In suradonline a single parameter is given to design the mute zone.
+For an example of applying suradonline with the mississippi Canyon data
+see 
+
+/home/dtrad/seismic/su/Xsuradonline_miss
+
+
+In this example, a single cdp is processed. stkvel.misscn.su is he
+parfile with velocity information along the line.
+
+NAME=cdp1000 # One cdp
+
+PAR=stkvel.misscn.su
+FILE=$NAME'.su'
+FILEOUT=$NAME'.demul.su'
+
+CDPMIN=1000
+CDPMAX=1000
+dxcdp=1
+mute=1  # subtract multiples      
+t0mute=3.8  # initial muting time
+parmute=1.5e-9 # parameter that separates prim from multiples
+
+
+suradonline < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp par=$PAR itercg=30 iter_end=3 eps2=5e-1 eps1=5e-1 nq=110  norm=0 mute=1  parmute=$parmute qmin=-0.25e-8 factor=1.5 fmax=80 solver=cgfft t0mute=$t0mute > $FILEOUT
+
+By default, it is created an auxiliar file called model.su, that contains
+the Radon space. This is important to check that the Radon parameters are
+allright, in particular parmute.
+There are many parameters that can be changed for tests, but most of them 
+have good defaults. It is important to tune properly parmute, qmin and factor.
+Factor is by default = 0.8, it means 0.8 the minimum sampling interval in the Radon space to prevent model aliasing. However, since this is for the maximum 
+frequency given by fmax, it is possible to increase factor wihtout affecting 
+seriously the process. 
+
+
+
+
+

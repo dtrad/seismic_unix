@@ -1,0 +1,10 @@
+radonilh2.c
+
+This Mex file allows to obtain the Radon transform of data d
+and also the matrix LH such that v=LH*v;
+The purpose is to study the structure of the matrix LH,
+so only very small data vectors should be used, 
+as it requires huge memory to compute LH.
+
+
+

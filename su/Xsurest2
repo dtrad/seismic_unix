@@ -1,0 +1,17 @@
+#!/bin/sh
+set -x 
+file=cdp4800.su
+
+xwindow="x1beg=0.84 x1end=2.0 x2beg=110 x2end=200 curve=curve1 npair=5 hbox=900 wbox=700"
+sugain scale=$1 <  kencmpwin.surecRFK > ppp
+suop2 $file ppp > pppp
+
+sunmo vnmo=$3 tnmo=0 < $file > nmo1 
+sufill < nmo1 | suximage perc=$2 title=original $xwindow xbox=0 &
+sunmo  vnmo=$3  tnmo=0  < pppp  > nmo2 
+sufill < nmo2 | suximage perc=$2 title=scale:$1 $xwindow xbox=600 &
+
+
+#suximage < xiter.su title=scale:$1 $xwindow xbox=600 perc=$2 &
+
+#sufill  < kencmpwin.surecRFK | suximage perc=$2 title=scale:$1 $xwindow xbox=0 &

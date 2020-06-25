@@ -1,0 +1,60 @@
+#!/bin/sh
+set -x
+
+MODEL=testfile_real_earth
+FILE=moddata2
+FILEINT=$FILE".int"
+FILERMS=$FILE".rms"
+FILEINTZ=$FILE".intz"
+OPTION="RMS"
+
+nt=256
+nz=300
+dz=5
+dt=0.004
+dta=4000
+fx=0
+nx=201
+dx=5
+
+
+unif2 < $MODEL ninf=4 nx=$nx nz=$nz dx=$dx dz=$dz \
+v00=2000,2500,3000,3500 > $FILEINTZ
+
+ximage legend=1 n1=$nz d1=$dz n2=$nx d2=$dx title="Int vel-depth " < $FILEINTZ &
+
+case $OPTION in
+RMS)
+velconv  < $FILEINTZ dz=$dz nz=$nz nt=$nt dt=$dt nx=$nx dx=$dx intype=vintz outtype=vrmst > $FILERMS
+
+ximage legend=1 n1=$nt d1=$dt n2=$nx d2=$dx title="RMS Vel" < $FILERMS &
+
+suaddhead < $FILERMS ns=$nt | sushw key=dt a=$dta | sushw key=cdp a=0 b=$dx  > $FILERMS'.su'
+
+suximage < $FILERMS'.su' d2=$dx & 
+
+sureadvel2 < $FILERMS'.su' > 'rmsvel.'$FILE
+
+;;
+
+INT)
+velconv  < $FILEINTZ nt=$nt dt=$dt nx=$nx dx=$dx dz=$dz nz=$nz intype=vintz outtype=vintt > $FILEINT
+
+ximage legend=1 n1=$nt d1=$dt n2=$nx d2=$dx title="Int Vel" < $FILEINT &
+
+suaddhead < $FILEINT ns=$nt | sushw key=dt a=$dta | sushw key=cdp a=0 b=$dx  > $FILEINT'.su'
+
+suximage < $FILEINT'.su' d2=$dx & 
+
+
+
+;;
+esac
+
+
+
+
+
+
+
+

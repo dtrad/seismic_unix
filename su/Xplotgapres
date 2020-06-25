@@ -1,0 +1,45 @@
+#! /bin/sh
+# Xradon --- Hyperbolic Radon Transform.
+######################################################################
+# Example: real  sucdps2, sumiss2
+# 
+#######################################################################
+# Author: Daniel Trad- November 1999
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+HBOX=400
+WBOX=350
+
+set -x
+
+FILEB=$1
+
+if [ $2 -eq 1 ]; then
+    FILE=$FILEB'res2_toep'
+    FILEGAPS=$FILEB'_gaps_toep'    
+elif [ $2 -eq 2 ]; then
+    FILE=$FILEB'res2_down_LI1'    
+    FILEGAPS=$FILEB'_gaps_down_LI1'
+elif [ $2 -eq 3 ]; then
+    FILE=$FILEB'res2_HRF'
+    FILEGAPS=$FILEB'_gaps_HRF'
+fi
+
+
+
+
+
+clip=97
+
+accept=-8468,-8293,-8118,-7943,-7768,-7593,-7418,-7243,-7068
+
+suwind < $FILE key=offset abs=1 max=1500 min=0 > gap1
+suwind < $FILE key=offset abs=1 accept==$accept  max=0 min=0 > gap2        
+suwind < $FILE key=offset abs=1 max=15550 min=14000 > gap3
+
+cat gap3 gap2 gap1 > $FILEGAPS 
+$PLOTT < $FILEGAPS clip=$clip x1beg=1.85 &

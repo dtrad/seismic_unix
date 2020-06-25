@@ -1,0 +1,13 @@
+surange < marmousi_cdps.nmo.su
+23040 traces:
+ tracl=(1,23040)  tracr=(1,23040)  fldr=(3000,8975)  tracf=(1,96)  ep=2139081118 cdp=(68,355)  cdpt=(1,96)  trid=1 nhs=1 offset=(200,2575) 
+ sx=(3000,8975)  gx=(425,8775)  gut=(200,2575)  mute=2900 ns=726
+ dt=4000 igi=(0,1)  sfe=1 tatyp=(1,23040)  lcs=(0,1) 
+ hcs=1 sec=1 grnors=-18200 gaps=(-13922,0)  otrav=1
+ d1=4.000000 d2=1.000000 shortpad=(0,1) 
+surange < marmousi_vels.v2.su b
+2253 traces:
+ tracl=(1,2253)  tracr=1 fldr=1 tracf=(1,2253)  cdpt=(1,2253) 
+ trid=1 mute=(3000,3004)  ns=751 dt=4000 igi=(0,1) 
+ tatyp=(1,2253)  lcs=(0,1)  hcs=1 sec=1 otrav=1
+ d1=4.000000 d2=1.000000 shortpad=(0,1) 

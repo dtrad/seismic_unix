@@ -1,0 +1,40 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I/usr/local/cwp/include -I/home/dtrad/radon/clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=suvelanrt
+
+FLAG=-c -O -Wall
+
+OBJ=  $(PROG).o velanrt.o velopi.o velop.o wtcglsvel.o dot.o
+
+
+LIB=./flibrary
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) $(IDIR)
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+velanrt.o: $(LIBC)/velanrt.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+velop.o: $(LIBC)/velop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+velopi.o: $(LIBC)/velopi.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wtcglsvel.o: $(LIBC)/wtcglsvel.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dot.o: $(LIBC)/dot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+

@@ -1,0 +1,108 @@
+#!/bin/sh
+# Figures for Poland report.
+# Figure 2: stack with or without supef (spike decon)
+# Examples: Figure 2
+#  Xfigures_poland 2 "" "" 0.06
+#  Xfigures_poland 2 .agres .agres 0.06
+#  Xfigures_poland 2 .agres3 .agres3 0.06
+#  Xfigures_poland 2 .demultd .demultd 0.06
+
+set -x
+NAME="line77b$2"
+velan="line77b${3}.su"
+dir="/home/dtrad/poland/torum1/su/"
+f2=300
+d2=10
+#stack0="${NAME}.stack.su"
+#stackimage0=$dir"${NAME}.stack.ps"
+stack0=$dir"${NAME}.su"
+stackimage0=$dir"${NAME}.ps"
+
+mig0=$dir"${NAME}.mig.su"
+migimage0=$dir"${NAME}.mig.ps"
+
+velimage="${NAME}.vel.su"
+velfile=$dir"${NAME}.vel.ps"
+semblance=$dir"${NAME}.semb.ps"
+figure=$1
+
+case $figure in
+1*)
+supsimage < $velimage legend=1 title="velocity profile" f2=$f2 d2=$d2 label1="Time(s)" label2="CDP number" > $velfile perc=98
+
+gv $velfile
+
+;;
+
+2)
+# Spike decon first
+if [ $4 -eq 0 ];then
+cp $stack0 $stack0'dec'
+else
+supef maxlag=$4 pnoise=0.01< $stack0 | sufilter f=2,10,80,100 > $stack0'dec'
+fi
+supsimage < $stack0'dec'  title="NMO+stack" f2=$f2 d2=$d2 label1="Time(s)" label2="CDP number" > $stackimage0 perc=99 
+
+gv $stackimage0 &
+
+;;
+
+3)
+
+velan1=${velan}".350.ps"
+velan2=${velan}".400.ps"
+velan3=${velan}".450.ps"
+velan4=${velan}".500.ps"
+velan5=${velan}".550.ps"
+velan6=${velan}".600.ps"
+velan7=${velan}".650.ps"
+velan8=${velan}".700.ps"
+velan9=${velan}".750.ps"
+
+supsmerge in=$velan1 in=$velan2 in=$velan3 in=$velan4 in=$velan5 in=$velan6 in=$velan7 in=$velan8 in=$velan9 scale=0.33,0.33  translate=0,7 translate=2.8,7 translate=5.6,7 translate=0,3.5 translate=2.8,3.5 translate=5.6,3.5 translate=0,0 translate=2.8,0 translate=5.6,0 > $semblance
+
+gv $semblance
+
+;;
+5)
+supsimage < $mig0  title="Time prestack migration (CGG)" f2=$f2 d2=$d2 label1="Time(s)" label2="CDP number" > $migimage0 perc=98
+
+gv $migimage0
+
+;;
+6) 
+position="xbox=0 hbox=900 wbox=1200"
+
+files="T0770693_Final_stack.su T0770693_Final_stack_PRT1.su  T0770693_Final_stack_PRT2.su T0770693_Final_stack_HRT.su"
+
+echo $files
+for FILE in $files
+do
+   suximage  < "$FILE" title="stacks: ${FILE}" perc=99 $position &
+done
+;;
+7)
+files="T0770693_Final_Migr.su T0770693_Final_Migr_PRT1.su"
+position="xbox=0 hbox=900 wbox=1200"
+echo $files
+for FILE in $files
+do
+   suximage  < "$FILE" title="post-mig: ${FILE}" perc=99 $position  &
+done
+;;
+8)
+files="T0770693_PST_Migr.su  T0770693_PST_Migr_PRT1.su line77.eom.su "
+position="xbox=0 hbox=900 wbox=1200"
+echo $files
+for FILE in $files
+do
+   suximage  < "$FILE" title="prest_mig: $FILE" perc=99 $position  &
+done
+
+
+;;
+esac
+
+
+
+exit 0 

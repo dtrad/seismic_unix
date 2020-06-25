@@ -1,0 +1,30 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a  $L/libdan.a $L/libnr.a
+
+LFLAGS= $(PRELFLAGS) -L$L -L../bin -lsu -lpar -lcwp -lm -ldan -lnr $(POSTLFLAGS)
+
+PROG=suradonwavelet
+
+FLAG=-c -O3 -Wall 
+
+OBJ=  $(PROG).o  radonwavelet0.o  
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ) $D
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonwavelet0.o: $(LIBC)/radonwavelet0.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+

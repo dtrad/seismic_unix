@@ -1,0 +1,35 @@
+#! /bin/sh
+# Supws - Demo shell script for SUPWS (compares sustack, sudivstack, and supws)
+# Author: Nils Maercklin, GFZ Potsdam, Germany, 2001 
+# Credit: Mary Palen-Murphy, CSM Dept of Geophysics, 1995
+#         (uses parts of demo script "Sudivstack")
+
+# PostScript flag (set to 1 to generate PS output instead of X display):
+POSTSCRIPT=0
+
+# X window sizes and positions:
+WIDTH=400
+HEIGHT=500
+WIDTHOFF1=0
+WIDTHOFF2=280
+WIDTHOFF3=560
+WIDTHOFF4=840
+HEIGHTOFF=100
+
+
+# Create one shot record:
+
+echo "Create one Shot Record"
+set -x
+susynlv nt=630 dt=0.008 ft=0.0 nxo=1000 dxo=.005 fxo=0.05 nxs=1 dxs=.05 fxs=3 \
+er=0 ob=0 v00=0.75 dvdz=1 dvdx=0 smooth=1 ndpfz=10 \
+ref="1:0.0,2;9.0,2" \
+ref="1:0.0,3;6.0,5" |
+sushw key=d2 a=.005 | 
+suchw key1=ntr a=1000 > record.su
+suximage < record.su perc=99 legend=1 &
+
+#sudivcor trms=0.0,1.0,3.0,5.0   vrms=900,1050,1500,2000 > record.su
+
+
+exit 0

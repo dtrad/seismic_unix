@@ -1,0 +1,12 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+set -x
+
+FILE=$1
+FILETEMP='ppp'
+
+sustrip  < $FILE'.su' > $FILETEMP 
+b2a  < $FILETEMP n1=1 > $FILE'.bin'
+

@@ -1,0 +1,76 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+set -x 
+
+METHOD='wtcgls'
+#METHOD='toep'  
+#METHOD='adj'
+#METHOD='cgfft'
+#METHOD='TFD'; sufix="";
+  
+FILE='interp_cdps2_'${METHOD}'gap_filt.ps'
+
+# PLot model
+
+FILEN=cdps2.mute
+CLIP=3.0
+maxoff=1250
+maxq=1.3e-7
+
+if [ $METHOD = 'toep' ]; then
+    LEGEND='non-sparse'
+else 
+    LEGEND='sparse: '$METHOD
+fi
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.suradb.'${METHOD}
+FILE3=$FILEN'.surecb.'${METHOD}'filt'
+FILE4=$FILEN'.sures.'${METHOD}
+
+
+TITLE1="(a) data"
+TITLE2="(b) RT - ${LEGEND}"
+TITLE3="(c) Interpolated + mute "
+TITLE4="(d) Eliminated signal (residuals)"
+
+LABEL1="time(sec)" 
+LABEL2="offset(m)"
+LABELR2="q(s/m^2)"
+LABELR1="tau(sec)"
+LABELRF1="f(Hz)"
+
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELR1 label2=$LABELR2 x2beg=-${maxq} x2end=${maxq} perc=99"
+PLOTRF="supswigp key=f2 label1=$LABELRF1 label2=$LABELR2 perc=100"
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=${CLIP} x2beg=-${maxoff} x2end=${maxoff} "
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=${CLIP} x2beg=-${maxoff} x2end=${maxoff}"
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR"
+
+$PLOTD < $FILE1  title=$TITLE1  > p  
+$PLOTR < $FILE2  title=$TITLE2  > pp
+$PLOTX < $FILE3  title=$TITLE3  > ppp 
+$PLOTX < $FILE4  title=$TITLE4  > pppp
+
+psmerge in=p in=pp in=ppp in=pppp scale=0.55,0.55 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

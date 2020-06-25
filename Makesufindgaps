@@ -1,0 +1,30 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include   -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a  $L/libdan.a
+
+#$L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm -ldan $(POSTLFLAGS)
+
+PROG=sufindgaps
+
+FLAG=-c -O -Wall
+
+OBJ=  $(PROG).o 
+
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+
+
+
+
+

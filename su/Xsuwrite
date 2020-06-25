@@ -1,0 +1,28 @@
+#!/bin/sh
+# This is an auxiliar file used in Xsuwrite_curve and Xsuwrite_ridge
+# It reads a matlab binary file from matlab and adds a header
+# It has some very specific parameters for the file ozdata25
+# Usage Xsuwrite filename specific_name
+# example: Xsuwrite ozdata0win noise.curve
+# This will look for the file ozdata0win.noise.curve.bin
+# the present directory.
+#
+# Daniel Trad - December 9th, 2002
+
+
+set -x
+
+file1=$1 
+
+filematlab="${1}.${2}.bin"
+filesu="${1}.${2}.su"
+
+suaddhead < ${filematlab} ns=128 | sushw key=dt a=4000 | suwind key=tracl max=86 | susetntr > $filesu
+
+# Multiply original file by zero to get the header only 
+sugain < ${1}".su" scale=0 > ${1}"header.su"
+
+
+suop2 ${1}"header.su" ${filesu} op=sum > pp
+
+mv pp ${filesu}

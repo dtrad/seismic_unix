@@ -1,0 +1,105 @@
+June 14- 2002
+
+Problems with suradonfk0
+
+1) Why residuals are so large after applying weights.
+
+Sparseness doesn't seem to help for the Stolt operator because the result of
+migration is not sparse. Hence, although sparseness is achieved, the prediction
+ is seriously affected. If enough iterations are applied the prediction 
+improves slowly, but in general we can not iterate much with this operator as
+ explained below.
+
+In summary, sparseness is not useful here, since the CG is not converging well
+ then the model does not have the chance to recover after weighting.
+
+2) CG does not converge well.
+ 
+The strong events in the top are severely aliased, then the stolt operator 
+takes these under sampled event and produces a sort of scatter points rather
+ than a simple point. Solution? I try weights both in model and data and 
+they do  not seem to help. I am lost here. 
+
+The problem is that the residuals show very strange artifacts after a few 
+iterations, then the model calculated from these residuals became highly 
+distorted  as well. Model weights in the areas of the model where these 
+artifacts grow are helpful only in the first iterations. 
+
+Conclusion:
+
+For Stolt do not use sparseness (use iter_end=1) and use the automatic 
+stopping criterion that if the residuals increase stop itercg.
+
+Next work:
+
+Do the same analysis for Kirchhoff. The plotting system used to debug is 
+really useful, it is worthy to spend the extra time required to set it.
+
+Visualization of data weights, model, predictions and residuals is making a 
+huge difference. Function xplotgather is doing a good job in simplifying 
+the plotting instructions. 
+
+June 17
+
+1)
+Matlab program for 1d wavelet filtering.
+Done: 3 files in directory wav1dfilter.
+Comments: no further plans.
+
+2) suradontx
+The adjoint seems to be a bad approximations, much worse than the adjoin for 
+normal RT. After a few iterations results became better but in general there
+are very strong artifacts.
+
+But even after several iterations suradontx is not fitting the data correctly
+In comparison Stolt gives a very good fit even after the first iteration.
+
+Either there is a mistake in suradontx (for example the adjoint has very 
+low amplitude) or there is a fundamental difference between Kirchhoff  and
+Stolt. Actually it is  important to understand how these two approaches differ.
+Is it Kirchhoff fundamentally weaker than Stolt?
+
+
+3) There is something very peculiar about suradonfk0.cpp
+ Note that it is imposible to use fputtr with the data before and 
+after stretching due to the difference in the ns value.
+ However, it works fine when used in two different functions inside the code.
+Look that xplotgather inside radonfk_wtcgls is plotting with no problems.
+I try to repeat the trick with a wrapping function for xplotgather
+(plot_after_stretching) but it did not work!
+
+
+4) I created a script to compare results between suradonfk and suradontx.
+
+Xplotsuradonfk_tx_ken
+Xcopy_fk_tx
+ 
+5) Future: 
+   there must be a mistake in suradontx. Find it
+   it must be possible to use hyperbolic windows.
+   The difference between stolt and Kirchhoff once more make think of
+   how great would be a hyperbolic RT in fk!!
+
+June 24- 
+
+Since sparseness is not really required for coherent noise separation,
+then it is not necessary the transfomation to time. This  means that 
+the Radon transform with full coverage of velocities AND apexes is possible!!
+
+However, different velocities in Stolt is really expensive because of the 
+time stretching. Is it a way to simplify this?
+
+Well, if several velocities are applied it seems that it is not really
+necessary to apply stretching, because different events will be centered
+at different velocities like in RT.
+
+
+
+
+
+
+
+
+
+
+

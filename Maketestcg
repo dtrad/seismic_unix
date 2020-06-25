@@ -1,0 +1,29 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a  #$L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm -lnr -ldan $(POSTLFLAGS)
+
+PROG=testnlcg
+
+FLAG=-c -O -Wall
+
+OBJ=  $(PROG).o mpcgne0.o nlcgtest_interface.o
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+mpcgne0.o: $(LIBC)/mpcgne0.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nlcgtest_interface.o: $(LIBC)/nlcgtest_interface.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+

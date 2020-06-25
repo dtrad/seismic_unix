@@ -1,0 +1,30 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a  #$L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm -lnr -ldan $(POSTLFLAGS)
+
+PROG=testmatrixop
+
+FLAG=-c -O -Wall
+
+OBJ=  $(PROG).o dftls.o axbcomplex.o LSmatrix.o
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+dftls.o: $(LIBC)/dftls.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+axbcomplex.o: $(LIBC)/axbcomplex.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+LSmatrix.o: $(LIBC)/LSmatrix.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+

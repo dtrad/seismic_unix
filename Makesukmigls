@@ -1,0 +1,38 @@
+SHELL= /bin/sh
+
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=sukmigls
+
+FLAG=-c -O -Wall
+OPTC= -O3 -Wall
+
+OBJ=  $(PROG).o kmig4.o rjwfilter.o Complex.o filt.o interpovv.o \
+getvelocities.o
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ) 
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+kmig4.o: $(LIBC)/kmig4.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rjwfilter.o: $(LIBC)/rjwfilter.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Complex.o: $(LIBC)/Complex.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+filt.o: $(LIBC)/filt.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interpovv.o: $(LIBC)/interpovv.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+getvelocities.o: $(LIBC)/getvelocities.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+

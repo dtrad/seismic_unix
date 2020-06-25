@@ -1,0 +1,81 @@
+#!/bin/sh
+# Generate a data gather with shifted hyperbolic events 
+
+plotx="suxwigb key=offset perc=97"
+set -x
+name=sx2
+
+
+# Use a marine data. Create a symetric gather from this
+file1a=${name}.su
+file1b=${name}b.su
+file1=${name}0.su
+# Make the first trace to coincide with zero offset to make later 
+# a symmetric sampling
+susort +offset < misscnsx0.su | sugain tpow=2 > $file1a
+# apply mute to large offsets
+parvel="vnmo=5000,7000 tnmo=0,7"
+sunmo < $file1a $parvel smute=1.5  | sunmo invert=1 $parvel  > pp
+mv pp $file1a
+
+
+suchw key1=offset a=68 key2=offset  b=1 < $file1a > $file1a'tmp'
+cp $file1a'tmp' $file1a
+Xsetntr $file1
+rm $file1a'tmp'
+
+suchw key1=offset b=-1 key2=offset < $file1a > $file1b
+suwind key=offset reject=0  < $file1b > $file1b'tmp'
+cp $file1b'tmp' $file1b
+rm $file1a'tmp'
+
+
+cat $file1a $file1b > $file1
+rm $file1b
+
+suchw key1=offset b=0.30 key2=offset < $file1 > $file1'tmp'
+surange < $file1'tmp'
+suwind j=1 <  $file1'tmp' | susort +offset > $file1
+rm $file1'tmp'
+surange < $file1
+$plotx < $file1 &
+
+
+file2=${name}s.su
+
+file1c=${name}c.su
+file2c=${name}sc.su
+file1z=${name}z.su
+file2z=${name}sz.su
+file0a=${name}0a.su
+file0b=${name}0b.su
+file0=${name}ext0.su
+
+suchw key1=offset a=1023 key2=offset b=1 < $file1 > $file2
+
+#suwind key=offset min=-1573 < $file1 > $file1c
+#suwind key=offset max=4000 < $file2 > $file2c
+
+
+suwind key=offset min=-3203 < $file1 > $file1c
+suwind key=offset max=4776 < $file2 > $file2c
+
+
+#sugain scale=0 < $file1c > $file1z
+#sugain scale=0 < $file2c > $file2z
+
+#cat $file1c $file2z > $file0a
+#cat $file1z $file2c > $file0b
+
+#suop2 $file0a $file0b > $file0
+suop2 $file1c $file2c op=sum > $file0
+$plotx < $file0 &
+
+suresamp < ${name}"ext0.su" nt=1001 > ${name}"ext0r.su"
+
+exit 0
+
+
+
+
+

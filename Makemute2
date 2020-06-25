@@ -1,0 +1,21 @@
+SHELL= /bin/sh
+OPTC= -O
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG= sumute2
+ 
+
+
+$(PROG): sumute2.o $D
+	gcc sumute2.o -o sumute2 $(CFLAGS) $(LFLAGS) 
+
+sumute2.o: sumute2.c 
+	gcc -c $(OPTC) $(ENDIANFLAG) sumute2.c
+
+
+ 

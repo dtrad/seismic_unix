@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -x
+echo 'test'
+#for sx in 1 2
+#do
+#    echo "$sx"
+#done	

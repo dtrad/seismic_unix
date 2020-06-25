@@ -1,0 +1,52 @@
+#! /bin/sh
+# Xradon --- Example of high resolution radon.
+# It needs an extra file rtparab0.in with parameters for  rtpar0
+# The inistial data are sudata1 generated with Xsussyn0.
+# rtpar0 is a fortran program not implemented yet in SU.
+# Hence, the input and output are ascii files.
+# In the very near future (?) it will get the data as other SU files 
+# Author: Daniel Trad- 10
+set -x
+NT=512 
+NH=64
+NP=139
+DT=4000
+VNMO=6000,7000,8000
+TNMO=0.0,0.65,1.0
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+#Create Gaps
+#suwind abs=1 key=offset min=500 max=3200 < sudata1 > sudata1gap 
+#suxwigb < sudata1gap n1=512 dt=0.004 n2=all  key=offset hbox=$HBOX wbox=$WBOX &
+#sushw key=ntr a=64 < sudata1 > sudata1b
+
+suxmovie title="Original data"< sudata1b &
+
+sunmo tnmo=$TNMO vnmo=$VNMO < sudata1b > sudata1nmo
+
+suxmovie title="NMO corrected data" < sudata1nmo &
+
+suhrrt method=1 eps1=3 iter=5 qmin=-1.e-8 < sudata1nmo  > pp
+suhrrtw2  < sudata1nmo > sudata1rec
+
+sunmo tnmo=$TNMO vnmo=$VNMO invert=1 < sudata1rec | \
+
+suxmovie f2=$F2 title="RD After NMO c" &
+
+suxmovie title="RD Before NMO" < sudata1rec & 
+
+# Radon domain
+a2b n1=1 < vel_gather.out > pp1
+a2b n1=1 < data1.par > pp.par
+suaddhead ns=$NT < pp1 | sushw key=dt,ntr  a=$DT,$NP | \
+sushw key=offset a=0 b=$DQ > sudata1rad 
+suxmovie f2=$FP d2=$D2 title="Radon domain" n1=$NT n2=$NP < sudata1rad &
+
+exit 0  
+

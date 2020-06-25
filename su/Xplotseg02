@@ -1,0 +1,64 @@
+#!/bin/sh
+# Figures for FKRT  (SEG02)
+# Figures interpolation with FK (small window)
+if [ 1 = 1 ]; then
+window="x2beg=500 x2end=3000  x1beg=6.4 x1end=7 clip=$2 "
+window="x2beg=0 x2end=3000  x1beg=6.4 x1end=7 perc=98  "
+#suxwigb key=offset  f1=5.5 < $1 title=$1 $window&
+f1=5.5
+#f1=0
+
+suxwigb key=offset < $1 title=$1 $window label1='Time(s)' label2='Offset(m)' f1=$f1 interp=1 > $1".ps" &
+
+#supswigb key=offset < $1 title=$2 $window label1='Time(s)' label2='Offset(m)' f1=5.5 interp=1 > $1".ps"
+#gv $1".ps"
+
+fi
+
+# Figure: interpolation with FK (whole figure)
+if [ 0 = 1 ]; then
+
+suximage d2=50 f2=213   < $1 title=$1 
+
+supsimage f1=0  d2=50 f2=213  perc=98 < $1 title=$2  label1='Time(s)' label2='Offset(m)' > $1"imag2.ps" curve=curveseg npair=5 
+
+gv $1"imag2.ps"
+
+fi
+
+# Figure: coherent noise removal (whole figure)
+if [ 0 = 1 ]; then
+
+suwind < $1 key=offset min=0 | susetntr > pp.su
+suximage d2=50 f2=213   < pp.su title=$1 
+
+supsimage f1=0  x2beg=213 d2=50 f2=213  perc=98 < pp.su title=$2  label1='Time(s)' label2='Offset(m)' > $1"imag.ps" curve=curveseg npair=5 
+
+gv $1"imag.ps"
+
+fi
+
+# Figure: coherent noise removal (small window)
+if [ 0 = 1 ]; then
+window="x2beg=500 x2end=3000  x1beg=1.1 x1end=1.5 clip=2 "
+
+suxwigb key=offset  < $1 title=$1 $window&
+
+
+window="x2beg=500 x2end=3000  x1beg=6.4 x1end=7 clip=3.0 "
+supswigb key=offset < $1 title=$2 $window label1='Time(s)' label2='Offset(m)' f1=5.5 interp=1 > $1".ps"
+gv $1".ps"
+
+fi
+
+# Figure: coherent noise removal (whole figure)
+if [ 0 = 1 ]; then
+
+
+suximage d2=50 f2=213   < $1 title=$1 
+suwind key=offset min=0 < $1 | susetntr > pp.su
+supsimage f1=5.5 f2=213   x2beg=213 d2=50   perc=98 < pp.su title=$2  label1='Time(s)' label2='Offset(m)' > $1"imag2.ps" #curve=curveseg npair=5 
+
+gv $1"imag2.ps"
+
+fi

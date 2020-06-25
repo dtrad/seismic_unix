@@ -1,0 +1,50 @@
+# Makefile for ...libdan
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $I/cwp.h $I/su.h 
+
+IDIR=-I$(CWPROOT)/include  -I$(HOME)/seismic/clibrary
+
+LFLAGS= -L$L -lcwp -lsu  -lpar  -lm $(IDIR)
+
+LIB = $L/libdan.a
+
+.cpp.o:
+	g++ -c -Wall  $(IDIR) $<
+
+ARCH =				\
+	$(LIB)(dot.o)	\
+	$(LIB)(rcdot.o)	\
+	$(LIB)(xequaly.o)	\
+	$(LIB)(xplusy.o)	\
+	$(LIB)(xtimesy.o)	\
+	$(LIB)(Atimesx.o)	\
+	$(LIB)(AtimesBm.o)	\
+	$(LIB)(freqweight.o)	\
+	$(LIB)(save_vector.o)	\
+	$(LIB)(plotgather.o)	\
+	$(LIB)(Complex.o)	
+#	$(LIB)(getvelocities.o)		
+
+
+INSTALL:	$(LIB) 
+	@-rm -f INSTALL
+	@touch $@
+
+$(ARCH)	: $D
+
+$(LIB)	:	$(ARCH)
+	$(RANLIB) $(LIB)
+
+remake	:
+	@-rm -f $(LIB) INSTALL
+	@$(MAKE)
+
+list	:
+	$(AR) tv $(LIB)
+
+clean:
+	rm -f junk* core a.out
+
+.PRECIOUS:	 $(LIB)

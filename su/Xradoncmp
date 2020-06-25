@@ -1,0 +1,40 @@
+#! /bin/sh
+# shell for Kirchhoff modeling for linear v(x,z)
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+NAME=data4
+FILE=$NAME'.su'
+FILECMP=$NAME'.cmp.su'
+FILERAD=$NAME'.cmp.rad.su'
+FILEREC=$NAME'.cmp.rec.su'
+FILEOFF=$NAME'.cmp.off'
+
+suwind key=cdp min=500 max=500 < data4.su | sushw key=ntr a=5 > $FILECMP 
+  
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILECMP > $FILEOFF
+
+supswigp key=offset < $FILECMP | gv - &
+
+suradtd method=2 iter_end=2 step=.9 eps=0.01 eps1=1e-3 eps2=1e-3 qmin=-1e-7. qmax=4e-7 nq=32 itercg=10 thres=0.3  < $FILECMP | sufilter  f=5,10,60,70 amps=1,1,1,0  > $FILERAD
+
+supswigp key=f2 < $FILERAD | gv - &
+
+suradtdi offsetfile=$FILEOFF  < $FILERAD | sufilter  f=5,10,60,70 amps=1,1,1,0   > $FILEREC
+
+supswigp key=offset < $FILEREC | gv - &
+
+
+
+
+
+
+
+

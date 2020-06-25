@@ -1,0 +1,40 @@
+#! /bin/sh
+# PLOTS 
+# Plot for semblance analysis.
+# The ps files must be produced first with Velan5  (OPTIONPS='y')
+# Daniel Trad- UBC Nov 1999
+  
+FILE=fig19mig.ps
+
+FILEN=miss2.su
+
+FILE1=$FILEN'.1028.ps'
+FILE2=$FILEN'.1102.ps'
+FILE3=$FILEN'.1176.ps'
+FILE4=$FILEN'.1250.ps'
+OPTIONNUM='4'
+
+
+case $OPTIONNUM in
+2*)
+psmerge in=$FILE1 in=$FILE2  scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=$FILE1 in=$FILE2 in=$FILE3  scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0  > ~/ps/$FILE
+;;
+4*)
+psmerge in=$FILE1 in=$FILE2 in=$FILE3 in=$FILE4 scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+

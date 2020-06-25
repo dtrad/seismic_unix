@@ -1,0 +1,237 @@
+#! /bin/sh
+# Xradon --- Hyperbolic Radon Transform.
+######################################################################
+# Example: real  sucdps2, sumiss2
+# PAPER Xradonlin1d 10 3 .01 0 0.15 10 31
+#######################################################################
+# Author: Daniel Trad- November 1999
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+clip=65
+clipr=3
+
+set -x 
+
+EXAMPLE='_enmo_gap'
+
+FILEN=cdp1000g.su
+FILE=$FILEN
+FILETEMP=pp
+FILETEMP2=ppp
+FILENMO=$FILEN'nmo'
+FILEGAP=$FILEN'gap'
+FILEOFF=$FILEN'off'
+FILERAD=$FILEN'rad'${EXAMPLE}
+FILEREC=$FILEN'rec'${EXAMPLE}
+FILERADOFF=$FILEN'radoff'
+FILERAD2=$FILEN'radb'${EXAMPLE}'4'
+FILEREC2=$FILEN'recb'${EXAMPLE}'4'
+FILEMOD=$FILE'mod'${EXAMPLE}'4'
+FILEOFF2=$FILE'off2' # Final offset in which data will be resampled 
+par="stkvel.misscn3.su"
+
+# Options
+OPTIONGAP='y'
+OPTIONSETNTR='y'
+OPTIONGETH='y'
+OPTIONFILT='n'
+OPTIONAGC='n'
+OPTIONRAD='n'
+OPTIONENMO1='y'
+OPTIONREC='n'
+OPTIONREC2='y'
+OPTIONRESAMP='y'
+OPTIONFLIP='n'
+
+# PASS BAND FILTER
+F=1,10,70,80
+AMPS=0,1,1,0
+# RADON (see suhrrtf for more details)
+METHOD=2 # 
+EPS1=5e-1  # Variance of the noise
+ITER_END=1 ; # External iterations 
+QMIN=-0.17e-3;
+QMAX=0.1e-3;
+NQ=100      # NP traces
+FMAX=60     # max freq to compute
+RTMETHOD=1 # 1=LRT 2=PRT 3=HRT
+COSTFLAG=0 # =1 PLOT COST FUNCTIONS (SLOWER)
+ITERCG=14  # CG ITERATIONS
+EPS=0      # =0 FOR METHOD 2 
+NORM=1     # L1 NORM
+STEP=0.9  # Step less 1
+THRES=0.5 
+factor=1.65
+SMOOTH=0
+nmofactor=0 
+
+perc=99.5
+
+cdp=1000
+tnmo=0.08903,1.769,2.17,2.437,2.671,3.216,3.75,3.906,5.809,6.978
+vnmo=4393,4818,5003,5131,5292,5565,5845,5902,6319,6423
+
+#tnmo=0.,3.5,7.
+#vnmo=4100,4100,4100
+
+smute=2
+tvel=$tnmo
+vel=$vnmo
+TVEL=$tvel
+VEL=$vel
+method=2
+offsetfile=$FILEOFF
+
+reject1=-8468,-8293,-8118,-7943,-7768,-7593,-7418,-7243,-7068
+
+accept1=-15993,-15818,-15643
+
+accept1=-15993,-15643
+
+
+
+cp $FILE $FILETEMP
+
+if [ $OPTIONGETH = 'y' ]; then
+    sugethw key=offset output=geom < $FILE > $FILEOFF2    
+fi
+
+if [  $OPTIONGAP = 'y' ]; then
+    suwind key=offset abs=1 min=1500 max=14000 j=2 < $FILETEMP > $FILETEMP2  \
+    reject=$reject1 accept=$accept1 
+    cp $FILETEMP2 $FILEGAP
+    cp $FILETEMP2 $FILETEMP 
+fi
+
+if [ $OPTIONSETNTR = 'y' ]; then
+    ntr=`surange < $FILE | sed 1q | sed 's/traces://'`
+    cp $FILETEMP $FILETEMP2
+    sushw key=ntr a=$ntr < $FILETEMP2 > $FILETEMP 
+fi
+
+case $OPTIONFILT in
+y*)
+sufilter f=$F amps=$AMPS < $FILETEMP > $FILETEMP2
+cp $FILETEMP2 $FILETEMP
+;;
+esac
+
+
+# Save offset  for inverse radon transform
+case $OPTIONGETH in
+y*)
+sugethw key=offset output=geom < $FILE > $FILEOFF
+;;
+esac
+
+if [ $OPTIONFLIP = 'y' ]; then
+    Xflipdata $FILETEMP $FILETEMP2
+    $PLOTX < $FILETEMP2 &
+    cp  $FILETEMP2  $FILETEMP
+    cp  $FILETEMP2  $FILEGAP'flip'
+fi
+
+case $OPTIONRAD in
+y*)
+#Forward  Radon transform: Time domain
+#suhrrtf method=1 eps1=0.1 iter_end=$NITER qmin=$QMIN nq=$NQ freq=$FMAX rtmethod=1  costflag=0 itercg=35 eps=0 norm=1 step=0.95 factor=$FACTOR < $FILETEMP  > $FILERAD 
+suradontoep < $FILETEMP verbose=$verbose rtmethod=1 par=$par  eps1=$EPS1  nq=$NQ qmin=$QMIN norm=0 nmofactor=$nmofactor smute=3.0 step=0.95 factor=$factor modelfile=$FILERAD quantil=1 fmax=$FMAX > $FILETEMP2
+$PLOTX clip=$clip < $FILETEMP2 title="Reconstructed data from suradontoep " &
+$PLOTR < $FILERAD clip=$clipr &
+;;
+esac
+
+step=0.95
+
+itercg=5
+iter_end=1
+eps1=1e-2
+norm=0
+dv=0.01
+nv=70
+taper=1
+dtres=0.008
+ntres=875
+pervmin=0.5e6;
+ntapertime=1751
+centralq=15 
+ntaper=10 
+t0=0.5
+tmax=0
+LI=1
+
+itercgfin=`echo "scale=0; 1 * $itercg" | bc `
+#itercgfin=$itercg
+
+if [ $OPTIONRESAMP = 'y' ]; then
+    cp $FILERAD $FILERAD'backup'
+    sufilter f=0,10,50,60  amps=1,1,1,0  < $FILERAD | suresamp dt=$dtres nt=$ntres > $FILETEMP
+    cp $FILETEMP $FILERAD
+    ntapertime=400
+fi
+
+if [ $OPTIONENMO1 = 'y' ]; then
+    #sugain scale=1e4 < $FILERAD > pp; cp pp $FILERAD
+    suenmo9 model=1 smooth=0 < $FILERAD itercg=$itercg testadj=1 nv=$nv iter_end=$iter_end eps1=$eps1 norm=$norm eps2=1e-3 taper=$taper vel=$vel tvel=$tvel dv=$dv step=$step eps=0.01 method=0 modelfile=$FILEMOD itercgfin=$itercgfin  pervmin=$pervmin centralq=$centralq ntapertime=$ntapertime ntaper=$ntaper t0=$t0 tmax=$tmax LI=$LI  > $FILERAD2
+    $PLOTR < $FILERAD perc=$perc title=$FILERAD &
+    $PLOTR < $FILERAD2 perc=$perc title=$FILERAD2 &
+    $PLOTR < $FILEMOD  title=$FILEMOD &
+fi
+
+
+if [ $OPTIONRESAMP = 'y' ]; then
+    cp $FILERAD'backup' $FILERAD
+    rm $FILERAD'backup'
+    suresamp < $FILERAD2 dt=0.004 nt=1751 > $FILETEMP
+    cp $FILETEMP $FILERAD2
+fi
+
+
+
+#Inverse Radon Transformr
+case $OPTIONREC in
+y*)
+suradon00inv $FILE $FILERAD rtmethod=1 par=$par nq=$NQ nmofactor=$nmofactor smute=3.0 fmax=$FMAX > $FILEREC
+$PLOTX clip=$clip < $FILEREC title="Reconstructed data from suradon00inv " &
+suadapdiff $FILE $FILEREC | $PLOTR clip=65 title="Residuals with suradontoep" &
+#suhrrti rtmethod=$RTMETHOD offsetfile=$FILEOFF  fmax=$FMAX < $FILERAD  > $FILEREC
+;;
+esac
+
+case $OPTIONREC2 in
+y*)
+#Inverse Radon Transformr
+suradon00inv $FILE $FILERAD2 rtmethod=1 par=$par nq=$NQ nmofactor=$nmofactor smute=3.0 fmax=$FMAX > $FILEREC2
+$PLOTX clip=$clip < $FILEREC2 title="Reconstructed data from suradon00inv " &
+suadapdiff $FILE $FILEREC2 | $PLOTR clip=65 title="Residuals with suenmo9 " &
+#suhrrti rtmethod=$RTMETHOD offsetfile=$FILEOFF2  fmax=$FMAX < $FILERAD2  > $FILEREC2
+;;
+esac
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

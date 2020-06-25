@@ -1,0 +1,100 @@
+  230  sugethw < misscn1_1901_3000.su count=91 |more 
+  231  h | more
+  232  suchw key1=cdp key2=sx key3=gx b=1 c=1 d=17500 < misscn1_818_1900.su > misscn1_a.su
+  233  sugethw < misscn1_1.su count=100 |suxwigb
+  234  sugethw < misscn1_a.su count=100 |suxwigb
+  235  exit
+  236  su
+  237  exit
+  238  su
+  239  cd seismic
+  240  make -f Makesuradonl1freq
+  241  emacs radonl1freq.cpp &
+  242  emacs ./clibrary/radonl1freq.cpp &
+  243  cd 
+  244  lth
+  245  mc
+  246  suchw
+  247  df
+  248  lth
+  249  cd work
+  250  mc
+  251  df
+  252  exit
+  253  startx
+  254  cd work
+  255  lth
+  256  surange < misscn1_a.su 
+  257  surange < misscn1_a.su 
+  258  sugethw < misscn1_a.su key=cdp | more
+  259  suwind < misscn1_a.su count=100| suxwigb
+  260  suwind < misscn1_a.su count=100| suximage perc=99
+  261  lth
+  262  rm  misscn1_818_1900.su
+  263  df
+  264  suchw
+  265  sugethw < misscn1_1901_3000.su count=91 |more 
+  266  sugethw < misscn1_a.su key=cdp | more
+  267  suchw key1=cdp key2=sx key3=gx a=92 b=1 c=1 d=17500 < misscn1_1901_3000.su > misscn1_b.su
+  268  sugethw < misscn1_b.su key=cdp | more
+  269  suwind < misscn1_b.su count=183 | suximage perc=99
+  270  suwind < misscn1_b.su count=183 | plotx  perc=99
+  271  sugethw < misscn1_b.su key=cdp | more
+  272  suwind < misscn1_b.su key=cdp min=450 max=450 count=183 | plotx  perc=99
+  273  suwind < misscn1_b.su key=cdp min=450 max=450 count=183 | sugethw key=offset | more
+  274  suwind < misscn1_b.su key=cdp min=450 max=450 count=183 > cdp450.su
+  275* suwind < misscn1_b.su key=cdp min=450 max=450 count=183 | susort offset > cdp450.s
+  276  sugethw key=offset < cdp450 | more
+  277  sugethw key=offset < cdp450.su | more
+  278  sugethw key=offset < cdp450.su
+  279  suchw a=92 < misscn1_a.su > pp
+  280  mv pp misscn1_a.su
+  281  suwind < misscn1.su key=cpd min=200 max=200 > pp
+  282  suwind < misscn1.su key=cpd min=200 max=200 > pp
+  283  suwind < misscn1.su key=cdp min=200 max=200 > pp
+  284  plotx < pp
+  285  lt
+  286  sup misscn_test.eom.su 90
+  287  suwind key=offset min=-68 max=-68 < misscn1_a.su > pp
+  288  suxwigb < pp
+  289  susort +cdp <  pp > misscn1_a_68.su
+  290  Xsetntr misscn1_a_68.su 
+  291  plotc < misscn1_a_68.su  perc=90
+  292  plotc < misscn1_a_68.su  perc=90
+  293  suwind key=offset min=-68 max=-68 < misscn1_b.su > pp
+  294  susort +cdp <  pp > misscn1_b_68.su
+  295  cat misscn1_a_68.su misscn1_b_86.su | susort +cdp > misscn1_68.su
+  296  cat misscn1_a_68.su misscn1_b_68.su | susort +cdp > misscn1_68.su
+  297  Xsetntr misscn1_68.su
+  298  sup misscn1_68.su
+  299  sup misscn1_68.su perc=90
+  300  sup misscn1_68.su 90
+  301  sup misscn1_68.su 90
+  302  plotc <  misscn1_68.su perc=90
+  303  suwind key=cdp min=200 max=1000 < misscn1_68.su > pp
+  304  mv pp misscn1_68.su
+  305  Xsetntr misscn1_68.su
+  306  plotc <  misscn1_68.su perc=90
+  307  plotc <  misscn1_68.su perc=99
+  308  h
+  309  suchw key1=cdp key2=sx key3=gx a=0 b=1 c=1 d=17500 < misscn1_1901_3000.su > misscn1_b.su
+  310  suchw a=92 < misscn1_b.su > pp
+  311  mv pp misscn1_b.su
+  312  suwind key=offset min=-68 max=-68 < misscn1_b.su > pp
+  313  susort +cdp <  pp > misscn1_b_68.su
+  314  cat misscn1_a_68.su misscn1_b_68.su | susort +cdp > misscn1_68.su
+  315  Xsetntr misscn1_68.su
+  316  plotc <  misscn1_68.su perc=90
+  317  suwind key=cdp min=200 max=1090 < misscn1_68.su > pp
+  318  mv pp misscn1_68.su
+  319  Xsetntr misscn1_68.su
+  320  plotc <  misscn1_68.su perc=90
+  321  plotc <  misscn1_68.su perc=99
+  322  suwind key=cdp min=868 max=868 < misscn1_68.su > pp
+  323  surange < pp
+  324  plotc <  misscn1_68.su perc=99
+  325  sup  misscn1_68.su 99
+  326  suxwigb < pp
+  327  h > ../su/misscn1_process
+  328  h > ../seismi/su/misscn1_process
+  329  h > ../seismic/su/misscn1_process

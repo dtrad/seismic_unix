@@ -1,0 +1,66 @@
+#! /bin/sh
+# Xsuradonfk_ken --- Attenuation of difractions with  
+# non apex centered Radon Transform.
+# Data contain multiples of diffractions. 
+#
+# data preprocessing:
+# Althouth the data is a real data set, for this example we need to take a
+# window, and make the data to look symmetric 
+# from  kencmpsnonmo.su take cdp 5300 and window from 5.5s to end.
+# Data name kencmpwin0.su
+# then make the data symmetric by 
+# suchw key1=offset key2=offset b=-1 < kencmpwin0.su > pp
+# cat pp kencmpwin0.su > kencmpwin.su
+# sushw key=delrt a=0 < kencmpwin.su > pp
+# susort +offset < pp >  kencmpwin.su
+# Xsetntr kencmpwin.su
+######################################################################
+# Author: Daniel Trad- November 2001
+set -x
+#filen=lineken0b
+#filein=$filen".su"
+# Uncomment these two lines if all cdps are going to be output
+# to a single file
+
+#fileout=$filen"a.su"
+#rm $fileout
+
+
+filen=cdps5800_6300
+
+orig="${filen}orig.su"
+clean="${filen}clean.su"
+diff="${filen}diff.su"
+
+origzo="${filen}orig.zo.su"
+cleanzo="${filen}clean.zo.su"
+diffzo="${filen}diff.zo.su"
+
+origstack="${filen}orig.stack.su"
+cleanstack="${filen}clean.stack.su"
+diffstack="${filen}diff.stack.su"
+
+
+hmax=1000
+
+suwind < $orig key=offset max=$hmax abs=1 > $origzo
+sunmo par=stkvel.lineken0.su < $origzo | sustack > $origstack 
+
+
+suwind < $clean key=offset max=$hmax abs=1 > $cleanzo
+sunmo par=stkvel.lineken0.su < $cleanzo | sustack > $cleanstack 
+
+xwindow="hbox=900 wbox=700 cmap=hsv4 perc=98 x1beg=6.24 x1end=7.4"
+
+suximage < $origstack $xwindow &
+suximage < $cleanstack $xwindow &
+ 
+exit 0
+
+
+
+
+
+
+
+

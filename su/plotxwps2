@@ -1,0 +1,36 @@
+#! /bin/sh
+
+FILEPS="$1".int.3gaps.ps
+FILEJPG="$1".int.3gaps.jpg
+
+set -x 
+
+clip=95    
+
+    
+x1beg=4
+x1end=6
+x2beg=-5000
+x2end=0    
+
+supswigp < "$1" key=offset x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end clip=$clip title="${1}:near offsets"  > p
+    
+x2beg=-10000
+x2end=-5000	
+
+supswigp < "$1" key=offset x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end clip=$clip title="${1}:middle offsets"  > pp
+	   
+x2beg=-16000
+x2end=-11000
+
+supswigp < "$1" key=offset x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end clip=$clip title="${1}:far offsets"  > ppp
+
+psmerge in=ppp in=pp in=p  scale=0.42,0.42 translate=0,3 translate=3,3 translate=6,3  > ~/ps/$FILEPS
+
+convert ~/ps/$FILEPS  ~/ps/jpg/$FILEJPG
+
+
+
+
+
+

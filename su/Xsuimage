@@ -1,0 +1,13 @@
+#!/bin/sh
+# Given a sufile this script produces the jpg figure.
+# First argument is the sufile, second is the perc parameter for suximage
+# Daniel Trad UBC - June 20,2000
+
+FILE=$1
+suximage perc=$2 < $FILE > $FILE'.xwd' label2="CDP number" label1="time(s)" &
+xwd -out $FILE'.xwd'
+echo "Click with mouse the window...............\n"
+convert $FILE'.xwd' ../jpg/$FILE'.jpg'
+ee ../jpg/data1.su.jpg &
+#convert ../ps/fig3seg.ps figtest.jpeg
+

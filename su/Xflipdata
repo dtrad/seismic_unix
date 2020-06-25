@@ -1,0 +1,12 @@
+#! /bin/sh
+FILE="$1" 
+FILEF=$FILE'flip'
+FILET="$2"
+
+#suflip < $FILE flip=2 | suchw key1=offset key2=offset b=1 a=$MAXOFFSET > $FILEF
+
+suchw key1=offset key2=offset b=-1 < $FILE > $FILEF
+cat $FILE $FILEF > $FILET
+Xsetntr $FILET
+suxwigb key=offset  < $FILET perc=97
+

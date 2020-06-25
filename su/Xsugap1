@@ -1,0 +1,40 @@
+#! /bin/sh
+# Xsugap1 --- Example of interpolation with sugap.
+######################################################################
+# This example needs sudata1 generated with Xsusyn0
+# No extra files are needed.
+# If you change the data check the values at the beginning.
+#######################################################################
+# Author: Daniel Trad- March 15/99
+
+
+set -x
+NT=512 
+NH=64
+NP=150
+DT=4000
+VNMO=6000,7000,8000
+TNMO=0.0,0.65,1.0
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+
+
+#Create Gaps
+sukill  min=46 count=5 < sudata1 > sudata1b 
+supswigb < sudata1b  key=offset | ghostview - &
+# Be sure ntr key is set and rename
+sushw key=ntr a=$NH < sudata1b > sudata1c
+
+
+# use sugap to fill gaps
+sugap n1=46 n2=50  ip=5  eps=3 < sudata1c  > sudata1fill
+supswigb < sudata1fill   key=offset  | ghostview - &  
+
+exit 0  
+

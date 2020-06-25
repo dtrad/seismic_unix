@@ -1,0 +1,59 @@
+SHELL= /bin/sh
+OPTC= -O
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG= suhrrtcg
+
+FLAG=-c -O 
+
+OBJ=  suhrrt2.o hrrtf.o cholesky2.o graddesc.o p_stack.o h_stack.o fx_go.o fx_symmetry.o \
+      fft.o  matrix_2.o gauss_gauss_0.o cauchy_gauss_cg.o  \
+      radon_param.o gauss_gauss_t0.o herm.o interval.o norma.o
+LIB=/home/dtrad/radon/flibrary
+
+# dependence 
+$(PROG):suhrrt2.o  hrrtf.o cholesky2.o graddesc.o p_stack.o h_stack.o fx_go.o fx_symmetry.o fft.o \
+	matrix_2.o gauss_gauss_0.o cauchy_gauss_cg.o  \
+	radon_param.o gauss_gauss_t0.o herm.o interval.o norma.o
+	g77 -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+suhrrt2.o: suhrrt2.c
+	gcc -c $(OPTC) $(ENDIANFLAG) suhrrtf.c -Wall
+hrrtf.o: hrrtf.f 
+	g77 $(FLAG) hrrtf.f
+cholesky2.o:   $(LIB)/cholesky2.for
+	g77 $(FLAG) $(LIB)/cholesky2.for
+graddesc.o:   $(LIB)/graddesc.f
+	g77 $(FLAG) $(LIB)/graddesc.f -Wall
+p_stack.o:  $(LIB)/p_stack.for 
+	g77 $(FLAG)  $(LIB)/p_stack.for 
+h_stack.o:  $(LIB)/h_stack.for
+	g77 $(FLAG) $(LIB)/h_stack.for
+fx_go.o:  $(LIB)/fx_go.for
+	g77 $(FLAG) $(LIB)/fx_go.for
+fx_symmetry.o:  $(LIB)/fx_symmetry.for
+	g77 $(FLAG)  $(LIB)/fx_symmetry.for 
+fft.o:  $(LIB)/fft.for
+	g77 $(FLAG)  $(LIB)/fft.for
+matrix_2.o:  $(LIB)/matrix_2.for
+	g77 $(FLAG)  $(LIB)/matrix_2.for
+gauss_gauss_0.o:  $(LIB)/gauss_gauss_0.for
+	g77 $(FLAG)  $(LIB)/gauss_gauss_0.for
+cauchy_gauss_0.o:  $(LIB)/cauchy_gauss_0.for
+	g77 $(FLAG)  $(LIB)/cauchy_gauss_0.for
+sum_slope.o:  $(LIB)/sum_slope.for
+	g77 $(FLAG)  $(LIB)/sum_slope.for
+radon_param.o:  $(LIB)/radon_param.for
+	g77 $(FLAG)   $(LIB)/radon_param.for
+gauss_gauss_t0.o:   $(LIB)/gauss_gauss_t0.for
+	g77 $(FLAG)  $(LIB)/gauss_gauss_t0.for
+herm.o:  $(LIB)/herm.for
+	g77 $(FLAG) $(LIB)/herm.for
+interval.o: $(LIB)/interval.for
+	g77 $(FLAG) $(LIB)/interval.for
+norma.o: $(LIB)/norma.for
+	g77 $(FLAG) $(LIB)/norma.for

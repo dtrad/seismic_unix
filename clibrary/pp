@@ -1,0 +1,325 @@
+1c1
+< #include "radonfk.h"
+---
+> #include "radonfkcube.h"
+5,6c5,7
+< void stoltz_wtcgls(float **data, float **model, float **Wd, float *h, int nh,  float *t, 
+< 		   int nt,  float vel, inv_par inv, float Wmthreshold, float **Wm)
+---
+> void stoltz_wtcgls_cube(float **data, float ***model, float **Wd, float *h, int nh,  float *t, 
+> 			int nt,  float *vel, int nv, inv_par inv, float Wmthreshold,
+> 			float ***Wm)
+8c9,14
+< 
+---
+>   /* CG with 2 dimensional data and 3 dimensional model */
+>   /* data has axes t,h
+>      model has axes t,h,vel
+>      In a more general situation model will be t,q,vel
+>   */
+>    
+19,20c25,26
+<   void (*oper) (float **datain, float **dataout, int nt, int nh, float *t, 
+< 		float *h, float vel, int adj);
+---
+>   void (*oper) (float **datain, float ***dataout, int nt, int nh, int nv, float *t, 
+> 		float *h, float *velarray, int adj);
+25c31,32
+<   zero_array(model,nh,nt);
+---
+>   //datap=ealloc2float(nt,nh);
+>   zero_array(model,nv,nh,nt);
+31c38
+<     if (j==2) deviations(model[0],nh*nt,data[0],nh*nt,inv.norm,quantil1,
+---
+>     if (j==2) deviations(*model[0],nv*nh*nt,data[0],nh*nt,inv.norm,quantil1,
+38,39c45,46
+<     weights_test(model,nt,nh,inv.norm,sigmam,Wm,Wd,j,Wmthreshold);    
+<     //    weights(model[0],nt*nh,inv.norm,sigmam,Wm[0],j);    
+---
+>     weights_test(model,nt,nh,nv,inv.norm,sigmam,Wm,Wd,j,Wmthreshold);    
+>     //weights(*model[0],nx,inv.norm,sigmam,*Wm[0],j);    
+41c48
+<     J[j-1]=wpcgnr_mig(oper,model,data,nt,nh,t,h,vel,Wm,Wd,inv);
+---
+>     J[j-1]=wpcgnr_mig(oper,model,data,nt,nh,nv,t,h,vel,Wm,Wd,inv);
+47c54,55
+<   if (1) weights_test(model,nt,nh,inv.norm,sigmam,Wm,Wd,j,Wmthreshold);
+---
+>   
+>   if (1) weights_test(model,nt,nh,nv,inv.norm,sigmam,Wm,Wd,j,Wmthreshold);
+53c61
+< void weights_test(float **m, int nt, int nh, int norm, float sigmam, float **Wm, float **Wd, int iter, float Wmthreshold)
+---
+> void weights_test(float ***m, int nt, int nh, int nv, int norm, float sigmam, float ***Wm, float **Wd, int iter, float Wmthreshold)
+70,76c78,83
+< 
+<      int ih, it, ii, iih;
+<      float temp;
+<      int smooth=5;     // smoothing in the time direction
+<      int hsmooth = 3;  // smoothing in the offset direction
+<      int verbose = 0;
+<       
+---
+>      
+>       int iv, ih, it, ii, iih;
+>       float temp;
+>       int smooth=5;     // smoothing in the time direction
+>       int hsmooth = 3;  // smoothing in the offset direction     
+>       int verbose = 0;
+78,80c85,88
+< 	for (ih=0;ih<nh;ih++) 
+< 	  for (it=0;it<nt;it++) 
+< 	    Wm[ih][it]=1;
+---
+> 	for (iv=0;iv<nv;iv++) 
+> 	  for (ih=0;ih<nh;ih++) 
+> 	    for (it=0;it<nt;it++) 
+> 	      Wm[iv][ih][it]=1;
+83c91
+<       if (verbose) fprintf(stderr,"norm=%d,sigmam=%f,Wmthreshold=%f\n",norm,sigmam,Wmthreshold);
+---
+>       if (verbose) fprintf(stderr,"norm=%d,sigmam=%f\n",norm,sigmam);
+84a93
+> 	for (iv=0;iv<nv;iv++)
+87c96
+< 	      Wm[ih][it]=MAX(fabs(m[ih][it]),sigmam);
+---
+> 	      Wm[iv][ih][it]=MAX(fabs(m[iv][ih][it]),sigmam);
+88a98
+> 	for (iv=0;iv<nv;iv++){ 
+91d100
+< 		 // Add all energy inside a window smooth x hsmooth
+92a102
+> 		 // Add all energy inside a window smooth x hsmooth
+94,95c104,105
+< 		      for (ii= -smooth;ii<smooth;ii++)
+< 			   temp=temp+fabs(m[ih+iih][it+ii]);
+---
+> 		      for (ii=-smooth;ii<smooth;ii++)
+> 			   temp=temp+fabs(m[iv][ih+iih][it+ii]);
+98c108
+< 		 Wm[ih][it]=MIN(Wmthreshold,(sigmam*sigmam+temp*temp));
+---
+> 		 Wm[iv][ih][it]=MIN(Wmthreshold,(sigmam*sigmam+temp*temp));
+101,102c111,112
+< 		 // inside the near offsets.
+< 		 if ((Wd[ih][it]==0)&&(fabs(nh/2-ih)<5)) Wm[ih][it]=Wmthreshold;
+---
+> 		 // inside the near offsets.      
+> 		 if ((Wd[ih][it]==0)&&(fabs(nh/2-ih) < 5)) Wm[iv][ih][it] = Wmthreshold; 
+104a115
+> 	}
+108a120,123
+> 
+> 
+> 
+> 
+136,139c151,154
+< float wpcgnr_mig(void (*oper)  (float **data, float **model, int nt, int nh, float *t,
+< 				float *h, float vel, int adj),
+< 		 float **x, float **b,int nt, int nh, float *t, float *h,  
+< 		 float vel, float **Wm, float **Wd, inv_par inv)
+---
+> float wpcgnr_mig(void (*oper)  (float **data, float ***model, int nt, int nh, int nv, float *t,
+> 				float *h, float *vel, int adj),
+> 		 float ***x, float **b,int nt, int nh, int nv, float *t, float *h,  
+> 		 float *vel, float ***Wm, float **Wd, inv_par inv)
+144c159
+<   int k,j=0,ih,it;
+---
+>   int k,j=0,ih,it, iv;
+158c173
+<   float **r2,**r,**g,**s,**z,**w,*rho,*eta,rhold, **rc, **xc;
+---
+>   float **r2,**r,***g,***s,***z,**w,*rho,*eta,rhold, **rc, ***xc;
+160,161c175,176
+<   int nx=nt*nh;
+<   int ny=nx;  
+---
+>   int nx=nt*nh*nv;
+>   int ny=nt*nh;  
+165,167c180,182
+<   g=ealloc2float(nt,nh);
+<   s=ealloc2float(nt,nh);
+<   z=ealloc2float(nt,nh);
+---
+>   g=ealloc3float(nt,nh,nv);
+>   s=ealloc3float(nt,nh,nv);
+>   z=ealloc3float(nt,nh,nv);
+173c188
+<   xc=ealloc2float(nt,nh); 
+---
+>   xc=ealloc3float(nt,nh,nv); 
+183,184c198,206
+<   if (plot) ximageplotgather(Wm,nh,nt,dt,"Wm.su",0,"perc=100 legend=1");
+<   if (plot)  xplotgather(b,nh,nt,dt,"datains.su",0,"clip=1 xbox=600 legend=1&");
+---
+>   if ((plot)&&(0)) 
+>     ximageplotgather(Wd,nh,nt,dt,"Wd.su",0,"perc=100 legend=1");
+> 
+> 
+>   if ((plot)||(1)) 
+>     for (iv=0;iv<nv;iv++)
+>       ximageplotgather(Wm[iv],nh,nt,dt,"Wm.su",0,"perc=100 legend=1");
+> 
+>   if ((plot)&&(0))  xplotgather(b,nh,nt,dt,"datains.su",0,"bclip=1.20259 wclip=-1.175 xbox=600 legend=1&");
+187c209
+<     zero_array(x,nh,nt);
+---
+>     zero_array(x,nv,nh,nt);
+191c213
+<     (*oper) (r,x,nt,nh,t,h,vel,0);
+---
+>     (*oper) (r,x,nt,nh,nv,t,h,vel,0);
+198,199c220,221
+<   (*oper) (r2,g,nt,nh,t,h,vel,1);
+<   CequalAxB(z,g,Wm,nt,nh);
+---
+>   (*oper) (r2,g,nt,nh,nv,t,h,vel,1);
+>   CequalAxB(z,g,Wm,nt,nh,nv);
+201c223
+<   normb=dot(nx,z[0],z[0]);
+---
+>   normb=dot(nx,*z[0],*z[0]);
+203,206d224
+<      
+<   for (ih=0;ih<nh;ih++)
+<     for (it=0;it<nt;it++) 
+<       s[ih][it]=z[ih][it];
+207a226,230
+>   for (iv=0;iv<nv;iv++)
+>     for (ih=0;ih<nh;ih++)
+>       for (it=0;it<nt;it++) 
+> 	s[iv][ih][it]=z[iv][ih][it];
+> 
+213c236
+<     (*oper) (w,s,nt,nh,t,h,vel,0);
+---
+>     (*oper) (w,s,nt,nh,nv,t,h,vel,0);
+216c239
+<     alphanum=dot(nx,z[0],g[0]);
+---
+>     alphanum=dot(nx,*z[0],*g[0]);
+230c253,255
+<       for (ih=0;ih<nh;ih++) x[ih][it]+=(alpha*s[ih][it]);
+---
+>       for (ih=0;ih<nh;ih++)
+> 	for (iv=0;iv<nv;iv++)
+> 	  x[iv][ih][it]+=(alpha*s[iv][ih][it]);
+240c265
+<     (*oper) (r2,g,nt,nh,t,h,vel,1);
+---
+>     (*oper) (r2,g,nt,nh,nv,t,h,vel,1);
+242c267
+<     CequalAxB(z,g,Wm,nt,nh);
+---
+>     CequalAxB(z,g,Wm,nt,nh,nv);
+245c270
+<     rho[k]=dot(nx,z[0],z[0])/normb;
+---
+>     rho[k]=dot(nx,*z[0],*z[0])/normb;
+251,258c276,290
+<     beta=dot(nx,z[0],g[0])/alphanum;
+<     CequalApluskxB(s,z,beta,s,nt,nh);    
+<     eta[k]=dot(nx,x[0],x[0]);
+< 
+<     if (plot) xplotgather(x,nh,nt,dt,"xiter.su",k,"clip=1 xbox=0 &");
+<     if (plot)  xplotgather(r2,nh,nt,dt,"riter.su",k,"clip=1 xbox=600 legend=1&");
+<     if (plot){
+<       stoltzopinv2(dp,x,nt,nh,t,h,vel);
+---
+>     beta=dot(nx,*z[0],*g[0])/alphanum;
+>     CequalApluskxB(s,z,beta,s,nt,nh,nv);    
+>     eta[k]=dot(nx,*x[0],*x[0]);
+>     TRACE;
+>     if ((plot)&&(1)){
+>       xplotgather(x,nv,nh,nt,dt,"xiter.su",k,"bclip=1.20259 wclip=-1.175 xbox=0 &");
+>     }
+>     TRACE;
+>     if ((plot)&&(0)){  
+>       CequalAxB(rc,r,Wd,nt,nh);
+>       xplotgather(r2,nh,nt,dt,"riter.su",k,"bclip=1.20259 wclip=-1.175 xbox=600 legend=1&");
+>     }
+>     TRACE;
+>     if ((plot)&&(0)){
+>       (*oper) (dp,x,nt,nh,nv,t,h,vel,0);
+261,262d292
+< 
+< 
+264c294
+<   
+---
+>   TRACE;
+271c301
+<   CequalAxB(xc,x,Wm,nt,nh);
+---
+>   CequalAxB(xc,x,Wm,nt,nh,nv);
+274c304
+<   J=dot(nx,xc[0],xc[0])+dot(ny,rc[0],rc[0]);  
+---
+>   J=dot(nx,*xc[0],*xc[0])+dot(ny,rc[0],rc[0]);  
+277c307
+< 
+---
+>   TRACE;
+279c309
+<   free2float(xc);
+---
+>   free3float(xc);
+286,289c316,319
+<   free2float(z);
+<   free2float(s);
+<   free2float(g);
+< 
+---
+>   free3float(z);
+>   free3float(s);
+>   free3float(g);
+>   TRACE;
+319a350,374
+> void CequalAxB(float ***C,float ***A,float ***B,int n1,int n2, int n3)
+> {
+>      int i1,i2, i3;
+>      // Element wise multiplication of two matrices
+>      for (i3=0;i3<n3;i3++)
+>        for (i2=0;i2<n2;i2++)
+>          for (i1=0;i1<n1;i1++)
+> 	   C[i3][i2][i1]=A[i3][i2][i1]*B[i3][i2][i1];
+>           
+>      return;
+> }
+> 
+> void CequalApluskxB(float ***C, float ***A, float k, float ***B, int n1,int n2, int n3)
+> {
+>      int i1,i2, i3;
+>      // Element wise multiplication of two matrices
+>      for (i3=0;i3<n3;i3++)
+>        for (i2=0;i2<n2;i2++)
+>          for (i1=0;i1<n1;i1++)
+> 	   C[i3][i2][i1]=A[i3][i2][i1]+k*B[i3][i2][i1];
+>           
+>      return;
+> }
+> 
+> 
+369a425,443
+> void xplotgather(float ***d, int nv, int nh, int nt, float dt, char *s, int num, char *s2)
+> {
+>   char buf[120];
+>   save_gather(d,nv,nh,nt,dt,s);
+>   sprintf(buf,"suximage < %s title=%s%d curve=curve1 npair=5 hbox=900 wbox=700 %s\n",s,s,num,s2);
+>   system(buf);
+>   return;
+> }
+> 
+> void xplotgather(float **d, int nh, int nt, float dt, char *s, int num, float vel, char *s2)
+> {
+>   char buf[120];
+>   save_gather(d,nh,nt,dt,s);
+>   sprintf(buf,"suximage < %s title=%s%d_vel%f curve=curve1 npair=5 hbox=900 wbox=700 %s\n",s,s,num,vel,s2);
+>   system(buf);
+>   return;
+> }
+> 
+> 

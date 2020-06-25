@@ -1,0 +1,26 @@
+#!/bin/sh
+# Interpolation tests using suinterp
+
+set -x
+
+filen=kencmp0win
+file=$filen".su"
+
+
+suwind key=offset < $file min=211 | susetntr > $filen"p.su"
+
+
+# If  preliminar downsampling
+suwind key=cdpt j=2 < $filen"p.su" | susetntr > $filen"pds.su"
+
+suinterpm dx=50 < $filen"pds.su" | susetntr > $filen"0pds.su"
+
+suinterpm dx=25 < $filen"0pds.su" | susetntr > $filen"1pds.su"
+
+suinterpm dx=12.5 < $filen"1pds.su" | susetntr > $filen"2pds.su"
+
+suspecfk < $filen"2pds.su" | suximage title=$1 perc=98 cmap=hsv1 &
+
+
+exit 0
+

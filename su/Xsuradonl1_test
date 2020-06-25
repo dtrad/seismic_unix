@@ -1,0 +1,75 @@
+#! /bin/sh
+# shell for suradonl1 test
+# Daniel Trad - UBC
+set -x
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650 perc=99"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=99"
+
+NAME=data
+OPTION="L1"
+
+FILE=$NAME'.su'
+FILEREC=$NAME'.surec'
+
+offsetfile="${NAME}.suoff"
+
+verbose=0
+iter_end=4
+itercg=200
+modelfile="${NAME}.surad"
+eps1=30e-2
+eps2=30e-2
+nq=12
+qmin=1e-8
+qmax=1e-6
+
+qmin=2000
+qmax=2110
+method=2
+
+###################################
+
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+case $OPTION in
+L1*|l1*)
+suradonl1 < $FILE verbose=$verbose  itercg=$itercg iter_end=$iter_end eps2=$eps2 eps1=$eps1  testadj=0  nq=$nq qmin=$qmin qmax=$qmax tmpdir='.' step=0.95 factor=$factor modelfile=$modelfile  method=$method > $FILEREC
+;;
+
+esac
+
+$PLOTX < $FILEREC perc=100 &
+$PLOTR < $modelfile perc=100 &
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

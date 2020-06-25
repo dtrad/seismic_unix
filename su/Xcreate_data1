@@ -1,0 +1,36 @@
+#!/bin/sh
+# Create synthetic hyperbolic data for tests
+set -x
+
+FILE=data2.su
+FILELINE=dataline2.su
+
+nh=63
+dh=50
+tau=0.4,0.6,0.8,1.0,1.2,1.4
+vel=2000,2500,2000,3000,2000,3500
+tnmo=0.4,0.6,1.0,1.4
+vnmo=2000,2500,3000,3500
+
+coef=1,1,1,1,1,1
+susynth2 nh=$nh dh=$dh tau=$tau hnear=-1550 vel=$vel fpeak=20 coef=$coef | \
+sushw key=cdp a=1 > $FILE
+
+Xsetntr $FILE
+suxwigb key=offset < $FILE &
+sunmo key=cdp vnmo=$vnmo tnmo=$tnmo < $FILE | suxwigb key=offset &
+sunmo key=cdp vnmo=$vnmo tnmo=$tnmo < $FILE | sustack key=cdp > pp
+suxwigb key=offset < pp wbox=200 xbox=600 &
+
+
+
+sushw key=cdp a=2 < $FILE > $FILE'2'
+sushw key=cdp a=3 < $FILE > $FILE'3'
+
+cat  $FILE $FILE'2' $FILE'3' >  $FILELINE
+sugethw <  $FILE key=offset output=geom > $FILELINE'off'
+
+Xsetntr $FILELINE
+
+rm $FILE'2' $FILE'3'  
+exit 0

@@ -1,0 +1,62 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a 
+
+LFLAGS= $(PRELFLAGS) -L$L -L../bin -lsu -lpar -lcwp -lm -ldan $(POSTLFLAGS)
+
+PROG=suradonfkcube
+
+FLAG=${VEGAFLAGS}
+
+OBJ=  $(PROG).o  radonfk_wtcgls_cube.o radonstoltcube.o radonstolt.o \
+	radonstolt_one_trace2.o \
+	adjtestradonfkcube.o stretching2.o save_gather_freq.o modelweight.o \
+	axbcomplex.o mutemask.o smoothing.o
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ) $(CWPROOT)/lib/libdan.a 
+	${C++} -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp $(LIBC)/radonfk.h
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+radonfk_wtcgls_cube.o: $(LIBC)/radonfk_wtcgls_cube.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonstoltcube.o: $(LIBC)/radonstoltcube.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonstolt.o: $(LIBC)/radonstolt.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonstolt_one_trace2.o: $(LIBC)/radonstolt_one_trace2.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+adjtestradonfkcube.o: $(LIBC)/adjtestradonfkcube.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+stretching2.o: $(LIBC)/stretching2.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_gather_freq.o: $(LIBC)/save_gather_freq.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+axbcomplex.o: $(LIBC)/axbcomplex.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+mutemask.o: $(LIBC)/mutemask.c
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)	
+smoothing.o: $(LIBC)/smoothing.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)	
+
+
+
+
+
+
+
+
+
+
+
+
+
+

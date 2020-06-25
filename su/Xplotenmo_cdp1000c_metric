@@ -1,0 +1,116 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+EXAMPLE="enmo_gap"
+  
+FILE="${HOME}/ps/paper/fig_cdp1000_${EXAMPLE}_final_metric.ps"
+
+# PLot model
+
+FILEN=cdp1000g
+clipr=10
+clipr2=4
+clipx=63
+clipx2=63
+perc=99
+
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.suradb_enmo' # Sland stack form complete data set
+FILE3=$FILEN'.sugap'
+FILE4=$FILEN'.surad_'${EXAMPLE} # Sland stack form incomplete data set
+FILE5=$FILEN'.sumod_'${EXAMPLE}'4'
+FILE6=$FILEN'.suradb_'${EXAMPLE}'4' # Sland stack form incomplete data set + enmo
+#FILE6=$FILEN'.suradb_res_enmo_gap_nogap'
+
+FILE1=$FILE1'_metric'  
+FILE2=$FILE2'_metric'  
+FILE3=$FILE3'_metric'  
+FILE4=$FILE4'_metric'
+FILE5=$FILE5'_metric'  
+FILE6=$FILE6'_metric'
+
+
+OPTIONNUM='6'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+TITLE5="(e)"
+TITLE6="(f)"
+TITLE7="(g)"
+TITLE8="(h)"
+TITLE9="(i)"
+
+
+
+
+PSPLOT1=p1
+PSPLOT2=p2
+PSPLOT3=p3
+PSPLOT4=p4
+PSPLOT5=p5
+PSPLOT6=p6
+PSPLOT7=p7
+PSPLOT8=p8
+PSPLOT9=p9
+
+LABEL1="time(s)" 
+LABELT="tau(s)" 
+LABEL2="offset(m)"
+LABELR="p(s/m)"
+LABELM="vel(m/s)"
+LABELK="kx"
+LABELF="freq(Hz)"
+
+x2beg=-5e-4
+
+PLOTR="supswigp x2beg=$x2beg x2end=0 x1beg=1.5 x1end=7 f1=0 f2=0 key=f2 label1=$LABELT label2=$LABELR  "
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx x1beg=1.5 x1end=7"
+PLOTX2="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx2 x1beg=1.5 x1end=7"
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx x2beg=-4900 x2end=0 x1beg=1.5 x1end=7"
+PLOTD2="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx3 x2beg=-4900 x2end=0 x1beg=1.5 x1end=7"
+PLOTD3="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx2 x2beg=-4900 x2end=4900 x1beg=1.5 x1end=7"
+PLOTM="supswigp f1=0 f2=0 key=f2 label1=$LABEL1 label2=$LABELM perc=99.5 x1beg=1.5 x1end=7"
+PLOTIMAGE="supsimage label1=$LABELF label2=$LABELK perc=99 x1beg=1.5 x1end=7"
+
+$PLOTD < $FILE1  title=$TITLE1  > $PSPLOT1
+$PLOTR < $FILE2  title=$TITLE2  clip=$clipr > $PSPLOT2
+$PLOTD2 < $FILE3 title=$TITLE3  > $PSPLOT3
+$PLOTR < $FILE4  title=$TITLE4  clip=$clipr2 > $PSPLOT4
+$PLOTM < $FILE5  title=$TITLE5  > $PSPLOT5
+$PLOTR < $FILE6  title=$TITLE6 clip=$clipr2 > $PSPLOT6
+
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.4,0.4 translate=0,3 translate=3,3 translate=6,3  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+6*)
+psmerge in=$PSPLOT1 in=$PSPLOT2 in=$PSPLOT3 in=$PSPLOT4 in=$PSPLOT5 in=$PSPLOT6 scale=0.5,0.5 translate=0,5 translate=4,5  translate=8,5 translate=0,0 translate=4,0 translate=8,0 > "${FILE}"
+;;
+9*)
+psmerge in=$PSPLOT1 in=$PSPLOT2 in=$PSPLOT3 in=$PSPLOT4 in=$PSPLOT5 in=$PSPLOT6 in=$PSPLOT7 in=$PSPLOT8 in=$PSPLOT9 scale=0.36,0.36  translate=0,7 translate=2.8,7 translate=5.6,7  translate=0,3.5 translate=2.8,3.5 translate=5.6,3.5 translate=0,0 translate=2.8,0 translate=5.6,0 > "${FILE}"
+;;
+esac
+
+gv $FILE &
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,47 @@
+#! /bin/sh
+######################################################################
+# Author: Daniel Trad- Last update: July 2002
+
+# Some shortcuts for plots
+set -x
+
+"/home/dtrad/cwp/bin/suximage < $1 clip=2 legend=1 title=$1 "
+
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

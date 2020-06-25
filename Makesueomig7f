@@ -1,0 +1,72 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a $L/libdan.a
+
+LFLAGS= $(PRELFLAGS) -L$L -L$../bin -lsu -lpar -lcwp -lm -ldan $(POSTLFLAGS)
+
+PROG=sueomig7f
+
+FLAG=-c -O3 -Wall
+
+OBJ=  $(PROG).o  equiv_offset_fold.o eomig6.o rjwfilter.o filt.o t2t0.o \
+                 eomradonsolver0_mute.o radonsolver.o modelweight.o \
+		 radon_matrix.o radon_param.o interval.o taper.o  \
+		 nmo.o interpovv.o getvelocities.o radoninv.o \
+	       	 wtcgls_solvers.o radon_cgfft.o radon_toeplitz.o radon_cgtoep.o \
+		 eomdoublemute.o 	
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+equiv_offset_fold.o: $(LIBC)/equiv_offset_fold.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+eomig6.o: $(LIBC)/eomig6.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rjwfilter.o: $(LIBC)/rjwfilter.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+filt.o: $(LIBC)/filt.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+t2t0.o: $(LIBC)/t2t0.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+eomradonsolver0_mute.o: $(LIBC)/eomradonsolver0_mute.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonsolver.o: $(LIBC)/radonsolver.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_matrix.o: $(LIBC)/radon_matrix.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interval.o: $(LIBC)/interval.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+taper.o: $(LIBC)/taper.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nmo.o: $(LIBC)/nmo.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interpovv.o: $(LIBC)/interpovv.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+getvelocities.o: $(LIBC)/getvelocities.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoninv.o: $(LIBC)/radoninv.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wtcgls_solvers.o: $(LIBC)/wtcgls_solvers.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_cgfft.o: $(LIBC)/radon_cgfft.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_toeplitz.o: $(LIBC)/radon_toeplitz.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_cgtoep.o: $(LIBC)/radon_cgtoep.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+eomdoublemute.o: $(LIBC)/eomdoublemute.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+

@@ -1,0 +1,39 @@
+SHELL= /bin/sh
+OPTC= -O
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG= sutest
+
+FLAG=-c -O 
+
+OBJ=  $(PROG).o expc.o multmat.o
+
+LIB=./flibrary
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(PROG).o expc.o multmat.o
+	g++ -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp -Wall
+expc.o: $(LIBC)/expc.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/expc.cpp -Wall
+multmat.o: $(LIBC)/multmat.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/multmat.cpp -Wall
+
+
+
+
+
+
+
+
+
+
+
+

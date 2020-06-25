@@ -1,0 +1,85 @@
+#!/bin/sh
+# Noise predtiction and subtraction by using ridgelet transforms
+# First run ridgegrolllozdata.m to create the files ozdataNwin.noise.su
+#
+# Needs script Xsuwrite that takes a binary file and produces
+# a sufile with header given by the original data
+# example: Xsuwrite ozdata0win takes ozdata0win.noise.bin and produces
+# ozdata0win.noise.su with the same header from ozdata0win.su
+# 
+# Uses suvcat to pad the different windows. 
+# I have a small problem with the length (one sample is missing).,
+#
+# Daniel Trad - UBC - November 
+# ridgelet example
+
+set -x
+
+filenoise=oz25.noise.curve.su 
+filenoisemute=oz25.noise.curve.mute.su 
+filesignal=oz25.den.curve.su
+filesignalmute=oz25.den.curve.mute.su
+
+key="noise.curve"
+
+Xsuwrite ozdata0win ${key}
+Xsuwrite ozdata1win ${key}
+
+taplen=3
+
+suvcat ozdata0win.${key}.su ozdata1win.${key}.su taplen=$taplen > ${filenoise}
+
+
+Xsuwrite ozdata2win  ${key}
+
+suvcat ${filenoise} ozdata2win.${key}.su taplen=$taplen > pp; mv pp ${filenoise}
+
+Xsuwrite ozdata3win  ${key}
+
+suvcat ${filenoise} ozdata3win.${key}.su taplen=$taplen > pp; mv pp ${filenoise}
+
+Xsuwrite ozdata4win  ${key}
+
+suvcat ${filenoise} ozdata4win.${key}.su taplen=$taplen > pp; mv pp ${filenoise}
+
+Xsuwrite ozdata5win  ${key}
+
+suvcat ${filenoise} ozdata5win.${key}.su taplen=$taplen > pp; mv pp ${filenoise}
+
+Xsuwrite ozdata6win  ${key}
+
+suvcat ${filenoise} ozdata6win.${key}.su taplen=$taplen > pp; mv pp ${filenoise}
+
+Xsuwrite ozdata7win  ${key}
+
+suvcat ${filenoise} ozdata7win.${key}.su taplen=$taplen > pp; mv pp ${filenoise}
+
+
+
+# mute the predicted noise outside the cone of noise.
+sumute key=offset tmute=1.8,1.6,0,1.6,1.8 xmute=-2300,-2000,0,2000,2300 ntaper=50 < ${filenoise} > ${filenoisemute}
+
+suop2 oz25.su ${filenoisemute} > ${filesignalmute}
+
+suxwigb < ${filenoisemute} key=offset clip=0.12 xbox=0 title=${filenoisemute} &
+suxwigb < ${filesignalmute} key=offset clip=0.12 xbox=600  title=${filesignalmute} &
+
+
+#suop2 oz25.su ${filenoise} > ${filesignal}
+#suxwigb < ${filenoise} key=offset clip=0.12 xbox=0 &
+
+
+
+
+
+exit 0
+
+
+
+suvcat ozdata0win.su ozdata1win.su taplen=$taplen > oz25.su
+suvcat oz25.su ozdata2win.su taplen=$taplen > pp; mv pp oz25.su
+suvcat oz25.su ozdata3win.su taplen=$taplen > pp; mv pp oz25.su
+suvcat oz25.su ozdata4win.su taplen=$taplen > pp; mv pp oz25.su
+suvcat oz25.su ozdata5win.su taplen=$taplen > pp; mv pp oz25.su
+suvcat oz25.su ozdata6win.su taplen=$taplen > pp; mv pp oz25.su
+suvcat oz25.su ozdata7win.su taplen=$taplen > pp; mv pp oz25.su

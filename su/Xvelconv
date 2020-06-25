@@ -1,0 +1,52 @@
+#!/bin/sh
+set -x
+FILE=marmousi
+FILEINT=$FILE".int"
+FILERMS=$FILE".rms"
+FILEINTZ=$FILE".intz"
+OPTION="INT"
+
+nt=630
+dt=0.004
+dta=4000
+nx=2253
+dx=1
+dz=4
+nz=751
+dcdp=0.12
+f2=68
+sustrip  < $FILE"_vels.su" > $FILEINTZ
+
+ximage legend=1 n1=$nz d1=$dz n2=$nx title="Int vel-depth " < $FILEINTZ &
+
+case $OPTION in
+RMS)
+velconv  < $FILEINTZ dz=$dz nz=$nz nt=$nt dt=$dt nx=$nx intype=vintz outtype=vrmst > $FILERMS
+
+ximage legend=1 n1=$nt d1=$dt n2=$nx title="RMS Vel" < $FILERMS &
+
+suaddhead < $FILERMS ns=$nt | sushw key=dt a=$dta | sushw key=cdp a=68 b=$dcdp  | sushw key=d2 a=$dcdp | sushw key=f2 a=$f2 > $FILERMS'.su'
+
+suximage < $FILERMS'.su' & 
+
+sureadvel2 < $FILERMS'.su' > 'rmsvel.'$FILE
+
+
+;;
+
+INT)
+velconv  < $FILEINTZ nt=$nt dt=$dt nx=$nx dz=$dz nz=$nz intype=vintz outtype=vintt > $FILEINT
+
+ximage legend=1 n1=$nt d1=$dt n2=$nx title="Int Vel" < $FILEINT &
+
+suaddhead < $FILEINT ns=$nt | sushw key=dt a=$dta | sushw key=cdp a=68 b=$dcdp  | sushw key=d2 a=$dcdp | sushw key=f2 a=$f2 > $FILEINT'.su'
+
+suximage < $FILEINT'.su' & 
+
+
+;;
+esac
+
+
+
+

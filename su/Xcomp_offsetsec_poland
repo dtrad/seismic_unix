@@ -1,0 +1,44 @@
+#! /bin/sh
+# Compare constant offset sections in two files 
+# Jan 30 -2002
+# Daniel Trad - UBC
+
+
+set -x
+
+x2beg=259
+perc=99 
+FILEN=line77
+
+
+FILE1=$1
+FILE2=$2
+
+clip="bclip=28.0698 wclip=-27.7393"
+
+
+suwind key=offset min=$3 max=$4 < $FILE1 | sunmo par=stkvel.line77.su | sustack key=cdp > pppp1
+
+
+suwind key=offset min=$3 max=$4 < $FILE2 | sunmo par=stkvel.line77.su | sustack key=cdp > pppp2
+
+Xsetntr pppp1
+Xsetntr pppp2
+ 
+
+window="x2beg=400 x2end=800 x1beg=0.5 x1end=2.5"
+suximage  <  pppp1 title=$FILE1 perc=$perc f2=300 $window   &
+suximage < pppp2 title=$FILE2 perc=$perc f2=300 xbox=600 $window &
+
+
+exit 0
+
+
+
+
+
+
+
+
+
+

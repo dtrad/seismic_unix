@@ -1,0 +1,148 @@
+#! /bin/sh
+# Paper figures
+# After running suradonavo that creates files with the names 
+# primries.su multiples.su mutedmodel.su nomutedmodel.su
+# define the following function:
+# cpp(){ cp multiples.su multiples${1}.su; cp primaries.su primaries${1}.su; cp mutedmodel.su mutedmodel${1}.su; cp nomutedmodel.su nomutedmodel${1}.su; cp predicted0.su predicted0${1}.su; cp predicted1.su predicted1${1}.su; suop op=abs < mutedmodel${1}.su > mutedmodel${1}P.su}
+#
+# To define a window in the Radon space use for example:
+#
+# plotw(){ suxwigb key=f2 < $1 x1beg=0.7 x1end=1 x2beg=2e-7 x2end=3.2e-7 title=$1 & }
+#
+# Then run cpp NUM, where NUM is just an identifier to distinguish
+# results from different tests.
+# Finally this code can be use to create the ps files as follows
+# 
+# Xplotresults x1beg x2end Figure number perc
+# Examples:
+#
+# Xplotresults 0.7 1.3 3 0 99
+# Xplotresults 0.7 1.3 3 1 99
+# Xplotresults 0.7 1.3 3 2 99
+#
+# Daniel Trad - UBC
+
+set -x
+FILE=highresol_avo.ps
+
+FIGURE=$3   # plot in screen =1, plot in file =2
+
+if [ $FIGURE -eq 1 ]; then
+
+perc=99
+PLOTX="suxwigb key=offset label1=Time(s) label2=Offset(m) "
+PLOTR="suxwigb key=f2 label1=Tau(s) label2=q(s2/m2)   "
+
+window="x1beg=$1 x1end=$2 "    
+
+$PLOTX $window < multiples0c.su perc=$perc title=reconstructed & 
+$PLOTX $window < multiples1c.su perc=$perc xbox=600 title=reconstructed  &
+
+#$PLOTX $window < cdp1000s.su perc=$perc title=original  & 
+#$PLOTX $window < cdp1000s.su perc=$perc title=original xbox=600 & 
+
+$PLOTX $window < hyperbola3n.su perc=$perc title=original xbox=600 & 
+
+$PLOTX $window < primaries0c.su perc=$perc title=nullspace & 
+$PLOTX $window < primaries1c.su perc=$perc xbox=600 title=nullspace &
+
+$PLOTR $window < nomutedmodel0c.su perc=$perc title=RT & 
+$PLOTR $window < nomutedmodel1c.su perc=$perc xbox=600 title=RT &
+
+#$PLOTR $window < mutedmodel0.su perc=$perc & 
+#$PLOTR $window < mutedmodel1.su perc=$perc xbox=600 &
+
+elif [ $FIGURE -eq 2 ]; then
+NUM=$4
+FILE=highresol_avo${NUM}.ps
+clip="clip=17"
+perc=$5
+PLOTX="supswigp key=offset label1=Time(s) label2=Offset(m) f1=1.5"
+PLOTX0="supswigp key=offset label1=Time(s) label2=Offset(m) f1=0"
+PLOTR="supswigp key=f2 label1=Tau(s) label2=q(s2/m2) f1=1.5"
+
+window="x1beg=$1 x1end=$2 "  
+
+
+#$PLOTX $window < cdp1000s.su  $clip title="(a)" > p1 
+
+$PLOTX0 $window < cdp1000.su  $clip title="(a)" > p1 
+
+$PLOTR $window < nomutedmodel${NUM}0.su perc=$perc title="(b)"  > p2  
+$PLOTX $window < multiples${NUM}0.su $clip title="(c)" > p3  
+$PLOTX $window < primaries${NUM}0.su $clip title="(d)" > p4 
+
+$PLOTR $window < nomutedmodel${NUM}2.su perc=$perc title="(e)" > p5 
+$PLOTX $window < multiples${NUM}2.su $clip title="(d)" > p6 
+$PLOTX $window < primaries${NUM}2.su $clip title="(f)" > p7 
+
+supsmerge in=p1 in=p2 in=p3 in=p4 in=p5 in=p6 in=p7  scale=0.3,0.3 translate=2.5,6 translate=0,3 translate=2.5,3 translate=5,3  translate=0,0 translate=2.5,0 translate=5,0  > ~/ps/$FILE
+
+gv  ~/ps/$FILE &
+
+elif  [ $FIGURE -eq 3 ]; then
+NUM=$4
+FILE=highresol_avo${NUM}.ps
+clip="clip=1"
+perc=$5
+PLOTX="supswigp key=offset label1=Time(s) label2=Offset(m) "
+PLOTR="supswigp key=f2 label1=Tau(s) label2=q(s2/m2) "
+#PLOTR="supsimage f2=3.5e-8  label1=Tau(s) label2=q(s2/m2) "
+window="x1beg=$1 x1end=$2 "  
+windowrt="x1beg=$1 x1end=$2 x2beg=2e-7 x2end=3.5e-7"  
+
+#$PLOTX $window < cdp1000s.su  $clip title="(a)" > p1 
+
+$PLOTX $window < hyperbola.su  $clip title="(a)" > p1 
+suop op=abs < mutedmodelAA${NUM}.su > pp
+$PLOTR $windowrt < pp perc=$perc title="(b)"  > p2  
+$PLOTX $window < multiplesA${NUM}.su $clip title="(c)" > p3  
+
+$PLOTX $window < hyperbola3.su  $clip title="(d)" > p4 
+suop op=abs < mutedmodelBB${NUM}.su > pp
+$PLOTR $windowrt < pp perc=$perc title="(e)"  > p5  
+$PLOTX $window < multiplesB${NUM}.su $clip title="(f)" > p6  
+
+$PLOTX $window < hyperbola2.su  $clip title="(g)" > p7 
+suop op=abs < mutedmodelCC${NUM}.su > pp
+$PLOTR $windowrt < pp perc=$perc title="(h)"  > p8  
+$PLOTX $window < multiplesC${NUM}.su $clip title="(i)" > p9
+
+
+supsmerge in=p1 in=p2 in=p3 in=p4 in=p5 in=p6 in=p7  in=p8 in=p9 scale=0.3,0.3 translate=0,6 translate=2.5,6 translate=5,6 translate=0,3 translate=2.5,3 translate=5,3  translate=0,0 translate=2.5,0 translate=5,0  > ~/ps/$FILE
+
+gv  ~/ps/$FILE &
+
+elif  [ $FIGURE -eq 4 ]; then
+NUM=$4
+FILE=highresol_avo_zoom.ps
+
+perc=$5
+PLOTX="supswigp key=offset label1=Time(s) label2=Offset(m) "
+PLOTR="supswigp key=f2 label1=Tau(s) label2=q(s2/m2) "
+#PLOTR="supsimage f2=3.5e-8  label1=Tau(s) label2=q(s2/m2) "
+window="x1beg=0.7 x1end=1 x2beg=2e-7 x2end=3.5e-7"  
+windowxt="x1beg=$1 x1end=$2 " 
+
+#$PLOTX $window < cdp1000s.su  $clip title="(a)" > p1 
+$PLOTX $windowxt < hyperbola3.su   title="(a)" > p1 
+$PLOTR $window < nomutedmodel0cc.su perc=$perc title="(b)"  > p2  
+$PLOTR $window < nomutedmodel2cc.su perc=$perc title="(c)"  > p3  
+$PLOTR $window < nomutedmodel1cc.su perc=$perc title="(d)"  > p4  
+
+
+
+supsmerge in=p1 in=p2 in=p3 in=p4 scale=0.5,0.5 translate=0,5. translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+
+gv  ~/ps/$FILE &
+
+
+else
+
+exit 0
+
+    
+fi
+
+
+exit 0

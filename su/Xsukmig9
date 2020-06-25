@@ -1,0 +1,145 @@
+#! /bin/sh
+# shell for Kirchhoff modeling for linear v(x,z)
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+
+#OPTION='CSP'
+OPTION='MIG';label="EOM stk0"
+#OPTION='KIR';label="Kirchhoff stk1"
+#OPTION='LSM';label="LSM stk0"
+OPTION='VEL';label="VEL stk2"
+
+NAME=marmousi
+
+NAME1=$NAME'.su'
+NAME2=$NAME'.su'
+PAR=stkvel.$NAME2; NAME0=$NAME'.stkvel'  #semblance analysis 
+#PAR=rmsvel.marmousi; NAME0=$NAME # RMS velocity obtained with Xvelconv
+echo "$NAME"
+
+FILE=$NAME'_shots.su'
+FILEOUT=$NAME0'.eom.su'
+FILEOUT2=$NAME0'.lsm.su'
+FILEOUT3=$NAME0'.mig.su'
+FILEOUT4=$NAME0'.vel.su'
+FILECSP=$NAME0'.csp.su'
+FILEREC=$NAME'.rec.su'
+FILEOFF=$NAME'.eom.off'
+FILECSP1=$NAME'.csp1.su'
+FILECSP2=$NAME'.csp2.su'
+FILECSP3=$NAME'.csp3.su'
+FILECSP4=$NAME'.csp4.su'
+
+CDPMIN=68
+CDPMAX=355
+dxcdp=1
+
+OUTPUT=1
+BETA=90;
+TESTHE=0;
+PRECISE=0;
+HEMIN=100;
+HEMAX=2000;
+VERBOSE=0
+dfold=0.01
+buffer=10; 
+nhcsp=100;
+ncsp=50;
+output=2
+aper=100
+# If CSP define limits 
+CSPMIN=70
+DXCSP=30
+CSPMAX=300
+###################################
+
+PLOTOPT='XPLOT2'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+case $OPTION in
+MIG*)
+sueomig5 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp  output=1 hemin=$HEMIN hemax=$HEMAX  nhcsp=$nhcsp par=$PAR beta=$BETA testhe=$TESTHE precise=$PRECISE beta=$BETA verbose=$VERBOSE dfold=$dfold ntrmax=100000 ncsp=$ncsp cdpspace=25 aper=$aper tmpdir=$HOME'/work/.' pervmin=10 dperv=0.10 > $FILEOUT
+suximage perc=80 < $FILEOUT title=$label &
+;;
+
+KIR*)
+sukmig4 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=1 par=$PAR verbose=$VERBOSE dfold=$dfold cdpspace=25  ncsp=$ncsp ntrmax=100000 aper=$aper > $FILEOUT3
+suximage perc=80 < $FILEOUT3  title=$label  &
+;;
+
+VEL*)
+sueomig5 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=6  beta=$BETA hemin=$HEMIN hemax=$HEMAX nhcsp=$nhcsp par=$PAR itercg=5 iter_end=1 testhe=$TESTHE precise=$PRECISE eps2=1e-1 eps1=1e-1  testadj=0 smooth=0 nq=41 qmin=-450 qmax=450 verbose=$VERBOSE dfold=$dfold buffer=$buffer ncsp=10 aper=$aper cdpspace=25 tmpdir=$HOME"/work/." pervmin=10 dperv=0.10 > $FILEOUT4
+#supswigp key=cdp < $FILEOUT | gv - &
+suximage perc=99 < $FILEOUT4  title=$label  &
+;;
+
+LSM*)
+sueomig5 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=3  beta=$BETA hemin=$HEMIN hemax=$HEMAX nhcsp=$nhcsp par=$PAR itercg=5 iter_end=3 testhe=$TESTHE precise=$PRECISE eps2=1e-2 eps1=1e-2  testadj=0 smooth=0 nq=10 qmin=-150 qmax=150 verbose=$VERBOSE dfold=$dfold buffer=$buffer ncsp=$ncsp cdpspace=25 aper=$aper tmpdir=$HOME"/work/." pervmin=10 dperv=0.10> $FILEOUT2
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEOUT2  title=$label  &
+;;
+
+
+# PLOT CSP gathers
+
+CSP*) 
+sueomig5 < $FILE  cdpmin=$CSPMIN cdpmax=$CSPMAX dxcdp=$DXCSP  output=$output verbose=1 hemax=$HEMAX hemin=$HEMIN nhcsp=$nhcsp par=$PAR itercg=5 iter_end=1 beta=$BETA eps2=1e-3 eps1=1e-3  testadj=0 smooth=0 nq=31 qmin=-300 qmax=300 precise=$PRECISE testhe=$TESTHE  ntrmax=100000 ncsp=$ncsp cdpspace=25 aper=$aper tmpdir=$HOME'/work/.' pervmin=10 dperv=0.10 > $FILECSP
+
+;;
+esac
+
+case $OPTION in
+CSP*)
+case $PLOTOPT in
+    PSPLOT*)
+    PLOTPS="supswigp key=offset label1=$LABELT label2=$LABELO perc=100"
+    while [ $csp -le $CSPMAX ]
+    do
+	title=$csp' CSP'
+	suwind key=cdp min=$csp  max=$csp  < $FILECSP | $PLOTPS \
+	title=$title > $FILECSP".$csp.ps" 
+csp=`bc -l <<END
+	 $csp + $DXCSP
+END`
+    done
+    ;;
+
+
+    XPLOT2*)
+    
+    csp=$CSPMIN
+      
+    while [ $csp -le $CSPMAX ]
+    do
+    title=$csp' CSP'
+    suwind key=cdp min=$csp max=$csp  < $FILECSP | $PLOTX  title=$title &
+
+csp=`bc -l <<END
+		$csp + $DXCSP
+END`
+
+    done
+    ;;
+esac
+
+;;
+esac
+
+
+
+
+ 
+
+
+
+
+
+

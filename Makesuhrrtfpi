@@ -1,0 +1,164 @@
+SHELL= /bin/sh
+OPTC= -O
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=suhrrtfpi
+
+FLAG=-c -O 
+
+OBJ=  $(PROG).o hrrtfpi.o radon_param.o  norma.o interval.o \
+      matrix_2.o expc.o fftgo.o fftback.o Atimesx.o choldc.o cholsl.o \
+      AtimesBm.o maxmax.o testchol.o displayA.o modgrad.o xtimesy.o \
+      xminusy.o xplusy.o xequaly.o cdot.o  costfunc.o real.o \
+      AtimesDiag.o ctoeplitz.o ctoephcg.o htmult.o rcdot.o cghrrt.o \
+      misfit.o modnorm.o Dcomplex.o Complex.o freqweight.o \
+      choleskyrt.o matrix_3.o chol_all.o conjgradrt3pi.o \
+      conjgradrt4.o circ_mult.o cholundpi.o cholover.o toepradon.o \
+      toepradoncg.o tred2.o nrutil.o svdcmp.o svbksb.o svdover.o pythag.o \
+      conjgrad3r.o linbcg1.o asolve1.o atimes1.o snrm.o cgls0.o cgls.o \
+      wtcgls0.o wtcgls.o cgnl0.o cgnl.o 
+
+LIB=./flibrary
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp -Wall
+hrrtfpi.o: $(LIBC)/hrrtfpi.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/hrrtfpi.cpp -Wall
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/radon_param.cpp -Wall
+norma.o: $(LIBC)/norma.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/norma.cpp -Wall
+interval.o: $(LIBC)/interval.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/interval.cpp -Wall
+matrix_2.o: $(LIBC)/matrix_2.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/matrix_2.cpp -Wall
+expc.o: $(LIBC)/expc.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/expc.cpp -Wall
+fftgo.o: $(LIBC)/fftgo.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/fftgo.cpp -Wall
+fftback.o: $(LIBC)/fftback.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/fftback.cpp -Wall
+Atimesx.o: $(LIBC)/Atimesx.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/Atimesx.cpp -Wall
+choldc.o: $(LIBC)/choldc.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/choldc.cpp -Wall
+cholsl.o: $(LIBC)/cholsl.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cholsl.cpp -Wall
+AtimesBm.o: $(LIBC)/AtimesBm.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/AtimesBm.cpp -Wall
+maxmax.o: $(LIBC)/maxmax.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/maxmax.cpp -Wall
+testchol.o: $(LIBC)/testchol.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/testchol.cpp -Wall
+displayA.o: $(LIBC)/displayA.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/displayA.cpp -Wall
+modgrad.o: $(LIBC)/modgrad.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/modgrad.cpp -Wall
+xtimesy.o: $(LIBC)/xtimesy.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/xtimesy.cpp -Wall
+xminusy.o: $(LIBC)/xminusy.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/xminusy.cpp -Wall
+xplusy.o: $(LIBC)/xplusy.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/xplusy.cpp -Wall
+xequaly.o: $(LIBC)/xequaly.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/xequaly.cpp -Wall
+cdot.o: $(LIBC)/cdot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cdot.cpp -Wall
+costfunc.o: $(LIBC)/costfunc.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/costfunc.cpp -Wall
+real.o: $(LIBC)/real.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/real.cpp -Wall
+AtimesDiag.o: $(LIBC)/AtimesDiag.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/AtimesDiag.cpp -Wall
+ctoeplitz.o: $(LIBC)/ctoeplitz.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/ctoeplitz.cpp -Wall
+ctoephcg.o: $(LIBC)/ctoephcg.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/ctoephcg.cpp -Wall
+htmult.o: $(LIBC)/htmult.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/htmult.cpp -Wall
+rcdot.o: $(LIBC)/rcdot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/rcdot.cpp -Wall
+cghrrt.o: $(LIBC)/cghrrt.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cghrrt.cpp -Wall
+modnorm.o: $(LIBC)/modnorm.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/modnorm.cpp -Wall
+misfit.o: $(LIBC)/misfit.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/misfit.cpp -Wall
+Dcomplex.o: $(LIBC)/Dcomplex.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/Dcomplex.cpp -Wall
+Complex.o: $(LIBC)/Complex.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/Complex.cpp -Wall
+freqweight.o: $(LIBC)/freqweight.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/freqweight.cpp -Wall
+choleskyrt.o: $(LIBC)/choleskyrt.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/choleskyrt.cpp -Wall
+matrix_3.o: $(LIBC)/matrix_3.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/matrix_3.cpp -Wall
+chol_all.o: $(LIBC)/chol_all.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/chol_all.cpp -Wall
+conjgradrt3pi.o: $(LIBC)/conjgradrt3pi.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/conjgradrt3pi.cpp -Wall
+conjgradrt4.o: $(LIBC)/conjgradrt4.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/conjgradrt4.cpp -Wall
+circ_mult.o: $(LIBC)/circ_mult.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/circ_mult.cpp -Wall
+cholundpi.o: $(LIBC)/cholundpi.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cholundpi.cpp -Wall
+cholover.o: $(LIBC)/cholover.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cholover.cpp -Wall
+toepradon.o: $(LIBC)/toepradon.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/toepradon.cpp -Wall
+toepradoncg.o: $(LIBC)/toepradoncg.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/toepradoncg.cpp -Wall
+tred2.o: $(LIBC)/tred2.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/tred2.cpp -Wall
+nrutil.o: $(LIBC)/nrutil.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/nrutil.c -Wall 
+svdcmp.o: $(LIBC)/svdcmp.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/svdcmp.c -Wall 
+svbksb.o: $(LIBC)/svbksb.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/svbksb.c -Wall 
+svdover.o: $(LIBC)/svdover.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/svdover.cpp -Wall 
+pythag.o: $(LIBC)/pythag.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/pythag.c -Wall 
+conjgrad3r.o: $(LIBC)/conjgrad3r.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/conjgrad3r.cpp -Wall 
+linbcg1.o: $(LIBC)/linbcg1.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/linbcg1.c -Wall 
+atimes1.o: $(LIBC)/atimes1.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/atimes1.c -Wall 
+asolve1.o: $(LIBC)/asolve1.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/asolve1.c -Wall 
+snrm.o: $(LIBC)/snrm.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/snrm.c -Wall 
+cgls0.o: $(LIBC)/cgls0.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cgls0.cpp -Wall 
+cgls.o: $(LIBC)/cgls.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cgls.cpp -Wall 
+wtcgls0.o: $(LIBC)/wtcgls0.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/wtcgls0.cpp -Wall 
+wtcgls.o: $(LIBC)/wtcgls.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/wtcgls.cpp -Wall 
+cgnl0.o: $(LIBC)/cgnl0.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cgnl0.cpp -Wall
+cgnl.o: $(LIBC)/cgnl.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cgnl.cpp -Wall
+
+
+
+
+
+
+
+
+

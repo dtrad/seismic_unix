@@ -1,0 +1,103 @@
+#! /bin/sh
+# PLOTS 
+# Plots for testing reconstruction and nullspace for programs 
+# suradonfk0 and suradontx
+#
+# Daniel Trad- UBC June 2002
+
+set -x 
+
+FIGURE=1
+FILE=
+FILEN=kencmptx
+
+sufix='TX'
+sufix='RFK'
+
+FILE1=${FILEN}'.su'
+FILE2=${FILEN}'.surad'
+FILE3=${FILEN}'.surec'
+FILE4=${FILEN}'.sures'
+
+
+
+
+TITLE1="(a)" #data
+TITLE2="(b)" #migrated data
+TITLE3="(c)" #reconstructed
+TITLE4="(d)" #residuals 
+
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)"
+
+LABEL1="Time" 
+LABEL2="Offset"
+hideaxes="d1num=10 d2num=1000 f1num=100 f2num=100000"
+hideaxes=""
+
+parimage="f2=213 d2=50  clip=2 cmap=hsv8 "
+parimageb="f2=213 d2=50  perc=98 cmap=hsv8 "
+
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 ${parwigle} ${hideaxes} "
+PLOTX2="supsimage label1=$LABEL1 label2=$LABEL2 ${parimage} ${hideaxes} "
+PLOTX2b="supsimage label1=$LABEL1 label2=$LABEL2 ${parimageb} curve=curve1p npair=5 cuvecolor=white ${hideaxes}"
+
+# To find the coordinates of the curve1 for the second plot 
+# uncomment the following few lines and use the mouse
+############################################################################
+FILE2=kencmpwin.suradRFK
+#FILE2=mask.su
+PLOTX2c="suximage label1=$LABEL1 label2=$LABEL2 ${parimage} curve=curve1p npair=5 cuvecolor=white ${hideaxes}"
+suwind key=tracl min=124 < $FILE2 | sushw key=delrt a=5500 | $PLOTX2c title=$TITLE2  
+ exit 0
+############################################################################
+
+if [ $FIGURE -eq 1 ];then 
+
+image=1 # image
+#image=0 # wigle plot 
+
+FILE="${FILEN}.ps"  
+suwind key=tracl min=124 < $FILE1 | sushw key=delrt a=5500 | $PLOTX2 title=$TITLE1  > p  
+suwind key=tracl min=124 < $FILE2 | sushw key=delrt a=5500 | $PLOTX2b title=$TITLE2  > pp
+suwind key=tracl min=124 < $FILE3 | sushw key=delrt a=5500 | $PLOTX2 title=$TITLE3  > ppp
+suwind key=tracl min=124 < $FILE4 | sushw key=delrt a=5500 | $PLOTX2 title=$TITLE4  > pppp
+
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.45,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2 > ~/ps/$FILE
+
+gv ~/ps/$FILE &
+
+elif [ $FIGURE -eq 2 ];then 
+
+FILE='suinterpfk_ken2_secret.ps' 
+suwind key=offset min=0 < $FILE1 | sushw key=delrt a=5500 | $PLOTX2 title=$TITLE1  > p  
+suwind key=offset min=0 < $FILE5 | sushw key=delrt a=5500 | $PLOTX2 title=$TITLE2  > pp
+
+supsmerge in=p in=pp scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.45,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2 > ~/ps/$FILE
+gv ~/ps/$FILE &
+
+
+fi
+
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,60 @@
+#! /bin/sh
+# examples using while loops
+# Daniel Trad - UBC
+# Reference Shell Programming - Sams Publishing
+
+example=ex4
+
+case $example in
+ex1)
+
+x=0
+while [ $x -le 10 ]
+do
+	y="$x"
+	while [ $y -ge 0 ] 
+        do 
+	    echo "$y"
+            y=`echo "$y - 1" | bc` 
+	done    
+	x=`echo "$x + 1" | bc`  
+done
+;;
+
+ex2)
+
+RESPONSE=
+while [ -z "$RESPONSE" ] ;
+do 
+    echo "Enter the name of the directory where your files are located:\c "
+    read RESPONSE
+    if [ ! -d "$RESPONSE" ] ; then 
+	echo "ERROR : Please enter a directory pathname "
+	RESPONSE=
+    fi
+done
+;;
+
+ex3)
+x=1;
+until [ $x -ge 10 ]
+do 
+    echo "$x"
+    x=`echo "$x + 1" | bc` 
+done
+;;
+
+ex4)
+for FILE in $HOME/seismic/*.for
+do 
+    cp $FILE $HOME/oldfor/. 
+done
+;;
+
+esac
+
+
+
+
+
+

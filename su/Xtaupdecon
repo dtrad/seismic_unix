@@ -1,0 +1,56 @@
+#! /bin/sh
+# This example is intended to filter multiples in Radon domain
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+OPTIONSETNTR='y'
+OPTIONGETH='y'
+OPTIONRAD='n'
+
+FILE=sumiss2.sg0 
+FILERAD=$FILE'.rad'
+FILERADDEC=$FILE'.rad.dec'
+FILEDEC=$FILE'.dec'
+FILEOFF=$FILE'off'
+FILEOFF2=$FILEOFF
+
+case $OPTIONSETNTR in
+y*)
+ntr=`surange < $FILE | sed 1q | sed 's/traces://'`
+cp $FILE pp
+sushw key=ntr a=$ntr < pp > $FILE 
+;;
+esac
+
+# Save offset  for inverse radon transform
+case $OPTIONGETH in
+y*)
+sugethw key=offset output=geom < $FILE > $FILEOFF
+;;
+esac
+
+$PLOTX < $FILE &
+
+#suradon < $FILE igopt=4 cdpkey=sx nxmax=200 > $FILERAD
+case $OPTIONRAD in
+y*)  
+suhrrtf method=1 nq=150 rtmethod=1 < $FILE > $FILERAD
+;;
+esac
+
+suacor sym=0 ntout=301 < $FILERAD | $PLOTX &
+supef minlag=0.1 maxlag=3  < $FILERAD > $FILERADDEC  
+#suradon < $FILERADDEC igopt=4 choose=4 cdpkey=sx nxmax=200 > $FILEDEC
+suhrrti  < $FILERADDEC  method=1  rtmethod=1  offsetfile=$FILEOFF  > $FILEDEC
+$PLOTX < $FILERAD &
+$PLOTX < $FILERADDEC &
+$PLOTX < $FILEDEC &
+
+exit 0
+
+
+
+
+

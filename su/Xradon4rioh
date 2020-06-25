@@ -1,0 +1,110 @@
+#! /bin/sh
+# Xradon --- Example of interpolation with high resolution radon.
+######################################################################
+# This example needs sudata1 generated with Xsusyn0
+# No extra files are needed.
+# method 1 and 2 stands for Usual Radon and High resolution RT.
+# First the header of full offset data are saved in file=headers 
+# and offset in sudata1.off
+# The sudata1.off file is  used by suhrrti to create data at given offsets 
+# from the model.
+# The headers file is used after suhrrti to put back the header.
+# The suwind is used to create gaps that are filled with suhrrtf and suhrrti
+# Main purpose of the program is to compare gap filling capabilities of
+# HRRT (method=2) with the usual RT (method=1).
+# If you change the data check the values at the beginning.
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+NT=512 
+NH=64
+NP=120
+DT=4000
+VNMO=2000,5000
+TNMO=0,2
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+FILE=surio3
+FILEN=surio3
+FILENMO=$FILEN'nmo'
+FILEGAP=$FILEN'gap'
+FILERAD=$FILEN'rad'
+FILEREC=$FILEN'rec'
+FILEOFF=$FILEN'off'
+FILERADOFF=$FILEN'radoff'
+
+FILERAD2=$FILEN'radb'
+FILEREC2=$FILEN'recb'
+FILEOFF2=$FILEN'off'  # Final offset in which data will be resampled 
+
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILE > $FILEOFF
+#NMO in original data
+#sunmo tnmo=$TNMO vnmo=$VNMO < $FILE | suaddnoise sn=50 > $FILENMO
+sunmo tnmo=$TNMO vnmo=$VNMO < $FILE  > $FILENMO
+#suaddnoise < $FILEGAP > pp sn=10
+#suxwigb < $FILE   key=offset wbox=550 hbox=650 & 
+#Create Gaps
+#suwind abs=1 key=offset min=500 max=3200 < $FILE > pp 
+#sushw key=ntr a=44 < pp  > $FILEGAP
+suxwigb < $FILENMO  key=offset hbox=$HBOX wbox=$WBOX &
+############Aperture effects
+
+#sushw key=ntr a=44 < pp  > $FILEGAP
+#suxwigb < $FILEGAP  key=offset hbox=$HBOX wbox=$WBOX &
+
+#Forward  Radon transform
+# Frequency  domain
+# Note: method 14 (wtcgls) usually very well but step parameter seems to be critical. If the results are bad compared with method 7 (Cholesky) try reduce the step size.
+
+NITER=4
+suhrrtf method=14 eps1=1-3 iter_end=$NITER qmin=-1e-7 nq=130 freq=70 rtmethod=2 costflag=0 itercg=20 eps=0 step=.5 eps2=1e-3  norm=1 < $FILENMO  > $FILERAD 
+
+# Time domain
+#NITER=2
+#suradtd method=1 iter_end=$NITER step=.9 eps=0.01 eps1=1e-3 eps2=1e-3 qmin=4e-8. qmax=1e-6 nq=60 itercg=10 reorth=1 thres=0.3  < $FILE  > $FILERAD 
+
+#xgraph d1=1 style=normal n=$NITER x1beg=0 x1end=$NITER < Jtottemp &
+# For gap example: 
+# method=2 eps1=0.1 iter_end=10  itercg=25 eps=1e-10 
+# method=10 eps=1e-4 method=7 eps=1e-7
+# method=4 eps=1e-4 
+
+suxwigb < $FILERAD   key=f2 wbox=550 hbox=650 &
+#sumute < $FILERAD > $FILERAD2 key=f2 xmute=2.7e-3,2.7e-3 tmute=0,2
+sufft < $FILERAD | suamp > $FILERAD'freq' 
+suximage  < $FILERAD'freq' & 
+
+#Inverse Radon Transform
+suhrrti rtmethod=2 offsetfile=$FILEOFF2  fmax=70 < $FILERAD  > $FILEREC
+suxwigb < $FILEREC   key=offset  wbox=550 hbox=650  &
+sunmo tnmo=$TNMO vnmo=$VNMO invert=1 < $FILEREC  > $FILEREC2 
+#binary file with radon parameter  
+#cp myfile $FILERADOFF
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

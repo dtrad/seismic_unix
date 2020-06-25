@@ -1,0 +1,56 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+
+set -x
+   
+FILE="${HOME}/ps/figeom_sinc3ray.ps"
+
+NAME=sinclinal3_ray.CSP.WDN # Test data 
+NAME=sinclinal3_ray # Test data 
+
+FILE1=$NAME'.stack.su'
+FILE2=$NAME'.EOM.su'
+FILE3=$NAME'.gathers.su'
+FILE4=$NAME'.CSP.orig.su'
+#FILE4=$NAME'.CSP.WAV2D.su'
+
+PLOTPS="supsimage perc=99  labelsize=22  label1=t(s)"
+NMO="sunmo  smute=3"
+PAR1="stkvel.sinclinal3_ray_prim.su"
+PAR2="stkvel.sinclinal3_ray.CSP.su"
+
+$PLOTPS label2=cdp x2end=800 < $FILE1 > p title="stack"
+$PLOTPS label2=cdp d2=2 < $FILE2 > pp title="EOM"
+$NMO par=$PAR1 < $FILE3 | $PLOTPS label2=trace\# f2=1  > ppp title="CDPs"
+$NMO par=$PAR2 < $FILE4 | $PLOTPS label2=trace\#  > pppp title="CSPs"
+
+
+OPTIONNUM='4'
+#OPTIONNUM='Printer'
+
+case $OPTIONNUM in
+4*)
+supsmerge in=p in=pp in=ppp in=pppp scale=0.58,0.53 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILE
+gv $FILE &
+;;
+Printer*)
+lpr -Plp < p &
+lpr -Plp < pp &
+lpr -Plp < ppp &
+;;
+esac
+
+
+
+
+
+
+
+
+
+
+
+
+

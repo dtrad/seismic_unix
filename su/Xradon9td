@@ -1,0 +1,129 @@
+#! /bin/sh
+# Xradon --- Example of interpolation with high resolution radon.
+######################################################################
+# This example needs sudata1 generated with Xsusyn0
+# No extra files are needed.
+# method 1 and 2 stands for Usual Radon and High resolution RT.
+# First the header of full offset data are saved in file=headers 
+# and offset in sudata1.off
+# The sudata1.off file is  used by suhrrti to create data at given offsets 
+# from the model.
+# The headers file is used after suhrrti to put back the header.
+# The suwind is used to create gaps that are filled with suhrrtf and suhrrti
+# Main purpose of the program is to compare gap filling capabilities of
+# HRRT (method=2) with the usual RT (method=1).
+# If you change the data check the values at the beginning.
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+NT=512 
+NH=111
+NP=150
+DT=4000
+VNMO=1400,1600,1800,2300
+TNMO=0,0.6,1,2
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+
+FILE=sucdps2
+FILEGAP=$FILE'gap'
+FILERAD=$FILE'rad'
+FILEREC=$FILE'rec'
+FILEOFF=$FILE'off'
+FILERADOFF=$FILE'radoff'
+FILERAD2=$FILE'radb'
+FILEREC2=$FILE'recb'
+FILEOFF2=sucdps2off3  # Final offset in which data will be resampled 
+
+
+#NMO in original data
+#sunmo tnmo=$TNMO vnmo=$VNMO < $FILE > $FILENMO
+#suxmovie title="NMO corrected data" < sudata1nmo &
+
+
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILE > $FILEOFF
+#suxwigb < $FILE   key=offset wbox=550 hbox=650 & 
+#Create Gaps           //fprintf(stderr,"alfanum=%e,alfaden=%e\n",alfanum,alfaden);
+#suwind abs=1 key=offset min=0 max=900 < $FILENMO > pp
+#sushw key=ntr a=68 < pp  > $FILENMO
+#suxwigb < $FILENMO  key=offset hbox=$HBOX wbox=$WBOX &
+#suaddnoise < $FILEGAP > pp sn=10
+#cp pp $FILEGAP
+NITER=2
+#Forward  Radon transform
+suradtd eps1=1 qmin=0 qmax=3.5e-7 iter_end=$NITER nq=100 method=2 itercg=10  eps=1e-3 norm=1 eps2=1e-3 step=.9 thres=0.1 < $FILE  > $FILERAD 
+
+sugethw key=f2 output=binary < $FILERAD > $FILERADOFF
+
+#xgraph d1=1 style=normal n=$NITER x1beg=0 x1end=$NITER < Jtottemp &
+# method 2 eps1=3 eps=1e-5 iter_end=5
+# method 2 eps1=10 eps=1e-15 iter_end=5
+# method 7 eps1=10 eps=1e-7 iter_end=10
+# method 4 eps1=1 eps=1e-5 iter_end=10
+
+#******************************
+# The following steps are for muting in two steps. 
+# Press s on the output of suxwigb to generate the file ppp with the
+# x and t coordinates to mute
+# The program readmute reads ppp and produces the two binary files
+# xfileb and tfileb, and the number of points as well.
+#****************************************************
+#suxwigb < $FILERAD perc=99  key=f2 wbox=550 hbox=650 title="Radon domain" \
+# mpicks=/home/dtrad/work/ppp 
+#NMUTE=`readmute << END`
+#sumute < $FILERAD  key=f2 xfile=xfileb tfile=tfileb nmute=$NMUTE below=0  > pp
+
+#suxwigb < pp perc=99  key=f2 wbox=550 hbox=650 title="Radon domain"  \
+#mpicks=/home/dtrad/work/ppp 
+#NMUTE=`readmute << END`
+#sumute < pp  key=f2 xfile=xfileb tfile=tfileb nmute=$NMUTE below=1 > $FILERAD2
+#********************************
+#sumute < pp  key=f2 xmute=-1e-7,1.5e-7,1.8e-7,1e-7,1.4e-7,2e-7  tmute=2.0,2.0,1.4,.8,.5,.4  below=1 > ppp
+#cp ppp $FILERAD2
+################
+#sumute < pp > $FILERAD2 key=f2 xmute=-2e-7,-2e-7,-1e-7,-1e-7,8e-7 tmute=0,2.1,2.1,0,0 below=0
+
+suxwigb < $FILERAD  perc=99  key=f2 wbox=550 hbox=650 &
+#Inverse Radon Transformr
+suradtdi offsetfile=$FILEOFF2  < $FILERAD  > $FILEREC
+#suradtdi offsetfile=$FILEOFF2  < $FILERAD2  > $FILEREC2
+#suradnmo offsetfile=$FILEOFF  < $FILERAD  > $FILEREC
+
+#NMO in original data
+#sunmo tnmo=$TNMO vnmo=$VNMO invert=1 < pp > $FILEREC 
+#suxmovie title="NMO corrected data" < sudata1nmo &
+
+suxwigb < $FILEREC   key=offset  wbox=550 hbox=650  &
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

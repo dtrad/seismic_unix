@@ -1,0 +1,37 @@
+#!/bin/sh
+set -x 
+FILEN=$1
+FILE=$FILEN
+
+FILEPS=~/ps/"${FILE}.ps"
+FILEJPG=~/ps/jpg/"${FILE}.jpg"
+
+
+label1="time(s)"
+#label2="offset(m)"
+
+label2="CMP"
+#title="cdp 2000"
+title="Stack"
+#title="Migrated with RADON-EOM"
+#title="Migrated with RADON (freq)-EOM "
+#title="Migrated with EOM"
+#title="CMP 1000 with gaps"
+#title="Two parabolic events"
+
+perc=97
+
+#key=offset
+key=cdp
+#clip=95
+
+#supswigp key=$key clip=$clip < $FILE title=$title label1=$label1 label2=$label2  > $FILEPS
+
+supsimage perc=$perc < $FILE title=$title label1=$label1 label2=$label2 f2=818 > $FILEPS
+
+#convert $FILEPS $FILEJPG
+
+gv $FILEPS &
+
+
+

@@ -1,0 +1,40 @@
+#!/bin/sh
+# This shell script contains the commands I used to plot the Missississipi Canyon stack data in the thesis. 
+# Daniel Trad UBC - June 22
+
+set -x
+
+FILE=misscn_stack_comp.ps
+
+FILE1=/home/dtrad/psthesis/misscn_stack.ps
+FILE2=/home/dtrad/ps/misscn_stack_win.ps
+FILE3=/home/dtrad/ps/misscn_PRT_stack_win.ps
+FILE4=/home/dtrad/ps/misscn_HRT_stack_win.ps
+
+#cat misscn_1000_1500.stack.su misscn_1502_1600.stack.su misscn_1602_2400.stack.b.su misscn_2402_2600.stack.su misscn_2602_2996.stack.su > misscn_RT_demul.stack.su
+
+#Xsetntr misscn_RT_demul.stack.su
+
+x2beg=1500
+x2end=2500
+x1beg=1.8
+x1end=6
+
+supsimage < ~/migration/misscn_stack.su perc=97 f2=818 d2=1 x2beg=$x2beg x2end=$x2end x1beg=$x1beg x1end=$x1end title="NMO-stack" label2="cdp#" label1="t(s)" > ~/ps/misscn_stack_win.ps
+#gv ~/ps/misscn_stack_win.ps &
+
+supsimage < ~/migration/misscn_RT_demul.stack.su perc=97 f2=1000 d2=2  x2beg=$x2beg x2end=$x2end x1beg=$x1beg x1end=$x1end title="PRT-NMO-stack" label2="cdp#" label1="t(s)" > ~/ps/misscn_PRT_stack_win.ps
+#gv  ~/ps/misscn_PRT_stack_win.ps &
+
+supsimage < ~/migration/misscn_HRT_stack.su perc=97 f2=1000 d2=2  x2beg=$x2beg x2end=$x2end x1beg=$x1beg x1end=$x1end title="HRT-NMO-stack" label2="cdp#" label1="t(s)" > ~/ps/misscn_HRT_stack_win.ps
+#gv  ~/ps/misscn_HRT_stack_win.ps &
+
+supsmerge in=$FILE1 in=$FILE2  in=$FILE3 in=$FILE4  scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0  > ~/ps/$FILE
+
+gv ~/ps/$FILE &
+
+
+
+
+
+

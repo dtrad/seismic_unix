@@ -1,0 +1,80 @@
+#! /bin/sh
+# Xsuradonfkneils --- Attenuation of difractions with  
+# non apex centered Radon Transform.
+# Data contain multiples of diffractions. 
+#
+# data preprocessing:
+# Althouth the data is a real data set, for this example we need to take a
+# window, and make the data to look symmetric 
+# from  kencmpsnonmo.su take cdp 5300 and window from 5.5s to end.
+# Data name kencmpwin0.su
+# then make the data symmetric by 
+# suchw key1=offset key2=offset b=-1 < kencmpwin0.su > pp
+# cat pp kencmpwin0.su > kencmpwin.su
+# sushw key=delrt a=0 < kencmpwin.su > pp
+# susort +offset < pp >  kencmpwin.su
+# Xsetntr kencmpwin.su
+######################################################################
+# Author: Daniel Trad- November 2001
+set -x
+
+filen=$1
+filein=$filen".su"
+
+
+# Uncomment these two lines if all cdps are going to be output
+# to a single file
+
+#fileout=$filen"a.su"
+#rm $fileout
+
+cdpmin=5300
+cdpmax=5300
+
+dcdp=1
+
+
+cdp=$cdpmin
+while [ $cdp -le $cdpmax ]
+do
+suwind < $filein key=cdp min=$cdp max=$cdp count= tmin=5.4 tmax=7.7 > pp1
+#suwind < $filein key=cdp min=$cdp max=$cdp count=240  > pp1
+# for the data set kencmpsnmo we keep all the traces
+# but for the cmps in the whole line we keep one every two.
+susort +offset < pp1 | suwind j=1 s=0 > pp2
+suchw key1=offset key2=offset b=-1  < pp2 > pp3
+cat pp3 pp2 > pp4
+sushw key=delrt a=0 < pp4 > pp5
+
+susort +offset < pp5 > "cdp${cdp}.su"
+
+#suximage perc=98 title=$cdp  < "cdp${cdp}.su" 
+
+# Uncomment this line to output to a single file
+#susort +offset < pp6 >> $fileout
+
+Xsetntr "cdp${cdp}.su"
+cdp=` expr $cdp + $dcdp`
+
+done
+
+
+#Xsetntr $fileout 
+
+exit 0
+rm pp1
+rm pp2
+rm pp3
+rm pp4
+rm pp5
+
+
+exit 0
+
+
+
+
+
+
+
+

@@ -1,0 +1,7 @@
+#!/bin/sh
+# resampling of data from China, line159.
+# July 27, 2001.
+
+set -x
+
+sufilter < line159b.su f=100,120 amps=1,0 | suresamp nt=1515 dt=0.004 > line159br.su

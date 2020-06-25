@@ -1,0 +1,91 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+  
+FILE=fig1mig.ps
+
+FILEN=data5
+
+FILE1=$FILEN'.mig.su'
+FILE2=$FILEN'.eom.su'
+FILE3=$FILEN'.eom.su'
+FILE4=$FILEN'.eom.su'
+
+OPTIONNORM='n'
+OPTIONNUM='2'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+
+LABELT="time (sec)" 
+LABELO="offset(feet)"
+LABELR="q(s/feet^2)"
+LABELTAU="tau(sec)"
+LABELFREQ="Freq(Hz)"
+LABELFREQ2="q"
+LABELCDP="CMP number"
+
+case $OPTIONNORM in
+y*)
+PLOTX="supswigp f1=0 f2=0 key=offset label1=$LABELT label2=$LABELO "
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELTAU label2=$LABELR clip=1.1"
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELTAU label2=$LABELR clip=1.1"
+;;
+n*)
+PLOTX="supswigp f1=0 f2=0 key=offset label1=$LABELT label2=$LABELO perc=100"
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELTAU label2=$LABELR perc=99.9"
+PLOTF="supswigp f1=0 f2=0 key=f2 label1=$LABELFREQ label2=$LABELR perc=99.9"
+PLOTC="supswigp f1=0 f2=0 key=cdp label1=$LABELT label2=$LABELCDP perc=100"
+;;
+
+
+esac
+
+
+
+case $OPTIONNORM in
+y*)
+suop op=norm < $FILE1 > aux1
+suop op=norm < $FILE2 > aux2
+suop op=norm < $FILE3 > aux3
+suop op=norm < $FILE4 > aux4
+
+$PLOTX < aux1 title=$TITLE1  > p clip=1  
+$PLOTR < $FILE2  title=$TITLE2  > pp perc=100
+$PLOTX < aux3  title=$TITLE3  > ppp  clip=1
+$PLOTR < $FILE4  title=$TITLE4  > pppp perc=99.7
+;;
+
+n*)
+$PLOTC < $FILE1  title=$TITLE1  perc=99.7 > p  
+$PLOTC < $FILE2  title=$TITLE2  perc=99.7 > pp
+#sufft < $FILE1 | suamp | $PLOTF  title=$TITLE3  > ppp  
+#sufft < $FILE2 | suamp | $PLOTF  title=$TITLE4  > pppp  
+;;
+esac
+
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+

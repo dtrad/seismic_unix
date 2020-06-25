@@ -1,0 +1,149 @@
+#! /bin/sh
+# Xradon --- Example of multiple removal with high resolution radon.
+######################################################################
+# This example needs sudata and allows multiple removal via 
+# Radon model filtering generated with HRRTF 
+#######################################################################
+# Author: Daniel Trad- March 10/99
+set -x
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+NT=512 
+NH=111
+NP=150
+DT=4000
+
+#VNMO=2600,2800,3000,3200,3400
+#TNMO=0,0.5,1,1.5,2
+
+VNMOFILE=stkvel.cdps2
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+
+FILE=sucdps2
+FILENMO=$FILE'nmo'
+FILEGAP=$FILE'gap'
+FILERAD=$FILE'radcgcm'
+FILEREC=$FILE'rec'
+FILEOFF=$FILE'off'
+FILERADOFF=$FILE'radoff'
+FILERAD2=$FILE'radb'
+FILEREC2=$FILE'recb'
+FILERES=$FILE'res'
+
+FILEOFF2=sucdps2off  # Final offset in which data will be resampled 
+
+OPTIONNMO='y'
+OPTIONRAD='y'
+OPTIONMUTE='y'
+OPTIONREC='y'
+OPTIONRES='y'
+
+case $OPTIONNMO in
+y*)
+#NMO in original data
+sunmo smute=1.5 par=$VNMOFILE  < $FILE > $FILENMO
+;;
+esac
+# Save offset  for inverse radon transform
+#sugethw key=offset output=geom < $FILE > $FILEOFF
+#suxwigb < $FILE   key=offset wbox=550 hbox=650 & 
+#suxwigb < $FILENMO  key=offset hbox=$HBOX wbox=$WBOX &
+case $OPTIONRAD in
+y*)
+NITER=4
+#Forward  Radon transform
+suhrrtf method=2 eps1=1 iter_end=$NITER qmin=-1.5e-7 nq=150 freq=60 rtmethod=2 costflag=0 itercg=35 eps=0 norm=1 step=.5 < $FILENMO  > $FILERAD 
+
+;;
+esac
+
+#sugethw key=f2 output=binary < $FILERAD > $FILERADOFF
+
+case $OPTIONMUTE in
+y*)
+#****************************************************
+# The following steps are for muting in two steps. 
+# Press s on the output of suxwigb to generate the file ppp with the
+# x and t coordinates to mute
+# The program readmute reads ppp and produces the two binary files
+# xfileb and tfileb, and the number of points.
+#****************************************************
+
+# First window to mute
+
+suxwigb < $FILERAD perc=95  key=f2 wbox=550 hbox=650 title="Radon domain" \
+mpicks=/home/dtrad/work/ppp 
+NMUTE=`readmute << END`
+sumute < $FILERAD key=f2 xfile=xfileb tfile=tfileb nmute=$NMUTE below=0 > $FILERAD2
+
+suxwigb < $FILERAD2  perc=99  key=f2 wbox=550 hbox=650 title="Filtered Radon domain"&
+ 
+;;
+esac
+
+# Second window to mute
+#suxwigb < pp perc=99  key=f2 wbox=550 hbox=650 title="Radon domain"  \
+#mpicks=/home/dtrad/work/ppp 
+#NMUTE=`readmute << END`
+#sumute < pp  key=f2 xfile=xfileb tfile=tfileb nmute=$NMUTE below=1 > $FILERAD2
+#********************************
+
+
+case $OPTIONREC in
+y*)
+#Inverse Radon Transform
+suhrrti rtmethod=2 fmax=60 offsetfile=$FILEOFF2 < $FILERAD > pp
+sunmo par=$VNMOFILE invert=1 < pp > $FILEREC 
+
+
+suhrrti rtmethod=2 fmax=60 offsetfile=$FILEOFF2 < $FILERAD2 > pp
+sunmo par=$VNMOFILE  invert=1 < pp > $FILEREC2 
+
+suxwigb < $FILEREC key=offset wbox=550 hbox=650 \
+title="Resampled NO Filtered data" &
+
+$PLOTX < $FILEREC2 title="Resampled Filtered data" &
+
+;;
+esac
+
+case $OPTIONRES in
+y*)
+suop2 $FILEREC $FILEREC2 op=diff > $FILERES 
+$PLOTX < $FILERES perc=99
+;;
+esac
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

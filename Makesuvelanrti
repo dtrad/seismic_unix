@@ -1,0 +1,30 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I/usr/local/cwp/include -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=suvelanrti
+
+FLAG=-c -O -Wall
+
+OBJ=  $(PROG).o  velop.o 
+
+
+LIB=./flibrary
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) $(IDIR)
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+velop.o: $(LIBC)/velop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+

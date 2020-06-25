@@ -1,0 +1,13 @@
+#!/bin/sh
+set -x 
+FILE1="$1"
+FILE2="$2"
+FILEOUT="$3"
+scale="$4"
+title="$5"
+
+sugain scale=$scale < $FILE2 > pp
+suop2 $FILE1 pp op=diff > $FILEOUT
+suxwigb < $FILEOUT perc= key=offset
+#Velan1 $FILEOUT 1000 1000 1 0.2 $title
+

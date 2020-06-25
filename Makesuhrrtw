@@ -1,0 +1,21 @@
+SHELL= /bin/sh
+OPTC= -O
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG= suhrrtw2
+ 
+
+
+$(PROG): $(PROG).o $D
+	gcc $(PROG).o -o $(PROG) $(CFLAGS) $(LFLAGS) 
+
+$(PROG).o: $(PROG).c 
+	gcc -c $(OPTC) $(ENDIANFLAG) $(PROG).c -Wall
+
+
+ 

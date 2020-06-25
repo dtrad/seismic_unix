@@ -1,0 +1,101 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+  
+FILE="${HOME}/ps/paper/fig1linrad_after.ps"
+
+# PLot model
+
+FILEN=data1
+clipr=0.10
+clipx=2.17
+clipx2=0.98
+
+
+FILE1=$FILEN'.su'
+FILE1b=$FILEN'.sugap_enmo_gap'
+FILE2=$FILEN'.surad_enmo_gap'
+FILE3=$FILEN'.surad_enmo_nogap'
+FILE4=$FILEN'.sumod'
+FILE5=$FILEN'.suradb_enmo_gap'
+#FILE6=$FILEN'.suradb_res_enmo_gap_nogap'
+
+OPTIONNUM='9'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+TITLE5="(e)"
+TITLE6="(f)"
+TITLE7="(g)"
+TITLE8="(h)"
+TITLE9="(i)"
+
+
+PSPLOT1=p1
+PSPLOT2=p2
+PSPLOT3=p3
+PSPLOT4=p4
+PSPLOT5=p5
+PSPLOT6=p6
+PSPLOT7=p7
+PSPLOT8=p8
+PSPLOT9=p9
+
+LABEL1="time(sec)" 
+LABELT="tau(sec)" 
+LABEL2="offset(m)"
+LABELR="p(s/m)"
+LABELM="Vel(m/s)"
+LABELK="Kx"
+LABELF="freq(Hz)"
+
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELT label2=$LABELR clip=$clipr "
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx "
+PLOTX2="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx2 "
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx x2beg=-1250 x2end=1200"
+PLOTM="supswigp f1=0 f2=0 key=f2 label1=$LABEL1 label2=$LABELM perc=99.5"
+PLOTIMAGE="supsimage label1=$LABELF label2=$LABELK perc=99"
+
+$PLOTD < $FILE1  title=$TITLE1  > $PSPLOT1
+$PLOTD < $FILE1b title=$TITLE2  > $PSPLOT2
+suspecfk < $FILE1 | $PLOTIMAGE title=$TITLE3 >  $PSPLOT3
+$PLOTR < $FILE3  title=$TITLE4  > $PSPLOT4
+$PLOTR < $FILE2  title=$TITLE5  > $PSPLOT5
+suop2 $FILE3 $FILE2 | $PLOTR title=$TITLE6  > $PSPLOT6
+$PLOTM < $FILE4  title=$TITLE7  > $PSPLOT7
+$PLOTR < $FILE5  title=$TITLE8  > $PSPLOT8
+suop2 $FILE3 $FILE5 | $PLOTR  title=$TITLE9  > $PSPLOT9
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.4,0.4 translate=0,3 translate=3,3 translate=6,3  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+6*)
+psmerge in=pp1 in=pp2 in=pp3 in=pp4 in=pp5 in=pp6 scale=0.5,0.5 translate=0,5 translate=4,5  translate=8,5 translate=0,0 translate=4,0 translate=8,0 > "${FILE}"
+;;
+9*)
+psmerge in=$PSPLOT1 in=$PSPLOT2 in=$PSPLOT3 in=$PSPLOT4 in=$PSPLOT5 in=$PSPLOT6 in=$PSPLOT7 in=$PSPLOT8 in=$PSPLOT9 scale=0.36,0.36  translate=0,7 translate=2.8,7 translate=5.6,7  translate=0,3.5 translate=2.8,3.5 translate=5.6,3.5 translate=0,0 translate=2.8,0 translate=5.6,0 > "${FILE}"
+;;
+esac
+
+gv $FILE &
+
+
+
+
+
+
+
+
+
+
+

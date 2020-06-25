@@ -1,0 +1,34 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include  -I$(HOME)/seismic/clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=sumyfilt2
+
+FLAG=-c -O -Wall
+
+OBJ=  $(PROG).o rjwfilter.o Complex.o filt.o rho_filter.o
+
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rjwfilter.o: $(LIBC)/rjwfilter.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Complex.o: $(LIBC)/Complex.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+filt.o: $(LIBC)/filt.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rho_filter.o: $(LIBC)/rho_filter.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+

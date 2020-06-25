@@ -1,0 +1,84 @@
+#! /bin/sh
+
+
+set -x 
+
+if [ $1 = "cdp1000.su" ]; then
+    clip=17
+elif [ $1 = "cdp1000g.su" ]; then
+    clip=95    
+fi
+
+
+#FILE=cdp1000.su
+
+case "$5" in
+    1)
+	x1beg=3
+	x1end=4.5
+	x2beg=-5000
+	x2end=0    
+	
+	;;
+    2)
+	x1beg=3
+	x1end=4.5
+	x2beg=-10000
+	x2end=-5000	
+	;;
+    3)
+	x1beg=3
+	x1end=4.5
+	x2beg=-16000
+        x2end=-11000
+	;;
+    4)
+	x1beg=4
+	x1end=6
+	x2beg=-5000
+	x2end=0    
+	
+	;;
+    5)
+	x1beg=4
+	x1end=6
+	x2beg=-10000
+	x2end=-5000	
+	;;
+    6)
+	x1beg=4
+	x1end=6
+	x2beg=-16000
+        x2end=-11000
+	;;
+    7)
+	x1beg=1.8
+	x1end=4
+	x2beg=-"$6"
+        x2end=000
+	;;
+esac
+
+supswigp < "$1" key=offset x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end clip=$clip \
+title="$1"  > ~/ps/"$1".wind"$5".ps
+
+supswigp < "$2" key=offset x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end clip=$clip \
+title="$2" > ~/ps/"$2".wind"$5".ps
+
+supswigp < "$3" key=offset x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end clip=$clip \
+title="$3"  > ~/ps/"$3".wind"$5".ps
+
+supswigp < "$4" key=offset x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end clip=$clip \
+title="$4" > ~/ps/"$4".wind"$5".ps
+
+
+
+convert ~/ps/"$1".wind"$5".ps  ~/ps/jpg/"$1".wind"$5".jpg
+convert ~/ps/"$2".wind"$5".ps  ~/ps/jpg/"$2".wind"$5".jpg
+convert ~/ps/"$3".wind"$5".ps  ~/ps/jpg/"$3".wind"$5".jpg
+convert ~/ps/"$4".wind"$5".ps  ~/ps/jpg/"$4".wind"$5".jpg
+
+
+
+
+

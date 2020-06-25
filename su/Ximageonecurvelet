@@ -1,0 +1,44 @@
+#!/bin/sh
+# This is an auxiliar file used in Xsuwrite_curve and Xsuwrite_ridge
+# It reads a matlab binary file from matlab and adds a header
+# It has some very specific parameters for the file ozdata25
+# Usage Xsuwrite filename specific_name
+# example: Xsuwrite ozdata0win noise.curve
+# This will look for the file ozdata0win.noise.curve.bin
+# the present directory.
+#
+# Daniel Trad - December 9th, 2002
+
+
+set -x
+
+file=onecurve
+
+filematlab="${file}.bin"
+filesu="${file}.su"
+filemig="${file}.mig.su"
+filedemig="${file}.demig.su"
+fileadj="${file}.adj.su"
+fileadjbin="${file}.adj.bin"
+
+cdpspace=0.5
+
+suaddhead < ${filematlab} ns=256 | sushw key=dt a=4000 | susetntr > $filesu
+
+sushw key=offset a=10 < $filesu | sushw key=cdp a=0 b=10 > pp
+
+mv pp ${filesu}
+
+sukmigls < ${filesu} cdpmin=0 cdpmax=2550 verbose=0 dfold=1 output=1 par=stkvel.onecurve.su > ${filemig} adj=1 cdpspace=${cdpspace}
+
+sukmigls < ${filesu} cdpmin=0 cdpmax=2550 verbose=0 dfold=1 output=1 par=stkvel.onecurve.su > ${filedemig} adj=0 cdpspace=${cdpspace}
+
+sukmigls < ${filedemig} cdpmin=0 cdpmax=2550 verbose=0 dfold=1 output=1 par=stkvel.onecurve.su > ${fileadj} adj=1 cdpspace=${cdpspace}
+
+#suximage < ${filemig} perc=99.9 &
+#suximage < ${filedemig} perc=99.9 xbox=400 &
+
+suximage < ${filesu} clip=0.1 xbox=0 &
+suximage < ${fileadj} clip0.1 xbox=800 &
+
+sustrip < ${fileadj}  > ${fileadjbin}

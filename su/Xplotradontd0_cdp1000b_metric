@@ -1,0 +1,138 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+
+set -x
+
+METHOD0='HRF'
+
+FILE='fig3bhyprad_comp_'$METHOD0'_td2_metric.ps'
+
+# PLot model
+
+FILEN=cdp1000g
+
+x1beg1=4
+x1end1=6
+x2beg1=-1500
+x2end1=0
+
+
+x1beg2=$x1beg1
+x1end2=$x1end1
+x2beg2=-3000
+x2end2=-1500
+
+x1beg3=$x1beg1
+x1end3=$x1end1
+x2beg3=-4900
+x2end3=-3300
+
+clip=95
+clip=95
+
+if [ $METHOD0 = 'toep' ]; then
+    FILE2=$FILEN'.sumix_toep'
+    NAME2="PRT-LS"  
+elif [ $METHOD0 = 'HRF' ]; then
+    FILE2=$FILEN'.sumix_HRF'
+    NAME2="PRT-HRF"
+fi
+
+
+FILE1=$FILEN'.su'
+FILE3=$FILEN'.sumix_LI1'
+FILE1=$FILE1'_metric'  
+FILE2=$FILE2'_metric'  
+FILE3=$FILE3'_metric'  
+
+NAME1="data"
+NAME3="HRT-TD"
+
+#NAME1="${FILE1}"
+#NAME2="${FILE2}"
+#NAME3="${FILE3}"
+
+
+OPTIONNUM='9'
+OPTIONPLOT='win'
+
+TITLE11="(a)${NAME1}"
+TITLE12="(b)${NAME2}"
+TITLE13="(c)${NAME3}"
+TITLE21="(d)${NAME1}"
+TITLE22="(e)${NAME2}"
+TITLE23="(f)${NAME3}"
+TITLE31="(g)${NAME1}"
+TITLE32="(h)${NAME2}"
+TITLE33="(i)${NAME3}"
+
+PSPLOT1=p1
+PSPLOT2=p2
+PSPLOT3=p3
+PSPLOT4=p4
+PSPLOT5=p5
+PSPLOT6=p6
+PSPLOT7=p7
+PSPLOT8=p8
+PSPLOT9=p9
+
+
+LABEL1="time(s)" 
+LABEL2="offset(m)"
+LABELR="q(s2/m2)"
+
+
+case $OPTIONPLOT in
+win*)
+PLOTXW1="supswigp key=offset x1beg=$x1beg1 x1end=$x1end1 x2beg=$x2beg1 x2end=$x2end1 clip=$clip label1=$LABEL1 label2=$LABEL2"  
+PLOTXW2="supswigp key=offset x1beg=$x1beg2 x1end=$x1end2 x2beg=$x2beg2 x2end=$x2end2 clip=$clip label1=$LABEL1 label2=$LABEL2"  
+PLOTXW3="supswigp key=offset x1beg=$x1beg3 x1end=$x1end3 x2beg=$x2beg3 x2end=$x2end3 clip=$clip label1=$LABEL1 label2=$LABEL2"  
+;;
+esac
+
+
+case $OPTIONNUM in
+9*)
+$PLOTXW1 < $FILE1  title=$TITLE11  > $PSPLOT1
+$PLOTXW1 < $FILE2  title=$TITLE12  > $PSPLOT2
+$PLOTXW1 < $FILE3  title=$TITLE13  > $PSPLOT3
+$PLOTXW2 < $FILE1  title=$TITLE21  > $PSPLOT4
+$PLOTXW2 < $FILE2  title=$TITLE22  > $PSPLOT5
+$PLOTXW2 < $FILE3  title=$TITLE23  > $PSPLOT6
+$PLOTXW3 < $FILE1  title=$TITLE31  > $PSPLOT7
+$PLOTXW3 < $FILE2  title=$TITLE32  > $PSPLOT8
+$PLOTXW3 < $FILE3  title=$TITLE33  > $PSPLOT9
+;;
+esac
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.42,0.42 translate=0,3 translate=3,3 translate=6,3  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+9*)
+psmerge in=$PSPLOT1 in=$PSPLOT2 in=$PSPLOT3 in=$PSPLOT4 in=$PSPLOT5 in=$PSPLOT6 in=$PSPLOT7 in=$PSPLOT8 in=$PSPLOT9   scale=0.33,0.33  translate=0,7 translate=2.8,7 translate=5.6,7 translate=0,3.5 translate=2.8,3.5 translate=5.6,3.5 translate=0,0 translate=2.8,0 translate=5.6,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,137 @@
+#! /bin/sh
+# Xsuradonfk_ken --- Attenuation of difractions with  
+# non apex centered Radon Transform.
+# Data contain multiples of diffractions. 
+#
+# data preprocessing:
+# Althouth the data is a real data set, for this example we need to take a
+# window, and make the data to look symmetric 
+# from  kencmpsnonmo.su take cdp 5300 and window from 5.5s to end.
+# Data name kencmpwin0.su
+# then make the data symmetric by 
+# suchw key1=offset key2=offset b=-1 < kencmpwin0.su > pp
+# cat pp kencmpwin0.su > kencmpwin.su
+# sushw key=delrt a=0 < kencmpwin.su > pp
+# susort +offset < pp >  kencmpwin.su
+# Xsetntr kencmpwin.su
+######################################################################
+# Author: Daniel Trad- November 2001
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=94"
+suxx="suximage perc=98 hbox=900 wbox=700 xbox=$2   curve=curve1 npair=5 & "
+
+set -x
+
+METHOD='TX'
+METHOD='RFK' # Radon fk (equiv to LSFK so far)
+
+RADONFORW='y'
+
+sufix=${METHOD}
+
+FILE=kencmpwin.su; clip=  #clip corresponding to perc=97
+
+FILEN=$FILE
+FILETEMP=pp
+FILETEMP2=ppp
+
+offsetfile=$FILE'off'
+
+FILERAD=${FILEN}'rad'${sufix}
+FILERAD0=${FILEN}'rad0'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILERES=$FILEN'res'${sufix}
+
+# Options
+# None
+
+scale=1.0
+
+############################*****
+perc=100
+
+cp $FILE $FILETEMP
+
+cdpmin=5800
+cdpmax=5899
+
+
+dcdp=1
+
+
+cdp=$cdpmin
+while [ $cdp -le $cdpmax ]
+do
+    FILE="cdp${cdp}.su"
+    CDPREC="cdp${cdp}dif.su"
+    cp $FILE $FILETEMP
+    sufill  < $FILETEMP > pp1;  # Fill gaps with zero traces 
+   
+    # Zero traces are identified with tr.trid=2
+    # After suradonfk0 we need remove dead traces and set ntr to the original
+    suradonfk0 < pp1 vmig=3200,3200 tmig=0,4 plot=0  \
+    itercg=2 iter_end=1 step=0.98 testadj=0 eps1=9.8e-1 eps2=9.8e-1 modelfile=$FILERAD \
+    ascale=1 fpeak=20 nw=0 typewav=2 option=3 tmin_m=0.85 tmax_m=2.4 ihmin_m=132 \
+    ihmax_m=158 thres_m=0 slope_m=26 mute=1 norm=0 > pp2
+    suremovedead < pp2 hmax=300 | susetntr > $CDPREC
+#    cp migrated.su $FILERAD0
+#    cp $FILEREC  $CDPREC
+#    PLOTXX="suximage perc=98 hbox=900 wbox=700 curve=curve1 npair=5 &"
+
+#$PLOTXX < $FILERAD xbox=0 &
+#$PLOTXX < $FILEREC xbox=600 &
+
+#suadapdiff $FILE $FILEREC > $FILERES
+
+#sushw key=delrt a=5500 < $FILERES > pp; mv pp $FILERES
+
+#$PLOTXX < $FILE xbox=0 x2beg=120 &
+#$PLOTXX < $FILERES xbox=600 x2beg=120 &
+
+# save the migrated data before mute for plot in Xplotsuradonfk_ken
+ 
+cdp=` expr $cdp + $dcdp`
+
+done
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

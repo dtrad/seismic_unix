@@ -1,0 +1,112 @@
+#! /bin/sh
+# Xradon --- Example of interpolation with high resolution radon.
+######################################################################
+# This example needs sudata1 generated with Xsusyn0
+# No extra files are needed.
+# method 1 and 2 stands for Usual Radon and High resolution RT.
+# First the header of full offset data are saved in file=headers 
+# and offset in sudata1.off
+# The sudata1.off file is  used by suhrrti to create data at given offsets 
+# from the model.
+# The headers file is used after suhrrti to put back the header.
+# The suwind is used to create gaps that are filled with suhrrtf and suhrrti
+# Main purpose of the program is to compare gap filling capabilities of
+# HRRT (method=2) with the usual RT (method=1).
+# If you change the data check the values at the beginning.
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+NT=512 
+NH=132
+NP=150
+DT=4000
+VNMO=1400,1600,1800,2300
+TNMO=0,0.6,1,2
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+
+FILE=surealdata3c
+
+FILENMO=surealdata3nmo
+FILERAD=surealdata3radC2
+FILEREC=surealdata3recC2
+FILEOFF=surealdata3off
+FILERADOFF=surealdata3radoff
+FILERAD2=surealdata3radbC2
+#FILEREC2=sudata3recb
+FILEOFF2=surealdata3off2  # Final offset in which data will be resampled 
+
+#NMO in original data
+sunmo tnmo=$TNMO vnmo=$VNMO < $FILE > $FILENMO
+#suxmovie title="NMO corrected data" < sudata1nmo &
+
+
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < surealdata3 > $FILEOFF
+#suxwigb < $FILE   key=offset wbox=550 hbox=650 & 
+#Create Gaps           //fprintf(stderr,"alfanum=%e,alfaden=%e\n",alfanum,alfaden);
+#suwind abs=1 key=offset min=0 max=1000 < $FILENMO > pp
+#sushw key=ntr a=68 < pp  > $FILENMO
+suxwigb < $FILENMO  key=offset hbox=$HBOX wbox=$WBOX &
+#suaddnoise < $FILEGAP > pp sn=10
+#cp pp $FILEGAP
+
+#Forward  Radon transform
+suhrrtf method=3 eps1=1 iter_end=7 qmin=-0.3e-7 nq=200 freq=50 rtmethod=2 costflag=1 itercg=40 eps=1e-13 norm=10 eps2=1e6 < $FILENMO  > $FILERAD 
+sugethw key=f2 output=binary < $FILERAD > $FILERADOFF
+# method 2 eps1=3 eps=1e-5 iter_end=5
+# method 2 eps1=10 eps=1e-15 iter_end=5
+# method 7 eps1=10 eps=1e-7 iter_end=10
+# method 4 eps1=1 eps=1e-5 iter_end=10
+
+suxwigb < $FILERAD   key=f2 wbox=550 hbox=650 &
+#sumute < $FILERAD  key=f2 xmute=0,4e-7,4.5e-7,8e-7 tmute=2,2,0,0 below=1 > pp 
+#sumute < pp > $FILERAD2 key=f2 xmute=-1e-7,0e-7,0e-7 tmute=0,0,2 below=1
+cp $FILERAD $FILERAD2
+suxwigb < $FILERAD2   key=f2 wbox=550 hbox=650 &
+#Inverse Radon Transformr
+
+suhrrti rtmethod=2 offsetfile=$FILEOFF2  fmax=50 < $FILERAD2  > pp
+
+#NMO in original data
+sunmo tnmo=$TNMO vnmo=$VNMO invert=1 < pp > $FILEREC 
+#suxmovie title="NMO corrected data" < sudata1nmo &
+
+suxwigb < $FILEREC   key=offset  wbox=550 hbox=650  &
+
+#binary file with radon parameter  
+#cp myfile $FILERADOFF
+sustrip < $FILE > $FILE's'
+sustrip < $FILERAD2 > $FILERAD2's'
+sustrip < $FILEREC > $FILEREC's'
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

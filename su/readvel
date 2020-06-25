@@ -1,0 +1,11 @@
+#! /bin/sh
+# Script to generate the par files from China marine data
+FILE0=DMO_v_99cl500b.txt # Remove the first few lines
+FILE=line500.txt
+gawk '{if ($1 !~ /SPNT/) {print ; }}' $FILE0 | tr  -d 'VELF' | tr -d 'SPNT' > $FILE
+gawk '/01  -/ {print $1}' $FILE | tr '\n' ' ' > cdps.dat  # check the pattern in every file
+gawk '{for (i=1; i<=12; i+=2) print $i " " $(i+1); }' $FILE | tr -d '\r' | gawk '{if ($2 > 0) {print $1 " " $2}}'  > vel_line500.txt
+
+#Use MATLAB program createparfile to create the two parfiles tnmopar and vnmopar
+#Use Matlab program mergeparfiles to create the final parfile for su
+

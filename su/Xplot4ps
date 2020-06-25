@@ -1,0 +1,36 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+
+set -x
+   
+FILE="${HOME}/ps/fig_misscn1_mig_final.ps"
+
+
+FILE1=~/ps/misscn1g.stack.su.ps
+FILE2=~/ps/misscn1.eom0.su.ps
+FILE3=~/ps/misscn1.lsm.fintot.su.ps
+FILE4=~/ps/misscn1.lsm.radf0.su.ps
+
+
+OPTIONNUM='4'
+
+case $OPTIONNUM in
+4*)
+psmerge in=$FILE1 in=$FILE2 in=$FILE3 in=$FILE4 scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILE
+;;
+esac
+
+gv $FILE &
+
+
+
+
+
+
+
+
+
+
+

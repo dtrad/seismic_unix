@@ -1,0 +1,57 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+
+set -x
+   
+FILE="${HOME}/ps/fig_misscn1_mig_final2.ps"
+
+FILE1=~/migration/misscn.stack.su
+FILE2=~/migration/misscn.eom.su
+FILE3=~/migration/misscn_fm.lsm.su
+FILE4=~/migration/misscn_freq.lsm.su
+
+PLOTPS="supsimage perc=97 x1beg=1.5 f2=818 x2end=3000 labelsize=22 label2=cdp label1=t(s)"
+
+# Cosmetics
+$PLOTPS < $FILE1 > p title="stack"
+sugain tpow=-1 < $FILE2 | $PLOTPS  > pp title="EOM"
+sugain tpow=-1 < $FILE3 | $PLOTPS  > ppp title="HRT(time)-EOM"
+sugain tpow=-1 < $FILE4 | $PLOTPS  > pppp title="HRT(freq)-EOM"
+###########
+
+# Plain ###############################
+#$PLOTPS < $FILE1 > p title="stack"
+#$PLOTPS < $FILE2 > pp title="EOM"
+#$PLOTPS < $FILE3 > ppp title="HRT(time)-EOM"
+#cp $FILE4 pppp
+#######################################
+
+OPTIONNUM='4'
+#OPTIONNUM='Printer'
+
+case $OPTIONNUM in
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.58,0.53 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILE
+gv $FILE &
+;;
+Printer*)
+lpr -Plp < p &
+lpr -Plp < pp &
+lpr -Plp < ppp &
+;;
+esac
+
+
+
+
+
+
+
+
+
+
+
+
+

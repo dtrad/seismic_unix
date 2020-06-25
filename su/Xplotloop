@@ -1,0 +1,58 @@
+#! /bin/sh
+
+set -x
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650 perc=90 "
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+
+NAME=misscn_gain_cdp_mute # Complete data
+FILECSP=$NAME'.csp.su'
+
+CSPMIN=1000
+DXCSP=250
+CSPMAX=3000
+
+PLOTOPT="FILES"
+
+case $PLOTOPT in
+    PSPLOT*)
+    ;;
+    FILES*)
+    csp=$CSPMIN
+      
+    while [ $csp -le $CSPMAX ]
+    do
+    title=$csp' CSP'
+
+    suwind key=cdp min=$csp max=$csp  < $FILECSP > "csp${csp}.su" 
+    suwind key=cdp min=$csp max=$csp  < model.su > "model${csp}.su" 
+    Velan1 "csp${csp}.su" $csp $csp 1 0.2 
+csp=`bc -l <<END
+		$csp + $DXCSP
+END`
+
+
+    done
+    ;;
+    XPLOT2*)
+    
+    csp=$CSPMIN
+      
+    while [ $csp -le $CSPMAX ]
+    do
+    title=$csp' CSP'
+    suwind key=cdp min=$csp max=$csp  < $FILECSP | $PLOTX  title=$title &
+    suwind key=cdp min=$csp max=$csp  < model.su | $PLOTR  title=$title &
+    
+
+csp=`bc -l <<END
+		$csp + $DXCSP
+END`
+
+
+    done
+    ;;
+esac

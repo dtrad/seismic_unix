@@ -1,0 +1,81 @@
+#! /bin/sh
+# PLOTS 
+# Plot for comparing Radon transforms with different methods. 
+# Daniel Trad- UBC April 2001
+
+set -x 
+
+METHOD1='toep'  
+METHOD2='wtcgls'
+METHOD3='TFD'
+
+NUM=750
+
+FILEN="cdpland_${NUM}"  
+#FILEN="cdpland1"  
+
+# PLot model
+
+clip=0.20
+
+sufix='rad'
+sufix='int'
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN".su${sufix}_"${METHOD1}
+FILE3=$FILEN".su${sufix}_"${METHOD2}
+FILE4=$FILEN".su${sufix}_"${METHOD3}
+
+OPTIONNUM='4'
+
+TITLE1="(a) Data"
+TITLE2="(b) Non sparse"
+TITLE3="(c) WTCGLS"
+TITLE4="(d) TFD"
+
+LABEL1="time(s)" 
+LABEL2="offset(m)"
+LABELR2="q(s/m2)"
+LABELR1="tau(s)"
+LABELRF1="f(Hz)"
+
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELR1 label2=$LABELR2 x2beg=-2e-8 x2end=3e-8 perc=99.8"
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 "
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR"
+
+
+if [ $sufix = 'rad' ]; then
+FILE="${FILEN}_RTcomp.ps"
+$PLOTX < $FILE1  title=$TITLE1  > p clip=0.5  
+$PLOTR < $FILE2  title=$TITLE2  > pp
+$PLOTR < $FILE3  title=$TITLE3  > ppp 
+$PLOTR < $FILE4  title=$TITLE4  > pppp
+elif [ $sufix = 'int' ]; then
+FILE="${FILEN}_INTcomp.ps"
+$PLOTX < $FILE1  title=$TITLE1  > p clip=0.5 
+$PLOTX < $FILE2  title=$TITLE2  > pp clip=${clip}
+$PLOTX < $FILE3  title=$TITLE3  > ppp clip=${clip}
+$PLOTX < $FILE4  title=$TITLE4  > pppp clip=${clip}
+fi
+
+supsmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0.3,5 translate=4.1,5 translate=0.3,0 translate=4.1,0  > ~/ps/$FILE
+
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

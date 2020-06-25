@@ -1,0 +1,6 @@
+*.o
+*.dat
+*~
+*nbproject
+*tar.gz
+

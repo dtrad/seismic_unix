@@ -1,0 +1,115 @@
+#! /bin/sh
+# PLOTS 
+# Plot for interpolation of mixed shots using suinterpfk4
+# To find the coordinates of the curve1 for the second plot 
+# use figure eq 0 and use the mouse
+# Daniel Trad- UBC Nov 1999
+############################################################################
+
+
+set -x 
+echo "Log file: Xplotsuradonfk_paper2"
+
+date 1>&2
+FIGURE=1
+
+FILEN=kencmp0sym
+
+sufix='TX'
+sufix='RFKpaper'
+
+FILE1=${FILEN}'.su'
+FILE2=${FILEN}'.surad0'${sufix}
+FILE4=${FILEN}'.surec'${sufix}
+FILE5=${FILEN}'.sures'${sufix}
+
+# Test the polygon in curve1p by using the muted radon gather
+#FILE2=${FILEN}'.suradRFK'
+
+
+TITLE1="(a)" #data
+TITLE2="(b)" #migrated data
+TITLE3="(c)" #mute
+TITLE4="(d)" #diffractions 
+TITLE5="(d)" #data after subtraction 
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)"
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)"
+hideaxes="d1num=10 d2num=1000 f1num=100 f2num=100000"
+
+parimage="f2=213 d2=50  clip=0.35 x1beg=5.4 x1end=8 "
+parimageb="f2=213 d2=50  perc=99 x1beg=5.4 x1end=8 "
+parwigle="clip=1 x1beg=6.3 x1end=7 x2beg=200 x2end=2000 "
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 ${parwigle}  "
+PLOTX2="supsimage label1=$LABEL1 label2=$LABEL2 ${parimage} "
+PLOTXX="suximage label1=$LABEL1 label2=$LABEL2 ${parimageb} curve=curve1paper npair=5 cuvecolor=white "
+
+PLOTX2b="supsimage label1=$LABEL1 label2=$LABEL2 ${parimageb} curve=curve1paper npair=5 cuvecolor=white "
+
+
+if [ $FIGURE -eq 0 ];then 
+FILE2=$FILE3
+#FILE2=mask.su
+PLOTX2c="suximage label1=$LABEL1 label2=$LABEL2 ${parimageb} curve=curve1paper npair=5 "
+sushw key=tracl a=1 b=1 < $FILE2 > pp; cp pp $FILE2
+suwind key=tracl min=124 < $FILE2 | sushw key=delrt a=5500 | $PLOTX2c title=$TITLE2  
+ 
+elif [ $FIGURE -eq 1 ];then 
+
+#test
+#suwind key=offset min=0 < $FILE2 | $PLOTXX title=$TITLE1  & 
+#exit 0
+
+FILE="fig"${FILEN}${sufix}".ps"  
+suwind key=offset min=0 < $FILE1 | $PLOTX2 title=$TITLE1  > p  
+suwind key=offset min=0 < $FILE2 | $PLOTX2b title=$TITLE2  > pp
+suwind key=offset min=0 < $FILE4 | $PLOTX2 title=$TITLE3  > ppp
+suwind key=offset min=0 < $FILE5 | $PLOTX2 title=$TITLE4  > pppp
+
+
+
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.45,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2 > ~/ps/$FILE
+
+elif [ $FIGURE -eq 2 ];then 
+
+#test
+#suwind key=offset min=0 < $FILE2 | $PLOTXX title=$TITLE1  & 
+#exit 0
+
+
+FILE="fig"${FILEN}${sufix}"wiggle.ps"  
+suwind key=offset min=0 < $FILE1 | $PLOTX title=$TITLE1  > p  
+suwind key=offset min=0 < $FILE5 | $PLOTX title=$TITLE2  > pp
+
+supsmerge in=p in=pp  scale=0.5,0.5 translate=0,0 translate=4,0  > ~/ps/$FILE
+
+
+
+
+fi
+
+gv ~/ps/$FILE &
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

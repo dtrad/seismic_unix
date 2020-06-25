@@ -1,0 +1,81 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+set -x 
+sufix='SOL'
+#METHOD='wtcgls'
+METHOD='toep'  
+#METHOD='adj'
+#METHOD='cgfft'
+#METHOD='TFD'; sufix="";
+  
+FILE='data2m_simple_example'${METHOD}'.ps'
+
+# PLot model
+
+FILEN=data2m
+CLIP=2.5
+
+if [ $METHOD = 'toep' ]; then
+    LEGEND='non-sparse'
+else 
+    LEGEND='sparse: '$METHOD
+fi
+
+LEGEND=''
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.surad'${sufix}${METHOD}
+FILE3=$FILEN'.surad'${sufix}${METHOD}
+FILE4=$FILEN'.surecb'${sufix}${METHOD}
+FILE5=$FILEN'.sures'${sufix}${METHOD}
+
+OPTIONNUM='4'
+
+TITLE1="(a) data"
+TITLE2="(b) RT - ${LEGEND}"
+TITLE3="(c) RT spectrum - ${LEGEND}"
+TITLE4="(d) Multiples"
+TITLE5="(e) Primaries"
+
+LABEL1="time(sec)" 
+LABEL2="offset(m)"
+LABELR2="q(s/m^2)"
+LABELR1="tau(sec)"
+LABELRF1="f(Hz)"
+
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELR1 label2=$LABELR2 perc=100"
+PLOTRF="supswigp key=f2 label1=$LABELRF1 label2=$LABELR2 perc=100"
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=${CLIP}"
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=2.5 x2beg=-1250 x2end=1250"
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR"
+
+
+$PLOTX < $FILE1  title=$TITLE1  > p  
+$PLOTR < $FILE2  title=$TITLE2  > pp
+#sufft < $FILE3 | suamp | $PLOTRF title=$TITLE3 > ppp
+#$PLOTX < $FILE4  title=$TITLE4  > pppp 
+#$PLOTX < $FILE5  title=$TITLE5  > ppppp
+
+#psmerge in=p in=pp in=ppp in=pppp in=ppppp  scale=0.37,0.37 translate=2.5,7 translate=1,3.5 translate=4,3.5 translate=0,0 translate=5,0  > ~/ps/$FILE
+
+psmerge in=p in=pp scale=0.5,0.5  translate=0,2 translate=4,2  > ~/ps/$FILE
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,74 @@
+#! /bin/sh
+# Xradon --- Example of interpolation with high resolution radon.
+######################################################################
+# This example needs sudata1 generated with Xsusyn0
+# No extra files are needed.
+# method 1 and 2 stands for Usual Radon and High resolution RT.
+# First the header of full offset data are saved in file=headers 
+# and offset in sudata1.off
+# The sudata1.off file is  used by suhrrti to create data at given offsets 
+# from the model.
+# The headers file is used after suhrrti to put back the header.
+# The suwind is used to create gaps that are filled with suhrrtf and suhrrti
+# Main purpose of the program is to compare gap filling capabilities of
+# HRRT (method=2) with the usual RT (method=1).
+# If you change the data check the values at the beginning.
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+NT=512 
+NH=64
+NP=100
+DT=4000
+VNMO=7000,8000,9000
+TNMO=0.0,0.65,1.0
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+FILE=sudata16
+FILERAD=sudata15rad
+FILEREC=sudata15rec
+FILEOFF=sudata15off
+FILERADOFF=data15ra
+
+FILERAD2=sudata15radb
+FILEREC2=sudata15recb
+FILEOFF2=sudata16off  # Final offset in which data will be resampled 
+
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILE > $FILEOFF
+suxwigb < $FILE   key=offset wbox=550 hbox=650 &
+
+#Forward  Radon transform
+suhrrt2 method=1 eps1=3 iter_end=1 qmin=0 nq=$NP freq=40 rtmethod=2 \
+ < $FILE  > $FILERAD 
+
+suxwigb < $FILERAD   key=f2 wbox=550 hbox=650 &
+sumute < $FILERAD > $FILERAD2 key=f2 xmute=0.001,0.003 tmute=2,2
+
+#Inverse Radon Transform
+suhrrti2 rtmethod=2 offsetfile=$FILEOFF2  < $FILERAD2  > $FILEREC2
+suxwigb < $FILEREC2   key=offset  wbox=550 hbox=650  &
+
+#binary file with radon parameter  
+cp myfile $FILERADOFF
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+

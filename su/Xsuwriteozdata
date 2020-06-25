@@ -1,0 +1,77 @@
+#!/bin/sh
+# Noise predtiction and subtraction by using ridgelet transforms
+# First run ridgegrolllozdata.m to create the files ozdataNwin.noise.su
+#
+# Needs script Xsuwrite that takes a binary file and produces
+# a sufile with header given by the original data
+# example: Xsuwrite ozdata0win takes ozdata0win.noise.bin and produces
+# ozdata0win.noise.su with the same header from ozdata0win.su
+# 
+# Uses suvcat to pad the different windows. 
+# I have a small problem with the length (one sample is missing).,
+#
+# Daniel Trad - UBC - November 
+# ridgelet example
+
+set -x
+
+
+Xsuwrite ozdata0win
+Xsuwrite ozdata1win
+
+taplen=3
+
+suvcat ozdata0win.noise.su ozdata1win.noise.su taplen=$taplen > oz25.noise.su
+
+
+Xsuwrite ozdata2win
+
+suvcat oz25.noise.su ozdata2win.noise.su taplen=$taplen > pp; mv pp oz25.noise.su
+
+Xsuwrite ozdata3win
+
+suvcat oz25.noise.su ozdata3win.noise.su taplen=$taplen > pp; mv pp oz25.noise.su
+
+Xsuwrite ozdata4win
+
+suvcat oz25.noise.su ozdata4win.noise.su taplen=$taplen > pp; mv pp oz25.noise.su
+
+Xsuwrite ozdata5win
+
+suvcat oz25.noise.su ozdata5win.noise.su taplen=$taplen > pp; mv pp oz25.noise.su
+
+Xsuwrite ozdata6win
+
+suvcat oz25.noise.su ozdata6win.noise.su taplen=$taplen > pp; mv pp oz25.noise.su
+
+Xsuwrite ozdata7win
+
+suvcat oz25.noise.su ozdata7win.noise.su taplen=$taplen > pp; mv pp oz25.noise.su
+
+
+if [ 1 -eq 1 ]; then
+# mute the predicted noise outside the cone of noise.
+    sumute key=offset tmute=3.5,0,3.5 xmute=-2300,0,2300 < oz25.noise.su > oz25.noise.mute.su
+    suxwigb < oz25.noise.mute.su key=offset clip=0.12 xbox=0 &
+    suop2 oz25.su oz25.noise.mute.su > oz25.den.su
+else
+    suxwigb < oz25.noise.su key=offset clip=0.12 xbox=0 &
+    suop2 oz25.su oz25.noise.su > oz25.den.su
+fi
+
+
+
+suxwigb key=offset clip=0.12 xbox=600 < oz25.den.su &
+
+
+
+exit 0
+
+suvcat ozdata0win.su ozdata1win.su taplen=$taplen > oz25.su
+suvcat oz25.su ozdata2win.su taplen=$taplen > pp; mv pp oz25.su
+suvcat oz25.su ozdata3win.su taplen=$taplen > pp; mv pp oz25.su
+suvcat oz25.su ozdata4win.su taplen=$taplen > pp; mv pp oz25.su
+suvcat oz25.su ozdata5win.su taplen=$taplen > pp; mv pp oz25.su
+suvcat oz25.su ozdata6win.su taplen=$taplen > pp; mv pp oz25.su
+suvcat oz25.su ozdata7win.su taplen=$taplen > pp; mv pp oz25.su
+

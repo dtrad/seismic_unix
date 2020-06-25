@@ -1,0 +1,20 @@
+#! /bin/sh
+# Xsentr : set the keyword ntr
+# Use :
+# Xsetntr file
+# 
+#######################################################################
+#  Daniel Trad- September 2000
+set -x
+FILE="$1"
+STRING1="$2"
+STRING2="$3"
+
+if [ -z $FILE ]; then
+    echo "USAGE: Xchangeps file string1 string2 "
+    exit 1
+fi
+
+sed 's/${STRING1}/${STRING2}/' < $FILE > ppppp; cp ppppp $FILE
+
+rm ppppp

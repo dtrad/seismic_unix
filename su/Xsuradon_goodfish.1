@@ -1,0 +1,181 @@
+#!/bin/sh
+# shell for ground roll attenuation by linear RT in 
+# goodfish data (shot 35).
+# 
+# Attempt to eliminate ground roll by null mapping (pass filter)
+# rather than subtraction (reject filter).
+#
+# March 7 -2003
+# Daniel Trad - Veritas
+
+set -x
+
+METHOD="${1}"
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+#NAME=misscn_red_gain_cdp # reduced data set with all cdps
+NAME=goodf_s35 # Complete data
+
+PAR=stkvel.$NAME.su
+FILE=$NAME'.su'
+FILEOUT=$NAME'.dgroll.su'
+
+CDPMIN=1
+CDPMAX=1
+dxcdp=1
+ntrmax=100000000   # For fast tests.
+
+######################################
+# Radon parameters
+
+t0=1.5;
+t0=0;
+VERBOSE=1
+mute=1        
+t0mute=0
+parmute=1.5e-0
+smute=10
+qmin=-2e-4
+factor=1
+fmax=100
+nq=160
+
+PLOTOPT='XPLOT3'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+if [ $METHOD = "SOL" ]; then
+#parmute=1.5e-9
+suradonline < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp nhcdp=$nhcdp par=$PAR itercg=30 iter_end=3 eps2=5e-1 eps1=5e-1 nq=$nq verbose=$VERBOSE ntrmax=$ntrmax tmpdir='./' norm=0 buffer=$buffer t0=$t0 smute=$smute nmofactor=1 mute=0  parmute=$parmute factor=$factor fmax=$fmax solver="$2" t0mute=$t0mute > $FILEOUT rtmethod=1 qmin=$qmin
+elif [ $METHOD = "TD" ]; then
+mute=1
+parmute=-6.5e-7 
+#qmin=-0.25e-8
+t0=1.5
+smute=2
+
+centralq=25
+suradoneom < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp par=$PAR  itercg=20 iter_end=2 eps2=8e-1 eps1=8e-1 nq=110 verbose=0 ntrmax=$ntrmax norm=0 t0=$t0 smute=$smute mute=$mute  parmute=$parmute qmin=$qmin plot=2 pervmin=0.4e-9 dperv=0 centralq=$centralq LI=0 nw=0 filtout=0  dataprec=5 outputmodel=1 > $FILEOUT
+
+else
+itercg=100
+suradonlinetfd < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=1 par=$PAR itercg=$itercg iter_end=2 eps2=8e-1 eps1=8e-1 nq=$nq verbose=$VERBOSE norm=0 buffer=$buffer smute=10 mute=0  parmute=15e-5 qmin=$qmin rtmethod=1 factor=$factor fmax=$fmax stopc=1 nmofactor=1 > $FILEOUT
+fi
+
+suximage < model.su perc=98 &
+$PLOTR < model.su  title=model.su perc=98   &
+suximage < $FILEOUT  title=$label  perc=98 &
+$PLOTX < $FILEOUT  title=$label  perc=98 &
+sufft < model.su | suamp | suximage perc=98 &
+################################################################
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

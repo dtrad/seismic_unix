@@ -1,0 +1,132 @@
+#! /bin/sh
+# Xsuhrff2 --- 2D Fourier transform for interpolation
+######################################################################
+# Example: 
+# 
+#######################################################################
+# Author: Daniel Trad- December 2000
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+set -x
+
+PROGRAM='toep'
+FILE=cdp1000g.su
+FILEN=$FILE
+FILETEMP=pp
+FILETEMP2=ppp
+FILEGAP=$FILE'gap'
+FILEOFF=$FILE'off'
+FILEF2D=$FILEN'f2d'${PROGRAM}
+FILEREC=$FILEN'rec'${PROGRAM}
+FILERES=$FILEN'res'${PROGRAM}
+FILEF2DOFF=$FILEN'f2doff'
+FILEF2D2=$FILEN'f2db'
+FILEREC2=$FILEN'recb'${PROGRAM}
+FILEOFF2=$FILEOFF'2'  # Final offset in which data will be resampled 
+
+# Options
+OPTIONGAP='y'
+OPTIONSETNTR='y'
+OPTIONGETH='n'
+OPTIONFILT='n'
+
+# PASS BAND FILTER
+F=1,10,70,80
+AMPS=0,1,1,0
+dperv=0.10;
+pervmin=20;
+perc=100
+step=1
+par="stkvel.misscn3.su"
+factor=0.9
+scale=1
+nk=165
+kmin=-0.04
+kmax=0.0
+clip=65
+reject1=-8468,-8293,-8118,-7943,-7768,-7593,-7418,-7243,-7068
+accept1=-15993,-15818,-15643
+accept1=-15993,-15643
+
+
+
+if [ $OPTIONGETH = 'y' ]; then
+    sugethw key=offset output=geom < $FILE > $FILEOFF2
+fi
+
+
+cp $FILE $FILETEMP
+
+if [  $OPTIONGAP = 'y' ]; then
+    suwind key=offset abs=1 min=1500 max=14000 j=2 < $FILETEMP > $FILETEMP2  \
+    reject=$reject1 accept=$accept1 
+    cp $FILETEMP2 $FILEGAP
+    cp $FILETEMP2 $FILETEMP 
+fi
+
+
+Xsetntr $FILETEMP
+
+case $OPTIONFILT in
+y*)
+sufilter f=$F amps=$AMPS < $FILETEMP > $FILETEMP2;
+cp  $FILETEMP2 $FILETEMP
+;;
+esac
+
+
+# Save offset  for inverse radon transform
+case $OPTIONGETH in
+y*)
+sugethw key=offset output=geom < $FILETEMP > $FILEOFF
+;;
+esac
+
+
+if [ $PROGRAM = 'toep' ]; then
+	sudft2 < $FILETEMP verbose=$verbose par=$par  eps1=$eps1  nk=$nk kmin=$kmin kmax=$kmax  norm=0 nmofactor=0 smute=3.0 step=0.95 factor=$factor modelfile=$FILEF2D  offsetfile=$FILEOFF2 iter_end=5 eps1=0.1 eps2=1 norm=0 itercg=30 method=1 fmax=70 > $FILEREC
+elif [ $PROGRAM = 'fft2' ]; then
+sufft2 < $FILETEMP verbose=$verbose par=$par  eps1=$eps1  nk=$nk kmin=$kmin kmax=$kmax  norm=0 nmofactor=0 smute=3.0 step=0.95 factor=$factor modelfile=$FILEF2D  offsetfile=$FILEOFF2 > $FILEREC
+fi
+    $PLOTR < $FILEF2D perc=99 title="2D DFT" &	
+    $PLOTX clip=$clip < $FILEREC title="Reconstructed data from suf2dontoep " &
+fi
+
+
+suadapdiff $FILE $FILEREC  > $FILERES
+
+
+
+
+
+
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

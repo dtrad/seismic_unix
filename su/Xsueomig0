@@ -1,0 +1,88 @@
+#! /bin/sh
+# shell for Kirchhoff modeling for linear v(x,z)
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+NAME=data5
+FILE=$NAME'.su'
+FILEOUT=$NAME'.eom.su'
+FILECSP=$NAME'.csp.su'
+FILERAD=$NAME'.rad.su'
+FILEREC=$NAME'.rec.su'
+FILEOFF=$NAME'.eom.off'
+
+
+VEL=2000,2800,3600,4200
+TIME=0,1.4,2.8,3.2
+CDPMIN=100
+CDPMAX=2337
+NX=50
+OUTPUT=1
+HEMAX=2500
+OPTION='RAD'
+OPTION='CSP'
+OPTION='MIG'
+
+PLOTOPT='XPLOT'
+
+
+case $OPTION in
+MIG*)
+sueomig3 < $FILE  cdpmin=100 cdpmax=2600 nx=50 output=1 hemax=2500 hemin=0 nhmax=150 par=stkvel.$NAME  > $FILEOUT
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEOUT &
+
+;;
+esac
+
+
+case $OPTION in
+CSP*)
+sueomig3 < $FILE  cdpmin=500 cdpmax=2000 nx=4 output=0 hemax=2500 hemin=0 nhmax=100 par=stkvel.p1  > $FILECSP
+
+case $PLOTOPT in
+PSPLOT*)
+suwind key=cdp min=500  max=500  < $FILECSP | supswigp key=offset title="CSP gather for cdp=500"  | gv - &
+suwind key=cdp min=1000 max=1000 < $FILECSP | supswigp key=offset title="CSP gather for cdp=1000" | gv - &
+suwind key=cdp min=1500 max=1500 < $FILECSP | supswigp key=offset title="CSP gather for cdp=1500" | gv - &
+suwind key=cdp min=2000 max=2000 < $FILECSP | supswigp key=offset title="CSP gather for cdp=2000" | gv - &
+;;
+XPLOT*)
+suwind key=cdp min=500  max=500  < $FILECSP | $PLOTX  title="CSP gather for cdp=500"  &
+suwind key=cdp min=1000 max=1000 < $FILECSP | $PLOTX  title="CSP gather for cdp=1000" &
+suwind key=cdp min=1500 max=1500 < $FILECSP | $PLOTX  title="CSP gather for cdp=1500" &
+suwind key=cdp min=2000 max=2000 < $FILECSP | $PLOTX  title="CSP gather for cdp=2000" &
+
+;;
+esac
+
+
+;;
+esac
+
+
+case $OPTION in
+RAD*)
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILECSP > $FILEOFF
+
+suradtd method=2 iter_end=2 step=.9 eps=0.01 eps1=1e-3 eps2=1e-3 qmin=-1e-7. qmax=4e-7 nq=32 itercg=10 thres=0.3  < $FILECSP | sufilter  f=5,10,60,70 amps=1,1,1,0  > $FILERAD
+
+supswigp key=f2 < $FILERAD | gv - &
+
+suradtdi offsetfile=$FILEOFF  < $FILERAD | sufilter  f=5,10,60,70 amps=1,1,1,0   > $FILEREC
+
+supswigp key=offset < $FILEREC | gv - &
+;;
+esac
+
+
+
+
+

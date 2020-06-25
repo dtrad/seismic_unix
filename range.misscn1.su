@@ -1,0 +1,5 @@
+173588 traces:
+ tracl=(1,173588)  tracr=(1,173588)  fldr=(45,1045)  tracf=(1,183)  ep=(1,1001)  cdp=(818,3000)  cdpt=(1,183)  trid=1 nhs=1 offset=(-15993,-68) 
+ sdepth=250000 scalel=-10000 scalco=(-10000,-100)  sx=(0,8750000)  sy=(0,1) 
+ gx=(-9955000,8743250)  gy=(0,1)  counit=1 tstat=12 muts=(4,1620) 
+ mute=(4,1620)  ns=1751 dt=4000 ntr=173588

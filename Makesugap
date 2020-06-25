@@ -1,0 +1,42 @@
+SHELL= /bin/sh
+OPTC= -O
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG= sugap
+
+FLAG=-c -O 
+
+OBJ=  $(PROG).o gapfill.o gapf.o sfx_go.o sfx_symmetry.o \
+      fork.o  toeplitz.o burg.o correlation.o gapf_fx.o
+      
+LIB=/home/dtrad/radon/flibrary
+
+# dependence 
+$(PROG):$(OBJ)
+	g77 -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).c
+	gcc -c $(OPTC) $(ENDIANFLAG) $(PROG).c -Wall
+gapfill.o: gapfill.f 
+	g77 $(FLAG) gapfill.f -Wall
+gapf_fx.o:  gapf_fx.f
+	g77  $(FLAG)  gapf_fx.f
+gapf.o: $(LIB)/gapf.f
+	g77 $(FLAG) $(LIB)/gapf.f
+sfx_go.o:   $(LIB)/sfx_go.for
+	g77 $(FLAG) $(LIB)/sfx_go.for
+sfx_symmetry.o:  $(LIB)/sfx_symmetry.for 
+	g77 $(FLAG)  $(LIB)/sfx_symmetry.for 
+fork.o:  $(LIB)/fork.for
+	g77 $(FLAG) $(LIB)/fork.for
+toeplitz.o:  $(LIB)/toeplitz.for
+	g77 $(FLAG) $(LIB)/toeplitz.for
+burg.o:  $(LIB)/burg.for
+	g77 $(FLAG)  $(LIB)/burg.for 
+correlation.o:  $(LIB)/correlation.for
+	g77 $(FLAG)  $(LIB)/correlation.for
+

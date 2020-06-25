@@ -1,0 +1,65 @@
+#! /bin/sh
+# do and display nmo and stack
+set -x
+tau=0.2,0.5
+vel=2000,2500
+name0=dataex1
+name1=$name0".su"
+name2=$name0"nmo.su"
+name3=$name0"nmo2.su"
+name4=$name0"stk.su"
+FILEPS="nmostack.ps"
+FILEPDF="nmostack.pdf"
+FILEPNG="nmostack.png"
+
+susynth2 tau=$tau vel=$vel dh=10 nh=100 coeff=1 hnear=0 nt=512 > $name1
+
+sunmo vnmo=$vel tnmo=$tau smute=3 < $name1 > $name2
+sunmo vnmo=$vel tnmo=$tau smute=1.5   < $name1 > $name3
+sustack key=cdp < $name3 | susetntr > $name4
+
+#suxwigb < $name1 title="CDP" &
+#suxwigb < $name2 title="CDPNMO" &
+#suxwigb < $name3 title="STACK" & 
+
+TITLE1='title=a\)CDP'
+TITLE2='title=b\)NMO'
+TITLE3='title=c\)NMO'
+TITLE4='title=d\)STACK'
+
+
+ZOOM="x1beg=0 x1end=1 x2beg=0 x2end=1000 "
+ZOOM2="x1beg=0 x1end=1 x2beg=0 x2end=2 "
+PERC="legend=0 perc=99"
+PROGRAM=" suxwigb key=offset "
+PLOTPS=" supswigb key=offset width=6 height=8"
+
+FILE1=$name1
+FILE2=$name2
+FILE3=$name3
+FILE4=$name4
+
+
+ 
+if [ $1 == 0 ]; then 
+$PROGRAM < $FILE1 $ZOOM $PERC ${TITLE1} xbox=100 hbox=600 &
+$PROGRAM < $FILE2 $ZOOM $PERC ${TITLE2} xbox=653 hbox=600 &
+$PROGRAM < $FILE3 $ZOOM $PERC ${TITLE3} xbox=100 hbox=600 ybox=690  &
+$PROGRAM < $FILE4 $ZOOM2 $PERC ${TITLE4} xbox=653 hbox=600 ybox=690  &
+elif [ $1 == 1 ]; then
+$PLOTPS < $FILE1 $ZOOM $PERC ${TITLE1} > p1
+$PLOTPS < $FILE2 $ZOOM $PERC ${TITLE2} > p2
+$PLOTPS < $FILE3 $ZOOM $PERC ${TITLE3} > p3
+$PLOTPS < $FILE4 $ZOOM2 $PERC ${TITLE4} > p4
+/home/dtrad/cwp/bin/supsmerge in=p1 in=p2 in=p3 in=p4 scale=0.37,0.37 scale=0.37,0.37 scale=0.37,0.37 scale=0.37,0.37 translate=1,7  translate=3.7,7 translate=1,3.7 translate=3.7,3.7 > $FILEPS
+
+#convert -density 300 $FILEPS -resize 2048x2048 $FILEPDF
+convert -density 300 $FILEPS -resize 2048x2048 $FILEPNG
+ 
+else
+$PROGRAM < $FILE1 $ZOOM $PERC ${TITLE1} xbox=100 wbox=1200 hbox=1200 &
+$PROGRAM < $FILE2 $ZOOM $PERC ${TITLE2} xbox=100 wbox=1200 hbox=1200 &
+$PROGRAM < $FILE3 $ZOOM $PERC ${TITLE3} xbox=100 wbox=1200 hbox=1200 &
+$PROGRAM < $FILE4 $ZOOM2 $PERC ${TITLE4} xbox=100 wbox=1200 hbox=1200 &
+fi 
+exit 0

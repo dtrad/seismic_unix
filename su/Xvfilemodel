@@ -1,0 +1,44 @@
+#!/bin/sh
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+set -x
+
+file=moddata2
+
+velfile=$file".vfile"
+model=testfile
+
+optionfd='y'
+resample='y'
+gain='y'
+
+
+n1=300 d1=5 f1=0.0 label1="Depth (km)"
+n2=200 d2=5 f2=0.0 label2="Distance (km)"
+zs=200 hsz=200 vsx=250 verbose=0
+vsfile="vseis.pml.out" ssfile="sseis.pml.out" 
+tmax=1 mt=1 pml=0 pml_thick=10
+
+
+#makevel nx=$n2 nz=$n1 v000=3000  verbose=1  >vel.out
+
+unif2 < $model  ninf=5 nx=$n2 nz=$n1 dx=$d2 \
+v00=2000,2000,2500,3000,3500  dz=$d1 > $velfile
+
+psimage < $velfile n2=$n2 n1=$n1 d2=$d2 \
+v00=2000,2000,2500,3000,3500  d1=$d1 | gv - &
+
+
+
+
+
+
+
+
+
+
+

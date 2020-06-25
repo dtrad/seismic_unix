@@ -1,0 +1,14 @@
+#!/bin/sh
+# did not work for 3d because of the azimuth!!
+# In this 3d data set (obc),  traces that look as zero offset may have not zero offset 
+# instead just use an artificial offset, for example as
+# sushw key=offset a=-3000 b=25 < obcdata1.su > obcdata1b.su
+
+file="obcdata.su"
+fileout="obcdata1.su"
+
+
+suwind < $file key=tracl min=1   max=120 | suchw key1=offset key2=offset b=-1 > pp1
+suwind < $file key=tracl min=121 max=240 > pp2 
+
+cat pp1 pp2 > $fileout

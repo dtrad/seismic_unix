@@ -1,0 +1,34 @@
+#! /bin/sh
+# PLOTS 
+# add a small ps
+# Daniel Trad- UBC Nov 1999
+
+LABEL1="${HOME}/ps/LRDlabel.ps"  
+LABEL2="${HOME}/ps/HRDlabel.ps"  
+FILE="${HOME}/psthesis/ozdata.25hybrid.ps"
+FILEOUT="${HOME}/ps/ppp.ps"
+
+#FILE1="${HOME}/ps/fig1hyprad_after.ps"
+#FILE1="${HOME}/ps/fig1bhyprad.ps"
+
+# PLot model
+
+psmerge   in=${LABEL1} in=${LABEL2} in=${FILE} scale=0.5,0.5   scale=0.5,0.5 scale=1,1  translate=5.5,6.96 translate=6.9,6.96  translate=0,0 > $FILEOUT
+
+# Fig1 and 2
+#psmerge in=~/ps/number.ps in=~/ps/number.ps in=${FILE1}  scale=0.25,0.25 scale=0.25,0.25 scale=1,1 translate=6.35,9.96 translate=6.18,9.96  translate=0,0  > $FILE
+
+
+
+gv $FILEOUT &
+
+
+
+
+
+
+
+
+
+
+

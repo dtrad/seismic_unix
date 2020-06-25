@@ -1,0 +1,1024 @@
+#include "su.h"
+#include "clibrarytd.h"
+#include "radontx_win.h"
+
+#define NWIN 1 // Number of data space windows
+#define Wmthreshold 100 // for sx50
+#define Wmthreshold 1000 // for datasyn
+
+
+void wdmask(float **Wd, int nt, int nh);
+void wmmask(float **Wm, int nt, int nq);
+void xplotgather(float *d, int nh, int nt, float dt, char *s, int num, char *s2);
+void save_gather(float *d, int nh, int nt, float dt, char* name);
+void write_curve_mute(mutemask_par par);
+void weights_test(float **m, int nt, int nh, int norm, float sigmam, 
+		  float **Wm, float **Wd, int iter);
+
+void interptx_sparse(float *t, float *q, float *h, float **m,float **d, float **dp, int nt, int nh, int nq, float dt, float *vel, float dperv, float pervmin, float t0,  inv_par inv, int centralq, int dataprec, int nw, float fpeak, int typewav, int LI, int nreg, float parmute, int mute, int itm, int plot)
+
+  /*
+    INTERPTX_SPARSE
+    INTERPOLATION IN THE TIME DOMAIN: with linear interpolation and wavelet convoluction
+    This function is called by suinterptx0.cpp
+    This routine is just an interface to interptx_sparse_win, that performs the RT 
+    The interface takes windows in the  data space and calls the RT
+
+    Daniel Trad - UBC November 2001
+    
+    E-mail: dtrad@geop.ubc.ca
+  */
+{
+  register int it;
+  int  ih, iq, it0;
+  /****************************Model window********************************/ 
+  int nwin=NWIN;
+  int it0_total=(int) (t0/dt+0.5);
+  int ntwin=(nt-it0_total)/nwin;
+  float **mw;     // window for the model 
+  float **dw;     // window for the data
+  float **dpw;     // window for the predicted data
+  int iwin;
+  itm=itm-it0_total; if (itm<0) itm=0;
+  /***********************************************************************************/
+  //   Velocity axis //////////////////////////////////////////////////
+  mw=ealloc2float(ntwin,nq);
+  dw=ealloc2float(ntwin,nh);
+  dpw=ealloc2float(ntwin,nq);
+  for (iq=0;iq<nq;iq++) for (it=0;it< nt; it++) dp[iq][it]=0;
+  for (iq=0;iq<nq;iq++) for (it=0;it< nt; it++) m[iq][it]=0;
+
+  fprintf(stderr,"t0=%f,it0_total=%d,dt=%f,t[%d]=%f\n",t0,it0_total,dt,it0_total,
+	  t[it0_total]);
+  fprintf(stderr,"nq=%d,nh=%d,nt=%d,LI=%d,nw=%d,dataprec=%d\n",nq,nh,nt,LI,nw,dataprec);
+
+  // Loop for the data windows
+  for (iwin=0;iwin<nwin;iwin++){  
+    it0=iwin*ntwin+it0_total; 
+    for (ih=0;ih<nh;ih++) for (it=0;it< ntwin; it++) dw[ih][it]=d[ih][it+it0];
+
+    if (0){
+      save_gather(dw,nh,ntwin,dt,"dw");
+      system("suxwigb < dw  title=\"plot dw\" ");
+    }
+
+    interptx_sparse_win(&t[it0],q,h,mw,dw,dpw,ntwin,nh,nq,dt,vel,inv,dataprec,nw,fpeak,typewav,LI,parmute,mute,itm,plot);   
+
+    if (plot){
+      save_gather(mw,nq,q,ntwin,dt,"mw");
+      system("suxwigb < mw perc=97 key=f2 title=\"model_after_interp_sparse_win\" &");
+    }
+    if (plot){
+      save_gather(dw,nh,ntwin,dt,"dw");
+      system("suxwigb < dw perc=97 key=offset  title=\"data_after_interp_sparse_win\" &");
+    }
+    for (iq=0;iq<nq;iq++) for (it=0;it< ntwin; it++) m[iq][it+it0]=mw[iq][it];
+    for (iq=0;iq<nq;iq++) for (it=0;it< ntwin; it++) dp[iq][it+it0]=dpw[iq][it];
+    if (mute) for (ih=0;ih<nh;ih++) for (it=0;it< ntwin; it++) d[ih][it+it0]=dw[ih][it];
+  }
+
+  free2float(mw);
+  free2float(dw);
+  free2float(dpw);
+
+  return;
+  
+}
+
+void interptx_sparse_win(float *t, float *q, float *h, float **m,float **d, float **dp, int nt, int nh, int nq, float dt, float *vel, inv_par inv, int dataprec, int nw, float fpeak, int typewav, int LI, float parmute, int mute, int itm, int plot)
+
+  /*
+    RADONTD_SPARSE_WIN
+    RADON TRANSFORM INSIDE A WINDOW IN THE TIME DOMAIN
+
+    Daniel Trad - UBC October 2000
+    E-mail: dtrad@geop.ubc.ca
+  */
+{
+  register int it;
+  int  ih, iq;
+  float **Wm=0; // Model weights
+  float **Wd=0;// Data weights
+  float **dtemp=0;// Data weights
+  unsigned int **index=0; // sparse matrix L
+  int nsparse;
+  int ntaper=5; // Number of lateral traces to taper 
+  float test;
+  float *wavelet=0;
+  int testadj=1;
+  //int root_nqxnh=(int) sqrt(nq*nh);
+  //if (inv.iter_end==1) inv.restart=0;
+  float sigmam;
+  float sigmad; 
+  int iter;
+  /* Define array and parameters for the mask */
+  float **M=ealloc2float(nt,nq); // muting mask
+  mutemask_par par;
+  //////////////////////////////////////////////////////////////////////////
+  // Define pointers to functions to be used with operators
+  void (*radon3sw) (float *m, float *d, unsigned int **index, int adj, int nt, 
+		   int nh, int nq, int nsparse, float *wavelet, int nw);
+
+  void (*radon3s) (float *m, float *d, unsigned int **index, int adj, int nt, 
+		   int nh, int nq, int nsparse);
+
+  void (*convop)  (int, int, int, float *,int, float *,float *);
+
+  // The actual functions to be used are
+  if (!LI){
+    radon3sw=radonhyp;
+    radon3s=radonhyp;
+  }
+  else{
+    radon3sw=radonhyp_li;
+    radon3s=radonhyp_li;
+  }
+  convop=contruc_2;
+
+  // Generate a wavelet for the forward and adjoint operator and plot it
+  if (nw){
+    /*
+    typewav=1==>   Read a wavelet generated by Matlab (stored in an ascii file)
+    typewav=2==>   Generate a Ricker with SU
+    typewav=3==>   Design a simple wavelet by hand
+    */
+    //if ( typewav==1 || typewav == 2 ) nw=50;
+    wavelet=ealloc1float(nw);
+    nw=get_wavelet(wavelet,"BP_wavelet",nw,typewav,dt,fpeak);
+    wavelet=erealloc1float(wavelet,nw);
+    fprintf(stderr,"Test dot product for contran\n");
+    test=testadjop_conv(convop,nw,wavelet,nt,nt+nw-1);
+  }    
+
+  Wm=ealloc2float(nt,nq);
+  Wd=ealloc2float(nt,nh);
+  dtemp=ealloc2float(nt,nh);
+
+  if (0) if (inv.taperflag==1) taper(d,nt,nh,ntaper,0);
+  /***************************************************************************/  
+
+  for (iq=0;iq<nq;iq++) memset((void *)m[iq],(int)'\0',nt*FSIZE);
+  
+  nsparse=nt*nq*nh; 
+  fprintf(stderr,"nsparse=%d,t[0]=%f,nt=%d\n",nsparse,t[0],nt);
+  // allocate the big monster
+  size_t size=sizeof(unsigned int);
+  if ((index=(unsigned int **) alloc2(nsparse,2,size))==NULL) 
+    err("Cannot allocate index\n");
+
+  if (0) for (it=0;it<nt;it++) fprintf(stderr,"vel[it]=%f\n",vel[it]);
+  if (0) for (iq=0;iq<nq;iq++) fprintf(stderr,"q[iq]=%f\n",q[iq]);
+  // Assign the elements of index
+  if (!LI) build_index_slowness(t,h,q,vel,nt,nh,nq,index);
+  else build_index_slowness_li(t,h,q,vel,nt,nh,nq,index);
+
+  // Test the adjoint
+  if (testadj && nw ) test=testadjop(radon3sw,index,nt,nh,nq,nsparse,wavelet,nw);
+  else if (testadj) test=testadjop(radon3s,index,nt,nh,nq,nsparse);
+  /***************************************************************************/
+
+  fprintf(stderr,"Wd = 1 ............\n");    
+  for (ih=0;ih<nh;ih++) for (it=0;it<nt;it++) Wd[ih][it]=1.0;
+
+  // This is a filter for outliers or dominant bad data
+  if (dataprec==1||(dataprec==3 && 0)){
+    //radonhyp(m[0],Wd[0],index,0,nt,nh,nq,nsparse);
+    fprintf(stderr,"Filt outliers with quantil............\n");
+    float qup=quest(0.999,nh*nt,d[0]);
+    float qmean=quest(0.50,nh*nt,d[0]);
+    for (ih=0;ih<nh;ih++) 
+      for (it=0;it<nt;it++) 
+	if (fabs(d[ih][it])>qup) Wd[ih][it]=qmean/qup;
+  }
+  if (0) 
+  if (dataprec==2){  // Data preconditioner  
+    fprintf(stderr,"Lumley Precond............\n");
+    int c=1;
+    float a=0.5;
+    int b=1;
+    
+    for (ih=0;ih<nh;ih++) 
+      for(it=0;it<nt;it++)
+
+	if (0) Wd[ih][it]=c*(1+pow((fabs(h[ih]/1000.)),a))/(pow((1+t[it]),b));
+
+	Wd[ih][it]=((1+0.4*sqrt(fabs(h[ih]/1000.)))/(1+0*t[it]));
+
+        // Wd[ih][it]=((1+sqrt(fabs(h[ih]/1000.)))/(1+0*t[it]))/maxm;
+
+    if (0){ 
+      save_gather(Wd,nh,nt,dt,"Wd");
+      system("suxwigb < Wd  title=\"plot Wd\" &");
+    }
+  }
+  else if (dataprec==3){
+    float wdtemp;
+    fprintf(stderr,"Wd = 1 ............\n");    
+    for (ih=1;ih<nh-1;ih++){ 
+      wdtemp=fabs(h[ih-1]-h[ih+1])/2; 
+      for (it=0;it<nt;it++) Wd[ih][it]*=wdtemp;
+    }
+    for (it=0;it<nt;it++){
+      Wd[0][it]*=fabs(h[0]-h[1]);
+      Wd[nh-1][it]*=fabs(0-h[nh-2])/2;
+    }
+    if (1){
+      save_gather(Wd,nh,nt,dt,"Wd");
+      system("suxwigb < Wd  title=\"plot Wd\" &");
+    }
+  }
+  else if (dataprec==4){
+    fprintf(stderr,"Wd = 1 ............\n");    
+    for (ih=0;ih<nh;ih++) for (it=0;it<nt;it++)
+      if (d[ih][it]) Wd[ih][it]=1./MAX(fabs(d[ih][it]),1);
+      else Wd[ih][it]=0;
+    if (1){
+      save_gather(Wd,nh,nt,dt,"Wd");
+      system("suxwigb < Wd  title=\"plot Wd\" &");
+    }
+  }
+
+
+  /***************************************************************************/
+  // Compute the adjoint before the first iteration to obtain an initial model   
+  for (ih=0;ih<nh;ih++) for (it=0;it<nt;it++) dtemp[ih][it]=d[ih][it];
+  if (nw) radon3sw(m[0],dtemp[0],index,1,nt,nh,nq,nsparse,wavelet,nw);
+  else if (inv.restart==1) radon3s(m[0],dtemp[0],index,1,nt,nh,nq,nsparse);
+  else  radon3s(m[0],dtemp[0],index,1,nt,nh,nq,nsparse);  
+
+  //radonhyp_sinc(m[0],t,h,q,dtemp[0],vel,1,nt,nh,nq); 
+  if (0){
+    save_gather(m,nq,nt,0.004,"migrated2.su");
+    system("suximage < migrated2.su perc=97 title=migrated2 &");
+  }
+  if (0){
+    radon3s(m[0],dtemp[0],index,0,nt,nh,nq,nsparse);
+    save_gather(dtemp,nh,nt,0.004,"migrated3.su");
+    system("suximage < migrated3.su perc=97 title=migrated3 &");
+  }
+  // Scale the adjoint to get an initial model 
+  //for (iq=0;iq<nq;iq++) for (it=0;it<nt;it++) m[iq][it]/=root_nqxnh;  
+
+  /***************************************************************************/
+
+  fprintf(stderr,"inv.norm=%d,inv.eps1=%f,inv.eps2=%f,inv.itercg=%d,inv.iter_end=%d,inv.eps=%f,inv.restart=%d,inv.step=%f\n",inv.norm,inv.eps1,inv.eps2,inv.itercg,inv.iter_end,inv.eps,inv.restart,inv.step);    
+
+  /* Use the pass mute area only for predicting multiples use */
+  /* construct the mask */
+  if (1){
+    
+    if (!getparfloat("tmin_m",&par.tmin)) par.tmin = 0.; 
+    if (!getparfloat("tmax_m",&par.tmax)) par.tmax = nt*dt;
+    if (!getparint("ihmin_m",&par.ihmin)) par.ihmin = (int) (nh/2+2);
+    if (!getparint("ihmax_m",&par.ihmax)) par.ihmin = (int) (nh);
+    if (!getparfloat("slope_m",&par.slope)) par.slope = 3;     
+    if (!getparfloat("thres_m",&par.threshold)) par.threshold = 0.2;         
+
+    /* Write the mute parameters to a file for plots */
+    write_curve_mute(par);
+   
+    if (mute){
+      mutemask(M,m,nq,nt,dt,par);
+      //AtimesB(m,M,nq,nt);
+    }
+    if (0){
+      if (nw) radon3sw(M[0],Wd[0],index,0,nt,nh,nq,nsparse,wavelet,nw);
+      else radonhyp(M[0],t,q,q,Wd[0],vel,0,nt,nq,nq);
+    }
+  }
+
+
+  //wdmask(Wd,nt,nh);  
+  xplotgather(Wd[0],nh,nt,dt,"Wd.su",0,"legend=1");
+  // IRLS loop. Modelweight computes the model preconditioner
+  for (iter=1;iter<=inv.iter_end;iter++){
+    if (iter>1) inv.restart=1;
+    
+    // norm==1 ==> L1 , ==0  Cauchy else l2
+    if (iter>1) 
+      deviations(m[0],nq*nt,d[0],nh*nt,inv.norm,inv.eps1,inv.eps2,&sigmam,&sigmad);
+    weights_test(m,nt,nq,inv.norm,sigmam,Wm,Wd,iter);        
+    //weights_td(m[0],nq*nt,inv.norm,sigmam,Wm[0],iter);
+    if (iter==inv.iter_end) inv.itercg*=1;  // Last external iteration is 3 times longer 
+    //AtimesB(Wm,M,nq,nt);
+    //wmmask(Wm,nt,nq); 
+    if (nw){ 
+      fprintf(stderr,"iteration with wavelet convolution\n");
+      wpcgnr(radon3sw,nt,nh,nq,nsparse,m[0],d[0],Wd[0],Wm[0],index,inv,wavelet,nw);
+    }
+    else wpcgnr(radon3s,nt,nh,nq,nsparse,m[0],d[0],Wd[0],Wm[0],index,inv);
+  }
+
+
+  /* Save the migrated data (and see them) before any mute */
+
+  if (1){
+    save_gather(m,nq,q,nt,0.004,"migrated2.su");
+    system("suximage < migrated2.su perc=97 title=migrated2 &");
+  }  
+
+  /* Before recovering the data, a mute routine can be applied here to filter 
+     the RT space.  */
+
+
+  /* for multiple attenuation use this */
+  if (0){ 
+    if (mute){  
+      if (nw) rest_multiples(radon3sw,m,d,index,0,nt,nh,nq,nsparse,wavelet,nw,
+			     parmute,q,h,itm,plot);
+      else rest_multiples(radon3s,m,d,index,0,nt,nh,nq,nsparse,parmute,q,h,itm,plot);
+    }
+  }
+
+  /* for predicting multiples use */
+  if (1){
+    /*    mutemask_par par;
+	  if (!getparfloat("tmin_m",&par.tmin)) par.tmin = 0.; 
+	  if (!getparfloat("tmax_m",&par.tmax)) par.tmax = nt*dt;
+	  if (!getparint("ihmin_m",&par.ihmin)) par.ihmin = (int) (nh/2+2);
+	  if (!getparint("ihmax_m",&par.ihmax)) par.ihmin = (int) (nh);
+	  if (!getparfloat("slope_m",&par.slope)) par.slope = 3;     
+	  if (!getparfloat("thres_m",&par.threshold)) par.threshold = 0.2;         
+    */
+
+
+    if (mute){
+      //mutemask(M,m,nq,nt,dt,par);
+      AtimesB(m,M,nq,nt);
+    }
+    if (nw) radon3sw(m[0],d[0],index,0,nt,nh,nq,nsparse,wavelet,nw);
+    else radonhyp(m[0],t,q,q,dp[0],vel,0,nt,nq,nq);
+
+
+  }
+
+  //else radon3s(m[0],d[0],index,0,nt,nh,nq,nsparse);
+  
+  if (1){
+    save_gather(dp,nq,nt,0.004,"migrated4.su");
+    system("suximage < migrated4.su perc=97 title=migrated4 &");
+  }  
+  //for (ih=0;ih<nh;ih++) for (it=0;it<nt;it++) d[ih][it]*=Wd[ih][it];
+  /***********************************************************************************/
+
+  // Let us kill the monster
+  free2((void **) index);
+
+  free2float(M); 
+  free2float(Wm);
+  free2float(Wd);  
+  free2float(dtemp);
+  if (nw) free1float(wavelet);
+
+  return;
+  
+}
+
+void build_index_slowness(float *t, float *h, float *q, float *vel, int nt, int nh, int nq,unsigned int **index)
+{
+  register int it;
+  int ih,iq;
+  float time,hxh,pxhxh,dx;
+  int iqxnt,ihxnt;
+  int itime;
+  int nsparse=nt*nq*nh;
+  float dt=t[1]-t[0];
+
+  for (it=0;it<nsparse;it++) index[0][it]=index[1][it]=0;
+  
+  for (ih=0;ih<nh;ih++){
+    ihxnt=ih*nt;
+    for (iq=0;iq<nq;iq++){    
+      iqxnt=iq*nt;
+      dx=fabs(h[ih]-q[iq]);
+      //if (dx>500) continue;
+      hxh=dx*dx;
+      for (it=0;it<nt;it++){
+	if (vel[it]>0){
+	  pxhxh=hxh/(vel[it]*vel[it]);
+	  time=sqrt(t[it]*t[it]+pxhxh);
+	  itime=(int) ((time-t[0])/dt+0.5);
+	  if (itime<nt){
+	    index[0][ih*nq*nt+iq*nt+it]=ihxnt+itime;
+	    index[1][ih*nq*nt+iq*nt+it]=iqxnt+it;
+	  }
+	  else{
+	    index[0][ih*nq*nt+iq*nt+it]=0;
+	    index[1][ih*nq*nt+iq*nt+it]=0;
+	  }
+	}
+      }            
+    }
+  }
+  return;
+}
+
+void radonhyp(float *m, float *d, unsigned int **index, int adj, int nt, int nh, int nq, int nsparse)
+{
+  int j;
+  int ny=nh*nt;
+  int nx=nq*nt;
+
+  d[0]=0;
+  m[0]=0;
+  
+  if (!adj){
+    memset((void *) d,(int)'\0',ny*FSIZE);
+    for (j=0;j<nsparse;j++) d[index[0][j]]+=m[index[1][j]];
+  }
+  else{
+    memset((void *) m,(int)'\0',nx*FSIZE);
+    for (j=0;j<nsparse;j++) m[index[1][j]]+=d[index[0][j]];
+  }
+  
+  /* 
+    A problem appears if some of the values of index are never computed
+    because the zero index of d and m are mapped each other for index=0
+    I make these two elements equal to zero just to prevent this problem, 
+    It does not affect the data or model significantly.  
+  */ 
+			      
+  d[0]=0;
+  m[0]=0;
+
+  return;
+}
+
+
+void radonhyp(float *m, float *d, unsigned int **index, int adj, int nt, int nh, int nq, int nsparse, float *wavelet, int nw)
+{
+  int j,ih;
+  int ny=nh*nt;
+  int nx=nq*nt;
+  float *dtemp;
+  float *dtemp2;
+
+  //fprintf(stderr,"nw=%d,nt=%d,nh=%d,nq=%d\n",nw,nt,nh,nq);
+  d[0]=0;
+  m[0]=0;
+  
+  dtemp2=ealloc1float(ny);
+  dtemp=ealloc1float(nt+nw);
+  memset((void *) dtemp,(int)'\0',(nt+nw)*FSIZE); 
+  memset((void *) dtemp2,(int)'\0',ny*FSIZE); 
+
+  //for (j=0;j<nw;j++) fprintf(stderr,"nw=%d, wavelet[%d]=%f\n",nw,j,wavelet[j]);
+  
+  if (!adj){
+    memset((void *) d,(int)'\0',ny*FSIZE);
+    for (j=0;j<nsparse;j++) d[index[0][j]]+=m[index[1][j]];
+    d[0]=0;
+    for (ih=0;ih<nh;ih++){
+      memset((void *) dtemp,(int)'\0',(nt+nw)*FSIZE); 
+      contruc_2(0,0,nw,wavelet,nt,&d[ih*nt],dtemp);
+      memcpy((void *) &d[ih*nt],(const void *) dtemp,nt*sizeof(float));
+    }
+  }
+  if (adj){
+    for (ih=0;ih<nh;ih++){
+      memset((void *) dtemp,(int)'\0',(nt+nw)*FSIZE); 
+      contruc_2(1,0,nw,wavelet,nt,dtemp,&d[ih*nt]);
+      memcpy((void *) &dtemp2[ih*nt],(const void *) dtemp,nt*sizeof(float));
+    }
+    memset((void *) m,(int)'\0',nx*FSIZE);
+    for (j=0;j<nsparse;j++) m[index[1][j]]+=dtemp2[index[0][j]];
+    m[0]=0;
+  }  
+  
+  /* 
+    A problem appears if some of the values of index are never computed
+    because the zero index of d and m are mapped each other for index=0
+    I make these two elements equal to zero just to prevent this problem, 
+    It does not affect the data or model significantly.  
+  */
+  d[0]=0;
+  m[0]=0;
+
+  free1float(dtemp2);
+  free1float(dtemp);
+  
+  return;
+}
+
+float testadjop(void (*oper) (float *,float *,unsigned int **,int ,int ,int, int, int, 
+			      float *wavelet, int nw),unsigned int **index,int nt, int nh, 
+		int nq, int nsparse, float *wavelet, int nw)
+{
+  float *dr1;
+  float *mr1;
+  float *dr2;
+  float *mr2;
+  float dp1;
+  float dp2;
+  int it;
+  int iq;
+  int ih;
+  float test;
+  int ny=nt*nh;
+  int nx=nt*nq;
+  //////////////  
+
+
+  if ((dr1=alloc1float(ny))==NULL)
+    fprintf(stderr,"***Sorry, space for vrand1 could not be allocated\n");
+  if ((mr1=alloc1float(nx))==NULL)
+    fprintf(stderr,"***Sorry, space for vrand2 could not be allocated\n");
+  if ((dr2=alloc1float(ny))==NULL)
+    fprintf(stderr,"***Sorry, space for vrand1 could not be allocated\n");
+  if ((mr2=alloc1float(nx))==NULL)
+    fprintf(stderr,"***Sorry, space for vrand2 could not be allocated\n");
+
+ 
+  for (it=0;it<nt;it++) for (ih=0;ih<nh;ih++) dr1[ih*nt+it]=frannor();
+  for (it=0;it<nt;it++) for (iq=0;iq<nq;iq++) mr1[iq*nt+it]=frannor();
+
+  oper(mr2,dr1,index,1,nt,nh,nq,nsparse,wavelet,nw);
+  oper(mr1,dr2,index,0,nt,nh,nq,nsparse,wavelet,nw);
+
+  dp1=dot(ny,dr1,dr2);
+  dp2=dot(nx,mr1,mr2);
+
+  if (dp2!=0) test=dp1/dp2;
+  else test=0;
+
+  fprintf(stderr,"Test adjoint = %f dp1=%f, dp2=%f \n",test,dp1,dp2);
+  return(test);
+  
+  free1float(mr2);
+  free1float(dr2);
+  free1float(mr1);
+  free1float(dr1);
+
+}
+
+float testadjop(void (*oper) (float *,float *,unsigned int **,int ,int ,int, int, int),unsigned int **index,int nt, int nh, int nq, int nsparse)
+{
+  float *dr1;
+  float *mr1;
+  float *dr2;
+  float *mr2;
+  float dp1;
+  float dp2;
+  int it;
+  int iq;
+  int ih;
+  float test;
+  int ny=nt*nh;
+  int nx=nt*nq;
+  //////////////  
+
+  if ((dr1=alloc1float(ny))==NULL)
+    fprintf(stderr,"***Sorry, space for vrand1 could not be allocated\n");
+  if ((mr1=alloc1float(nx))==NULL)
+    fprintf(stderr,"***Sorry, space for vrand2 could not be allocated\n");
+  if ((dr2=alloc1float(ny))==NULL)
+    fprintf(stderr,"***Sorry, space for vrand1 could not be allocated\n");
+  if ((mr2=alloc1float(nx))==NULL)
+    fprintf(stderr,"***Sorry, space for vrand2 could not be allocated\n");
+
+ 
+  for (it=0;it<nt;it++) for (ih=0;ih<nh;ih++) dr1[ih*nt+it]=frannor();
+  for (it=0;it<nt;it++) for (iq=0;iq<nq;iq++) mr1[iq*nt+it]=frannor();
+
+  oper(mr2,dr1,index,1,nt,nh,nq,nsparse);
+  oper(mr1,dr2,index,0,nt,nh,nq,nsparse);
+
+  dp1=dot(ny,dr1,dr2);
+  dp2=dot(nx,mr1,mr2);
+
+  if (dp2!=0) test=dp1/dp2;
+  else test=0;
+
+  fprintf(stderr,"Test adjoint = %f \n",test);
+  return(test);
+  
+  free1float(mr2);
+  free1float(dr2);
+  free1float(mr1);
+  free1float(dr1);
+
+}
+
+
+void weights_td(float *m, int nx, int norm, float sigmam, float *Wm, int iter)
+  /*
+  The right Wm from Cauchy is 
+  Wm[i]=sqrt(eps1*eps1+m[i]*m[i]/(maxm*maxm));
+  But if M^-1 ATA x = M^-1 AT b is solved instead
+  of the satndard form M=WmT *Wm 
+  Actually it works even better with (I don't know why)
+  Wm[i]=Wm[i]*Wm[i];
+  if (Wm[i]>2) Wm[i]=2; 
+  */
+{ 
+      int i;
+      
+      if (iter==1){ 
+	for (i=0;i<nx;i++) Wm[i]=1;
+	return;
+      }
+      
+      if (norm==1) for (i=0;i<nx;i++) Wm[i]=(fabs(m[i])*sigmam);
+      else if(norm==0)
+	for (i=0;i<nx;i++) Wm[i]=(sigmam*sigmam+fabs(m[i]*m[i]));
+      else if(norm==2){ // Mask
+	for (i=0;i<nx;i++)
+	  Wm[i]=1+200./(1+exp(1*(fabs(m[i])-sigmam)+0.5));
+      }
+      return;
+}
+
+void weights_test(float **m, int nt, int nh, int norm, float sigmam, float **Wm, float **Wd, int iter)
+
+{ 
+      int ih, it, ii, iih;
+      float temp;
+      int smooth=5;
+      int nsmooth=-1*smooth;
+
+      if (iter==1){ 
+	for (ih=0;ih<nh;ih++) 
+	  for (it=0;it<nt;it++) 
+	    Wm[ih][it]=1;
+	return;
+      }
+      fprintf(stderr,"smooth=%d,norm=%d,sigmam=%f\n",smooth,norm,sigmam);
+      if (norm==1) 
+	  for (ih=0;ih<nh-1;ih++)
+	    for (it=0;it<nt;it++)
+	      Wm[ih][it]=MAX(fabs(m[ih][it]),sigmam);
+      else if(norm==0){
+	  for (ih=3;ih<nh-3;ih++){
+	    for (it=smooth;it<nt-smooth;it++){
+	      // Solved !!!!!!!!!!!!!!!!!
+	      // The right Wm from Cauchy is 
+	      // Wm[i]=sqrt(eps1*eps1+m[i]*m[i]/(maxm*maxm));
+	      // But if M^-1 ATA x = M^-1 AT b is solved instead
+	      // of the satndard form M=WmT *Wm
+	      //temp=(m[iv][ih+1][it]-m[iv][ih][it]);
+	      if ((Wd[ih][it]==0)&&(fabs(nh/2-ih)<5)) Wm[ih][it]=Wmthreshold;
+	      else{
+		temp=0;
+		for (iih=-3;iih<3;iih++)
+		  for (ii=nsmooth;ii<smooth;ii++)
+		    temp=temp+fabs(m[ih+iih][it+ii]);
+		Wm[ih][it]=MIN(Wmthreshold,(sigmam*sigmam+temp*temp));
+	      }
+	      // Actually it works even better with (I don't know why)
+	      //Wm[i]=Wm[i]*Wm[i];
+	      //if (Wm[i]>2) Wm[i]=2; 
+	    }
+	  }
+      }
+
+      for (ih=0;ih<4;ih++)
+	    for (it=0;it<nt;it++) 
+	      Wm[ih][it]=Wm[nh-ih-1][it]=0;
+
+      for (ih=0;ih<nh;ih++)
+	    for (it=0;it<smooth;it++) 
+	      Wm[ih][it]=Wm[ih][nt-it-1]=0;
+
+      return;
+}
+
+
+/**************** Routines for sparse linear interpolation ******************************/
+
+
+void radonhyp_li(float *m, float *d, unsigned int **index, int adj, int nt, int nh, int nq, int nsparse)
+{
+  // This function is similar to radonhyp but it performs linear interpolation
+  // The first column of index has been multiplied by 10 to keep the first decimal
+  // place after truncation. 
+  /// D. Trad - October 2000
+  int j;
+  int ny=nh*nt;
+  int nx=nq*nt;
+  int id1;
+  int im1;
+  float a;
+  float b;
+
+  d[0]=0;
+  m[0]=0;
+  
+  if (!adj){
+    memset((void *) d,(int)'\0',ny*FSIZE);
+    for (j=0;j<nsparse;j++){
+      b=0.1*index[0][j];
+      id1=(int) b;
+      im1=index[1][j];
+      if (id1 && im1 ){
+	a=b-id1;
+	d[id1]+=(1.0-a)*m[im1];
+	d[id1+1]+=a*m[im1];
+      }
+    }
+  }
+  else{
+    memset((void *) m,(int)'\0',nx*FSIZE);
+    for (j=0;j<nsparse;j++){
+      b=0.1*index[0][j];
+      id1=(int) b;
+      im1=index[1][j];
+      if (id1 && im1 ){
+	a=b-id1;
+	m[im1]+=(1-a)*d[id1]+a*d[id1+1];
+      }
+    }
+  }
+
+  /* 
+    A problem appears if some of the values of index are never computed
+    because the zero index of d and m are mapped each other for index=0
+    I make these two elements equal to zero just to prevent this problem, 
+    It does not affect the data or model significantly.  
+  */ 
+			      
+  d[0]=0;
+  m[0]=0;
+
+  return;
+}
+
+
+
+void radonhyp_li(float *m, float *d, unsigned int **index, int adj, int nt, int nh, int nq, int nsparse, float *wavelet, int nw)
+{
+  int j,ih;
+  int ny=nh*nt;
+  int nx=nq*nt;
+  float *dtemp;
+  float *dtemp2;
+  int im1;
+  int id1;
+  float a;
+  float b;
+  //fprintf(stderr,"nw=%d,nt=%d,nh=%d,nq=%d\n",nw,nt,nh,nq);
+  d[0]=0;
+  m[0]=0;
+  
+  dtemp2=ealloc1float(ny);
+  dtemp=ealloc1float(nt+nw);
+  memset((void *) dtemp,(int)'\0',(nt+nw)*FSIZE); 
+  memset((void *) dtemp2,(int)'\0',ny*FSIZE); 
+
+  //for (j=0;j<nw;j++) fprintf(stderr,"nw=%d, wavelet[%d]=%f\n",nw,j,wavelet[j]);
+  
+  if (!adj){
+    memset((void *) d,(int)'\0',ny*FSIZE);
+    for (j=0;j<nsparse;j++){
+      b= ( 0.1 * index[0][j] );
+      id1=(int) b;
+      im1=index[1][j];
+      if (id1 && im1 ){
+	a=b-id1;
+	d[id1]+=(1-a)*m[im1];
+	d[id1+1]+=a*m[im1];
+      }
+    }
+    d[0]=0;
+    for (ih=0;ih<nh;ih++){
+      memset((void *) dtemp,(int)'\0',(nt+nw)*FSIZE); 
+      contruc_2(0,0,nw,wavelet,nt,&d[ih*nt],dtemp);
+      memcpy((void *) &d[ih*nt],(const void *) dtemp,nt*sizeof(float));
+    }
+  }
+  if (adj){
+    for (ih=0;ih<nh;ih++){
+      memset((void *) dtemp,(int)'\0',(nt+nw)*FSIZE); 
+      contruc_2(1,0,nw,wavelet,nt,dtemp,&d[ih*nt]);
+      memcpy((void *) &dtemp2[ih*nt],(const void *) dtemp,nt*sizeof(float));
+    }
+    memset((void *) m,(int)'\0',nx*FSIZE);
+    for (j=0;j<nsparse;j++){
+      b=( 0.1 *index[0][j] );
+      id1=(int) b;
+      im1=index[1][j];
+      if (id1 && im1 ){
+	a=b-id1;
+	m[im1]+=(1-a)*dtemp2[id1]+a*dtemp2[id1+1];
+      }
+    }
+    m[0]=0;
+  }  
+  
+  /* 
+     A problem appears if some of the values of index are never computed
+     because the zero index of d and m are mapped each other for index=0
+     I make these two elements equal to zero just to prevent this problem, 
+     It does not affect the data or model significantly.  
+  */
+  d[0]=0;
+  m[0]=0;
+  
+  free1float(dtemp2);
+  free1float(dtemp);
+  
+  return;
+}
+
+
+void build_index_slowness_li(float *t, float *h, float *q, float *vel, int nt, int nh, int nq,unsigned int **index)
+{
+  register int it;
+  int ih,iq;
+  float time,hxh,pxhxh,dx;
+  int iqxnt,ihxnt;
+  int itime;
+  int nsparse=nt*nq*nh;
+  float dt=t[1]-t[0];
+
+
+  for (it=0;it<nsparse;it++) index[0][it]=index[1][it]=0;
+  
+  for (ih=0;ih<nh;ih++){
+    ihxnt=ih*nt;
+    for (iq=0;iq<nq;iq++){    
+      iqxnt=iq*nt;
+      dx=fabs(h[ih]-q[iq]);
+      hxh=dx*dx;
+      for (it=0;it<nt;it++){
+	if (vel[it]>0){
+	  pxhxh=hxh/(vel[it]*vel[it]);
+	  // In this function we multiply by 10 before truncation to save
+	  // the first decimal digit. Later the times are multiply by 0.1
+	  time=sqrt(t[it]*t[it]+pxhxh);
+	  itime=(int) ((10*(time-t[0]))/dt+0.5);
+
+	  if (itime<((nt-1)*10)){
+	    index[0][ih*nq*nt+iq*nt+it]=10*ihxnt+itime;
+	    index[1][ih*nq*nt+iq*nt+it]=iqxnt+it;
+	  }
+	  else{
+	    index[0][ih*nq*nt+iq*nt+it]=0;
+	    index[1][ih*nq*nt+iq*nt+it]=0;
+	  }
+	}
+      }            
+    }
+  }
+  return;
+}
+
+/****************************************************************************/
+
+
+void radonhyp_sinc(float *m,float *t, float *h, float *q, float *d, float *vel,int adj,int nt, int nh, int nq)
+{
+  register  int it;
+  int ih,iq;
+  float *ttn,*dint,*tnt,hxh,pxhxh,dx;
+  int iqxnt,ihxnt;
+  int nx=nt*nq;
+  int ny=nt*nh;
+  float dt=t[1]-t[0];
+  float dt2=dt*dt;
+
+
+
+  if ((ttn=alloc1float(nt))==NULL)
+    err("cannot allocate memory for ttn \n");
+  if ((tnt=alloc1float(nt))==NULL)
+    err("cannot allocate memory for tnt \n");
+  if ((dint=alloc1float(nt))==NULL)
+    err("cannot allocate memory for dint \n");
+  fprintf(stderr,"Sinc interpolation for the adjoint +++++++++\n");
+
+  if (adj) memset((void *) m,(int)'\0',nx*FSIZE);// for (it=0;it<nx;it++) m[it]=0;
+  else memset((void *) d,(int)'\0',ny*FSIZE);// for (it=0;it<ny;it++) d[it]=0;   
+
+  for (ih=0;ih<nh;ih++){
+    ihxnt=ih*nt;
+    for (iq=0;iq<nq;iq++){    
+      dx=fabs(h[ih]-q[iq]);
+      hxh=dx*dx;
+      iqxnt=iq*nt;
+      for (it=0;it<nt;it++){
+	pxhxh=hxh/(vel[it]*vel[it]);
+	ttn[it]=sqrt(t[it]*t[it]/dt2+pxhxh/dt2);
+      }	
+      if (adj) ints8r(nt,1.0,0,&d[ihxnt],0.0,0.0,nt,ttn,dint);
+      else{
+	yxtoxy(nt,1.0,0.0,ttn,nt,1.0,0.0,-nt,nt,tnt);
+	ints8r(nt,1.0,0,&m[iqxnt],0.0,0.0,nt,tnt,dint);
+      }
+      if (adj) for (it=0;it<nt;it++) m[iqxnt+it]+=dint[it];
+      else  for (it=0;it<nt;it++) d[ihxnt+it]+=dint[it];
+    }            
+  }
+  free1float(dint);
+  free1float(ttn);
+  free1float(tnt);  
+  return;
+}
+
+void radonhyp(float *m, float *t, float *h, float *q, float *d, float *vel, int adj, int nt, int nh, int nq)
+{
+  register int it;
+  int ih,iq;
+  float time,hxh,pxhxh,dx;
+  int iqxnt,ihxnt;
+  int itime;
+  //int nsparse=nt*nq*nh;
+  float dt=t[1]-t[0];
+
+  if (adj) memset((void *) m,(int)'\0',nq*nt*FSIZE);
+  else memset((void *) d,(int)'\0',nh*nt*FSIZE);
+
+  for (ih=0;ih<nh;ih++){
+    ihxnt=ih*nt;
+    for (iq=0;iq<nq;iq++){    
+      iqxnt=iq*nt;
+      dx=fabs(h[ih]-q[iq]);
+      hxh=dx*dx;
+      for (it=0;it<nt;it++){
+	if (vel[it]>0){
+	  pxhxh=hxh/(vel[it]*vel[it]);
+	  time=sqrt(t[it]*t[it]+pxhxh);
+	  itime=(int) ((time-t[0])/dt+0.5);
+	  if (itime<nt){
+	    if (adj) m[iqxnt+it]+=d[ihxnt+itime];
+	    else d[ihxnt+itime]+=m[iqxnt+it];
+	  }
+	}
+      }            
+    }
+  }
+  return;
+}
+
+
+/****************************************************************************/
+
+void Lumley_precond(float **M,float *t, float *h, int nt, int nh, float a, float b, float c)
+{
+  unsigned short it,ih;
+
+  fprintf(stderr,"Inside Lumley nt=%d,nh=%d,a=%f,b=%f,c=%f\n",nt,nh,a,b,c);
+
+  for (ih=0;ih<nh;ih++)
+    for(it=0;it<nt;it++)
+      M[ih][it]=1+c*(1+pow((fabs(h[ih]/1000.)),a))/(pow((1+t[it]),b));
+    
+  return;
+}
+
+
+void wmmask(float **Wm, int nt, int nq)
+{
+
+  int it, iq;
+  // Define min trace to which signal is expected to map
+  int limit=(int) (nq/3); 
+  int slope;
+  for (it=0;it<nt;it++){
+    slope=(int) (30.0*(it/(1.0*nt)));
+    for (iq=0;iq<(limit-slope);iq++){
+      Wm[iq][it]*=0.1;
+      Wm[nq-iq-1][it]*=0.1;
+    }
+  }
+  return;
+}
+
+
+/* mask function designed to mask out energy mapping to unphysical areas
+   of the model space */
+void wdmask(float **Wd, int nt, int nh)
+{
+
+  int it, iq;
+  // Define min trace to which signal is expected to map
+  int limit=(int) (nh/2.1); 
+  int slope;
+  int topmute=(int) (nt/4);
+  if (0)
+  for (it=0;it<topmute;it++)
+    for (iq=0;iq<nh;iq++)
+      Wd[iq][it]*=0.1;
+
+
+  for (it=0;it<nt;it++){
+    slope=(int) (124.0*(it/(0.5*nt)));
+    if (limit<=slope) return;
+    for (iq=0;iq<(limit-slope);iq++){
+      Wd[iq][it]*=0.1;
+      Wd[nh-iq-1][it]*=0.1;
+    }
+  }
+  return;
+}
+
+
+void xplotgather(float *d, int nh, int nt, float dt, char *s, int num, char *s2)
+{
+  char buf[140];
+  save_gather(d,nh,nt,dt,s);
+  sprintf(buf,"suximage < %s title=%s%d curve=curve1 npair=5 hbox=900 wbox=700 %s  \n",s,s,num,s2);
+  system(buf);
+  return;
+}
+
+

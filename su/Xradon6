@@ -1,0 +1,103 @@
+#! /bin/sh
+# Xradon --- Example of interpolation with high resolution radon.
+######################################################################
+# This example needs sudata1 generated with Xsusyn0
+# No extra files are needed.
+# method 1 and 2 stands for Usual Radon and High resolution RT.
+# First the header of full offset data are saved in file=headers 
+# and offset in sudata1.off
+# The sudata1.off file is  used by suhrrti to create data at given offsets 
+# from the model.
+# The headers file is used after suhrrti to put back the header.
+# The suwind is used to create gaps that are filled with suhrrtf and suhrrti
+# Main purpose of the program is to compare gap filling capabilities of
+# HRRT (method=2) with the usual RT (method=1).
+# If you change the data check the values at the beginning.
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+NT=512 
+NH=64
+NP=120
+DT=4000
+VNMO=4500,6000,7000
+TNMO=0.0,1.0,2.0
+
+FP=0
+DQ=2
+HBOX=650
+WBOX=550
+MIN=500
+MAX=15000
+FILE=susg-4
+FILERAD=susg-4rad
+FILEREC=susg-4rec
+FILEOFF=susg-4off
+FILERADOFF=sg-4radoff
+FILEOFF2=susg-4off  # Final offset in which data will be resampled 
+
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILE > $FILEOFF
+#suxwigb < $FILE   key=offset wbox=550 hbox=650 & 
+
+
+#############Create Gaps   
+#suwind abs=1 key=offset min=550 max=3200 < $FILE |   
+#sushw key=ntr a=43  | suaddnoise sn=10 > $FILE'gap'
+#suxwigb < $FILE'gap'  key=offset hbox=$HBOX wbox=$WBOX &
+suwind reject=0,50,100,150,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400,2000,2050,2100,2150,2200,2250,2300  key=offset < $FILE | sushw key=ntr a=42  | suaddnoise sn=20 > $FILE'gap' 
+suxwigb < $FILE'gap'  key=offset hbox=$HBOX wbox=$WBOX &
+#suaddnoise < $FILE'gap' > pp sn=10
+#cp pp $FILEGAP
+#NMO in original data
+sunmo tnmo=$TNMO vnmo=$VNMO < $FILE'gap' > $FILE'nmo'
+#suxmovie title="NMO corrected data" < sudata1nmo &
+#suxwigb < $FILE'nmo' title="NMO corrected data"  key=offset wbox=550 hbox=650 &
+#Forward  Radon transform
+NITER=2
+suhrrtfpi method=7 eps1=3 iter_end=$NITER qmin=-1e-8 nq=140 freq=70 rtmethod=2 costflag=1 itercg=10 eps=1e-4 norm=11 eps2=1e-4 radonfile=sg-4 nfpm=200 < $FILE'nmo'  > $FILERAD 
+#suhrrtf method=2 eps1=.1 iter_end=$NITER qmin=-1e-8 nq=140 freq=70 rtmethod=2 costflag=0 itercg=10 eps=1e-10 norm=1 eps2=1e-4 < $FILE'nmo'  > $FILERAD 
+xgraph d1=1 style=normal n=$NITER x1beg=0 x1end=$NITER < Jtottemp &
+# For gap example: 
+#                  method=2  eps1=0.001  eps=1e-8 
+#                  method=10 eps1=1  eps=1e-10 
+#      		   method=7  eps1=1  eps=1e-7
+# 	           method=4  eps1=1  eps=1e-7 
+
+suxwigb < $FILERAD  perc=99  key=f2 wbox=550 hbox=650 &
+#sumute < $FILERAD > $FILERAD2 key=f2 xmute=4e-7,8e-7 tmute=2,2
+
+#Inverse Radon Transform
+suhrrti rtmethod=2 offsetfile=$FILEOFF  fmax=70 < $FILERAD  > $FILEREC
+#suxwigb < $FILEREC   key=offset  wbox=550 hbox=650  &
+#NMO in recovered data
+sunmo tnmo=$TNMO vnmo=$VNMO invert=1 <  $FILEREC > $FILEREC'2'
+suxwigb < $FILEREC'2' perc=99 title="NMO corrected data" key=offset wbox=550 hbox=650 &
+ 
+#suxmovie title="NMO corrected data" < sudata1nmo &
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

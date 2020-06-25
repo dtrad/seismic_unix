@@ -1,0 +1,79 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+set -x   
+#MACHINE="sun "
+
+FILE=data2ml2
+FILEPS=$FILE'hybrid.sparse.ps'
+FILEN=$FILE    
+
+sufix=''
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.surad'$sufix
+FILE3=$FILEN'.surad'$sufix
+FILE4=$FILEN'.surec2'$sufix
+FILE5=$FILEN'.surec2'$sufix
+
+
+OPTIONPLOT='i'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+TITLE5="(e)"
+TITLE6="(f)"
+
+LABEL1="time(sec)" 
+LABEL2="offset(m)"
+LABELR1="tau(sec)" 
+LABELR2="#trace in model space"
+LABELF1="freq(Hz)" 
+
+
+
+PLOTF="supswigp x2beg=-15993 x2end=0 key=offset label1=$LABEL1 label2=$LABELR perc=99"
+PLOTR="supswigp key=f2 label1=$LABEL1 label2=$LABELR "
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 "
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR perc=99"
+PLOTT="supswigp label1=$LABEL1 label2=$LABELT "
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABELD perc=99.9"
+SUXIM="supsimage label1=$LABEL1 label2=$LABEL2 "
+SUXIMR="supsimage label1=$LABELR1 label2=$LABELR2 "
+SUXIMF="supsimage label1=$LABELF1 label2=$LABELR2 "
+
+case $OPTIONPLOT in
+*) 
+clip=4.0
+perc=99.
+
+#clip=0.0668748
+
+
+$SUXIM < $FILE1   title=$TITLE1 clip=$clip > p  
+$SUXIMR < $FILE2   title=$TITLE2  perc=$perc > pp
+sufft < $FILE3  | suamp | $SUXIMF title=$TITLE3  perc=$perc > ppp
+$SUXIM < $FILE4   title=$TITLE4  clip=$clip > pppp 
+suop2 $FILE1 $FILE4 | $SUXIM title=$TITLE5  clip=$clip > ppppp 
+;;
+
+esac
+
+
+psmerge in=p in=pp in=ppp in=pppp in=ppppp  scale=0.35,0.35 translate=0,4 translate=2.6,4 translate=5.2,4 translate=1,0 translate=3.6,0   > $HOME'/ps/'$FILEPS
+
+
+ghostview $HOME'/ps/'$FILEPS &
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,243 @@
+#! /bin/sh
+# Xradon_data_comp --- Comparison of Radon Transform implementations.
+######################################################################
+# Author: Daniel Trad- Trad 2001
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+set -x
+
+PROGRAM='SOL'
+PROGRAM="$1"
+
+sufix="${PROGRAM}${2}"
+
+FILE=data.su
+FILEN=$FILE
+FILETEMP=pp
+FILETEMP2=ppp
+FILENMO=$FILE'nmo'
+FILEGAP=$FILE'gap'
+FILEOFF=$FILE'off'
+FILERAD=$FILEN'rad'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILERES=$FILEN'res'${sufix}
+FILERADOFF=$FILEN'radoff'
+FILERAD2=$FILEN'radb'${sufix}
+FILEREC2=$FILEN'recb'${sufix}
+FILEOFF2=$FILEOFF'2'  # Final offset in which data will be resampled 
+
+# Options
+OPTIONGAP='n'
+OPTIONMUTE='y'
+FORWARD='y'
+OPTIONSETNTR='y'
+OPTIONGETH='y'
+OPTIONFILT='n'
+OPTIONAGC='n'
+OPTIONRAD='n'
+OPTIONRADF='y'; 
+OPTIONINT='n'
+OPTIONREC='n'
+OPTIONRES='n'
+
+# PASS BAND FILTER
+F=1,10,70,80
+AMPS=0,1,1,0
+
+par="stkvel.${FILE}"
+perc=100
+step=1
+cut="$3" 
+cut=9e-9
+cut=8e-9
+if [ $OPTIONGETH = 'y' ]; then
+    sugethw key=offset output=geom < $FILE > $FILEOFF2
+fi
+
+cp $FILE $FILETEMP
+
+if [ $OPTIONGAP = 'y' ]; then
+    suwind key=offset abs=1 min=200 max=700 < $FILETEMP > $FILETEMP2
+    cp $FILETEMP2 $FILETEMP
+    cp $FILETEMP  $FILEGAP
+    $PLOTX perc=$perc < $FILETEMP title="${FILE} with gaps" &
+fi
+
+
+
+if [ $OPTIONSETNTR = 'y' ]; then
+    ntr=`surange < $FILETEMP | sed 1q | sed 's/traces://'`
+    sushw key=ntr a=$ntr < $FILETEMP > $FILETEMP2
+    cp  $FILETEMP2 $FILETEMP
+fi
+
+if [ $OPTIONFILT = 'y' ]; then
+    sufilter f=$F amps=$AMPS < $FILETEMP > $FILETEMP2;
+    cp  $FILETEMP2 $FILETEMP
+fi
+
+
+# Save offset  for inverse radon transform
+if [ $OPTIONGETH = 'y' ]; then
+    sugethw key=offset output=geom < $FILETEMP > $FILEOFF
+fi
+
+
+
+# Here we perform PRT to compare 
+case $OPTIONRADF in
+y*)
+
+    qmin=-3e-8
+    factor=0.9
+    scale=1
+    nq=80
+    eps1=0.1
+    eps2=0.1
+    eps=1e-10
+    itercg=25
+    iter_end=5
+    #PROGRAM='toep'
+    solver="$2"
+    rtmethod=2
+    norm=0
+
+    if [ $rtmethod -eq 3 ]; then
+	qmin=-2.5e-4
+	depth=100
+	nmofactor=0
+    fi
+
+    if [ $PROGRAM = 'toep' ]; then
+
+	suradontoep < $FILETEMP verbose=$verbose par=$par  eps1=$eps1  nq=$nq qmin=$qmin \
+	norm=0 nmofactor=1 smute=3.0 fmax=70 step=0.95 factor=$factor modelfile=$FILERAD \
+	quantil=1  > $FILEREC
+
+    elif [ $PROGRAM = 'YIL' ]; then
+        sutsq < $FILETEMP > $FILETEMP2
+        sutsq < $FILE > $FILE'tsq'
+
+	suradonwtcgls < $FILETEMP2 verbose=$verbose par=$par itercg=25 iter_end=5 \
+	eps2=$eps2 eps1=$eps1  testadj=0  nq=$nq qmin=$qmin norm=0 nmofactor=0 smute=3.0 \
+	step=0.99 factor=10 modelfile=$FILERAD  quantil=1 > $FILEREC
+	$PLOTR perc=99 < $FILERAD title="RT from suradontoep " &
+
+	sutsq flag=-1 < $FILEREC | suresamp nt=512 dt=0.004  > $FILETEMP
+	cp $FILETEMP $FILEREC
+	$PLOTX clip=$clip < $FILEREC title="Reconstructed data from suradontoep " &
+	
+	suradon00inv $FILE'tsq' $FILERAD par=$par nmofactor=0 smute=3.0 > $FILEREC2
+	sutsq flag=-1 < $FILEREC2 | suresamp nt=512 dt=0.004  > $FILETEMP
+	cp $FILETEMP $FILEREC2	
+	$PLOTX clip=$clip < $FILEREC2 title="Reconstructed data from suradon00inv " &
+
+    elif [ $PROGRAM = 'SOL' ] && [ $FORWARD = 'y' ] ; then
+	#$PLOTX < $FILETEMP &
+	itercg=50
+        eps1=1e-1
+        eps2=1e-1
+        #eps1=7e-1;
+        #eps2=7e-1;
+        iter_end=6
+        norm=0
+        
+	suradonsolver  < $FILETEMP verbose=$verbose par=$par itercg=$itercg \
+	iter_end=$iter_end solver=$solver rtmethod=$rtmethod  depth=$depth \
+	eps2=$eps2 eps1=$eps1 eps=$eps testadj=0  nq=$nq qmin=$qmin norm=$norm \
+        nmofactor=1 smute=3.0  step=0.95 factor=$factor modelfile=$FILERAD  \
+	quantil=1 > $FILEREC
+
+	#$PLOTX clip=$clip < $FILEREC title="Reconstructed data from suradonsolver " &
+
+    elif [ $PROGRAM = 'DEALIAS' ] && [ $FORWARD = 'y' ] ; then
+	#$PLOTX < $FILETEMP &
+	itercg=50
+        eps1=1e-3
+        eps2=1e-3
+        eps1=7e-1;
+        eps2=7e-1;
+        iter_end=6
+        norm=0
+	suradondealias < $FILETEMP verbose=$verbose par=$par itercg=$itercg \
+	iter_end=$iter_end solver=$solver rtmethod=$rtmethod  depth=$depth \
+	eps2=$eps2 eps1=$eps1 eps=$eps testadj=0  nq=$nq qmin=$qmin norm=$norm \
+        nmofactor=1 smute=3.0  step=0.95 factor=$factor modelfile=$FILERAD  \
+	quantil=1 > $FILEREC
+
+	#$PLOTX clip=$clip < $FILEREC title="Reconstructed data from suradonsolver " &
+
+    elif [ $PROGRAM = 'CGF' ]; then
+
+	suradoncgfft < $FILETEMP verbose=$verbose par=$par itercg=25 iter_end=5 \
+	eps2=$eps2 eps1=$eps1  testadj=0  nq=$nq qmin=$qmin norm=0 nmofactor=1 smute=3.0 \
+	step=0.99 factor=$factor modelfile=$FILERAD  quantil=1 > $FILEREC
+
+    elif [ $PROGRAM = 'TFD' ]; then
+        eps1=9.7e-1;
+        eps2=9.7e-1;
+	stopc=1;
+        
+	suradoncgfft_tfd < $FILETEMP verbose=$verbose par=$par itercg=30 iter_end=6 \
+	eps2=$eps2 eps1=$eps1  testadj=0  nq=$nq qmin=$qmin norm=0 nmofactor=1 smute=3.0 \
+	step=0.99 factor=$factor modelfile=$FILERAD  quantil=1 stopc=1 > $FILEREC
+
+    fi
+
+    if [ $PROGRAM != 'YIL' ]; then
+    $PLOTX clip=$clip < $FILEREC title="Reconstructed data from ${PROGRAM} " &
+
+    if [ $OPTIONMUTE = 'y' ]; then
+	sumutepar < $FILERAD cut=$cut ntaper=1 > $FILERAD2
+    else
+        cp  $FILERAD  $FILERAD2
+    fi
+
+    suradoninv $FILE $FILERAD2 par=$par nq=$nq nmofactor=1 rtmethod=$rtmethod \
+    depth=$depth smute=3.0   > $FILEREC2
+
+    $PLOTR perc=$perc < $FILERAD title="Radon transform"  &
+
+    $PLOTR perc=$perc < $FILERAD2 title="Muted Radon transform"  &
+    
+    $PLOTX clip=$clip < $FILEREC2 title="Multiples" &
+    if [ $solver = 'adj' ]; then
+	sugain scale=2.32 < $FILEREC2 > $FILETEMP; cp $FILETEMP $FILEREC2
+    fi 
+    #suop2 $FILE $FILEREC2 op=diff > $FILERES
+    suadapdiff $FILE $FILEREC2 > $FILERES
+    $PLOTX clip=$clip < $FILERES title="Primaries" &
+    fi
+
+esac
+
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

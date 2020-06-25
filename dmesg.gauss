@@ -1,0 +1,95 @@
+Linux version 2.2.5-15 (root@porky.devel.redhat.com) (gcc version egcs-2.91.66 19990314/Linux (egcs-1.1.2 release)) #1 Mon Apr 19 23:00:46 EDT 1999
+Detected 267280802 Hz processor.
+Console: colour VGA+ 80x25
+Calibrating delay loop... 266.24 BogoMIPS
+Memory: 63140k/65536k available (996k kernel code, 412k reserved, 928k data, 60k init)
+VFS: Diskquotas version dquot_6.4.0 initialized
+CPU: Intel Pentium II (Klamath) stepping 03
+Checking 386/387 coupling... OK, FPU using exception 16 error reporting.
+Checking 'hlt' instruction... OK.
+POSIX conformance testing by UNIFIX
+mtrr: v1.26 (19981001) Richard Gooch (rgooch@atnf.csiro.au)
+PCI: PCI BIOS revision 2.10 entry at 0xf0510
+PCI: Using configuration type 1
+PCI: Probing PCI hardware
+Linux NET4.0 for Linux 2.2
+Based upon Swansea University Computer Society NET3.039
+NET4: Unix domain sockets 1.0 for Linux NET4.0.
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP, IGMP
+Initializing RT netlink socket
+Starting kswapd v 1.5 
+Detected PS/2 Mouse Port.
+Serial driver version 4.27 with MANY_PORTS MULTIPORT SHARE_IRQ enabled
+ttyS00 at 0x03f8 (irq = 4) is a 16550A
+ttyS01 at 0x02f8 (irq = 3) is a 16550A
+pty: 256 Unix98 ptys configured
+apm: BIOS version 1.2 Flags 0x0b (Driver version 1.9)
+Real Time Clock Driver v1.09
+RAM disk driver initialized:  16 RAM disks of 4096K size
+PIIX4: IDE controller on PCI bus 00 dev 21
+PIIX4: not 100% native mode: will probe irqs later
+    ide0: BM-DMA at 0xd800-0xd807, BIOS settings: hda:DMA, hdb:pio
+    ide1: BM-DMA at 0xd808-0xd80f, BIOS settings: hdc:DMA, hdd:pio
+hda: WDC AC36400L, ATA DISK drive
+hdb: IOMEGA ZIP 100 ATAPI, ATAPI FLOPPY drive
+hdc: TOSHIBA CD-ROM XM-6102B, ATAPI CDROM drive
+ide0 at 0x1f0-0x1f7,0x3f6 on irq 14
+ide1 at 0x170-0x177,0x376 on irq 15
+hda: WDC AC36400L, 6149MB w/256kB Cache, CHS=784/255/63
+hdc: ATAPI 24X CD-ROM drive, 256kB Cache
+Uniform CDROM driver Revision: 2.54
+Floppy drive(s): fd0 is 1.44M
+FDC 0 is a post-1991 82077
+md driver 0.90.0 MAX_MD_DEVS=256, MAX_REAL=12
+raid5: measuring checksumming speed
+raid5: using high-speed MMX checksum routine
+   pII_mmx   :   650.748 MB/sec
+   p5_mmx    :   629.793 MB/sec
+   8regs     :   460.629 MB/sec
+   32regs    :   330.708 MB/sec
+using fastest function: pII_mmx (650.748 MB/sec)
+scsi : 0 hosts.
+scsi : detected total.
+md.c: sizeof(mdp_super_t) = 4096
+Partition check:
+ hda: hda1 hda2 hda3
+autodetecting RAID arrays
+autorun ...
+... autorun DONE.
+VFS: Mounted root (ext2 filesystem) readonly.
+Freeing unused kernel memory: 60k freed
+Adding Swap: 136548k swap-space (priority -1)
+Soundblaster audio driver Copyright (C) by Hannu Savolainen 1993-1996
+SB 4.16 detected OK (220)
+<SoundBlaster EMU8000 (RAM512k)>
+eth0: Intel EtherExpress Pro 10/100 at 0xd000, 00:A0:C9:85:37:AA, IRQ 11.
+  Board assembly 645477-007, Physical connectors present: RJ45 BNC AUI
+  Primary interface chip 80c24 PHY #0.
+  General self-test: passed.
+  Serial sub-system self-test: passed.
+  Internal registers self-test: passed.
+  ROM checksum self-test: passed (0x49caa8d6).
+  Receiver lock-up workaround activated.
+Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
+nfsd_init: initialized fhcache, entries=256
+parport0: PC-style at 0x378 [SPP,PS2]
+parport0: no IEEE-1284 device present.
+lp0: using parport0 (polling).
+lp0 off-line
+lp0 off-line
+parport0: PC-style at 0x378 [SPP,PS2]
+parport0: Printer, Hewlett-Packard HP LaserJet 6MP
+lp0: using parport0 (polling).
+lp0 out of paper
+lp0 out of paper
+hdb: 98304kB, 196608 blocks, 512 sector size
+hdb: 98304kB, 32/64/96 CHS, 4096 kBps, 512 sector size, 2941 rpm
+ hdb: unknown partition table
+VFS: Disk change detected on device ide0(3,64)
+ hdb: unknown partition table
+VFS: Disk change detected on device ide0(3,64)
+ hdb: unknown partition table
+parport0: PC-style at 0x378 [SPP,PS2]
+parport0: Printer, Hewlett-Packard HP LaserJet 6MP
+lp0: using parport0 (polling).

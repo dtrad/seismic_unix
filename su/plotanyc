@@ -1,0 +1,5 @@
+#!/bin/sh
+suxwigb key=cdp perc=$2 < ` ls -at | head | grep "$1"` &
+
+
+

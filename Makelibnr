@@ -1,0 +1,65 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+
+IDIR=-I$(CWPROOT)/include  -I$(HOME)/recipesc/util -I$(HOME)/recipesc/files
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a 
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm  $(POSTLFLAGS)
+
+PROG=libnr.a
+
+FLAG=-c -O3 -Wall 
+
+OBJ= nrutil.o wt1.o wtn.o pwtset.o pwt.o daub4.o rlft3.o fourn.o mnbrak.o brent.o \
+     linmin.o dbrent.o dlinmin.o f1dim.o df1dim.o
+
+
+LIBU=$(HOME)/recipesc/util
+LIBF=$(HOME)/recipesc/files
+
+# dependence 
+$L/$(PROG): $(OBJ)
+	ar -r  $L/$(PROG) $(OBJ) 
+nrutil.o: $(LIBU)/nrutil.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wt1.o: $(LIBF)/wt1.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wtn.o: $(LIBF)/wtn.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+pwtset.o: $(LIBF)/pwtset.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+pwt.o: $(LIBF)/pwt.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+daub4.o: $(LIBF)/daub4.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rlft3.o: $(LIBF)/rlft3.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fourn.o: $(LIBF)/fourn.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+mnbrak.o: $(LIBF)/mnbrak.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+brent.o: $(LIBF)/brent.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+linmin.o: $(LIBF)/linmin.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dbrent.o: $(LIBF)/dbrent.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dlinmin.o: $(LIBF)/dlinmin.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+frprmn.o: $(LIBF)/frprmn.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+f1dim.o: $(LIBF)/f1dim.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+df1dim.o: $(LIBF)/df1dim.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+
+
+
+

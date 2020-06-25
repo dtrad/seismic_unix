@@ -1,0 +1,103 @@
+#! /bin/sh
+. $HOME/shell/lib/libshell.sh
+set -x
+
+FILEN=moddata2
+
+PARFILE="stkvel0."$FILEN".csp.su" # Correct velocities
+PARFILE="stkvel2."$FILEN".csp.su" # wrong velocities
+
+FILE1=$FILEN'.filt.su'
+FILEOUT=$FILEN'.kir.depth.su'
+FILEVEL=$FILEN'_vels.su'
+VFILE=$FILEN'.vfile'
+TRAVELTIME=$FILEN'.traveltime'
+
+model=testfile_real_earth  # File with the model 
+READPAR="n" # Read parfile to suvelfile
+READVEL="n" # Read suvelfile to vfile
+GVFILE="y"  # Get the vfile directly from the model
+VELP='y'    # Plot the vfile
+RAYTR='y'   # raytracing to obtain traveltime
+RAYTRP='y'  # Plot traveltime
+KIRMIG='y'  # Kirchhoff 2 d depth migration
+
+nz=300
+dz=5
+dt=0.004
+
+fx=0
+nx=201
+dx=5
+
+fxo=0
+nxo=201
+dxo=5
+
+fzo=0
+nzo=300
+dzo=5
+
+fxs=0 
+nxs=20 
+dxs=50
+
+fxk=0
+nxk=200
+dxk=5
+fzk=0
+nzk=300
+dzk=5
+
+if [ "$READPAR" = "y" ] ; then
+checkEXIST "$PARFILE"
+sureadveli par=$PARFILE cdpmin=1 cdpmax=1000 dxcdp=1 > $FILEVEL
+fi
+
+
+if [ "$READVEL" = "y" ] ; then
+checkEXIST "$FILEVEL"
+sureadvel2 < $FILEVEL > pp vfile=$VFILE nz=$nz dz=$dz nx=$nx
+fi
+
+if [ "$GVFILE" = "y" ] ; then
+unif2 < $model ninf=4 nx=$nx nz=$nz dx=$dx dz=$dz \
+v00=2000,2500,3000,3500 > $VFILE    
+fi
+
+case $VELP in
+y*)
+checkEXIST "$VFILE"
+ximage < $VFILE n1=$nz n2=$nx d1=$dz d2=$dx legend=1 &
+;;
+esac
+
+case $RAYTR in
+y*)
+rayt2d vfile=$VFILE tfile=$TRAVELTIME nz=$nz dz=$dz nx=$nx dx=$dx nzo=$nzo dzo=$dzo fzo=$fzo fxo=0 nxo=$nxo dxo=$dxo fxs=0 nxs=$nxs ms=1 dxs=$dxs dt=$dt
+;;
+esac
+
+case $RAYTRP in
+y*)
+pscube < $TRAVELTIME n1=$nzo d1=$dzo f1=$fzo n2=$nxo d2=$dxo \
+	 f2=$fxo n3=$nxs d3=$dxs label1="Depth (m)" label2="Midpoint (m)" \
+	 label3="Shot" d3num=1000 ybox=3 hbox=4 bclip=10 d1num=500 d2num=2000 \
+	 title="Traveltime Tables"  > time.eps
+gv time.eps &
+;;
+esac
+
+case $KIRMIG in
+y*)
+sukdmig2d < $FILE1 > $FILEOUT ttfile=$TRAVELTIME fzt=$fzo nzt=$nzo dzt=$dzo  dxm=1 ntr=100000 fxt=$fxo nxt=$nxo dxt=$dxo fs=$fxs  ns=$nxs ds=$dxs nxo=$nxo dxo=$dxo fxo=$fxk fzo=$fzk nzo=$nzk dzo=$dzk
+suximage perc=98 legend=1 < $FILEOUT &
+;;
+esac
+
+
+
+
+
+
+

@@ -1,0 +1,164 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+
+set -x 
+
+#METHOD='toep'
+#METHOD='wtcgls'
+#METHOD='TFD'
+#METHOD='HRF'
+#METHOD='down_LI1'
+METHOD="HRT_metric"
+  
+FILE="fig1demul_cdp1000_${METHOD}.ps"
+
+if [ ${METHOD} = 'toep' ]; then
+    LEGEND='non-sparse'
+elif [ ${METHOD} = 'TFD' ]; then
+    LEGEND='sparse: Time-Frequency domain'
+else 
+    LEGEND="sparse: "${METHOD}
+fi
+
+param=3
+
+if [ $param -eq 1 ]; then
+    FILEN=cdp1000g
+    clipx=95
+    clip2=95
+    clipR=9.2
+elif [ $param -eq 2 ]; then
+    FILEN=cdp1000
+    clipx=18
+    clip2=16
+    clipR=9.2
+elif [ $param -eq 3 ]; then
+    FILEN=cdp1000
+    clipx=11
+    clip2=16
+    clipR=3
+fi
+
+clip3=`echo "scale=1; 3.5 * $clip2" | bc `
+echo $clip3
+
+# PLot model
+x1beg=1.85
+x1end=7
+x2beg=-5000
+x2end=0
+
+
+FILE1="${FILEN}.su_metric"
+FILE2="${FILEN}.supri_${METHOD}"
+FILE3="${FILEN}.sumul_${METHOD}"
+FILE4="${FILEN}.surad_${METHOD}"
+FILE5="arrow-4.ps"
+FILE6="${FILEN}.suradmul_${METHOD}"
+
+FILE7="${FILEN}.su_metric.1000.ps"
+FILE8="${FILEN}.supri_${METHOD}.1000.ps"
+FILE9="${FILEN}.sumul_${METHOD}.1000.ps"
+
+OPTIONPLOT='ps'
+OPTIONNUM='8'
+
+TITLE1="(a) Data"
+TITLE2="(b) Primaries"
+TITLE3="(c) Multiples"
+TITLE4="(d) HRT ${LEGEND}"
+TITLE5="(e) HRT after mute"
+TITLE6="(f) Semblace: Data"
+TITLE7="(g) Semblace: Primaries"
+TITLE8="(h) Semblace: Multiples"
+TITLE9="(i)"
+
+
+PSPLOT1=p1
+PSPLOT2=p2
+PSPLOT3=p3
+PSPLOT4=p4
+PSPLOT5=p5
+PSPLOT6=p6
+PSPLOT7=p7
+PSPLOT8=p8
+PSPLOT9=p9
+
+
+
+LABEL1="time(sec)" 
+LABEL2="offset(m)"
+LABELR="q(s/m2)"
+LABELG="trace #"
+
+
+
+PLOTR="supswigp  x1beg=$x1beg f1=0 f2=0 key=f2 label1=$LABEL1 label2=$LABELR clip=$clipR "
+PLOTX="supswigp  x1beg=$x1beg x2beg=$x2beg x2end=$x2end key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx"
+PLOTX2="supswigp x1beg=$x1beg x2beg=$x2beg x2end=$x2end key=offset label1=$LABEL1 label2=$LABEL2 clip=$clip2"
+PLOTG="supswigp  x1beg=$x1beg label1=$LABEL1 label2=$LABELG clip=$clip3"
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clip"
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR clip=$clip"
+
+
+$PLOTX < $FILE1  title=$TITLE1  > $PSPLOT1  
+$PLOTX < $FILE2  title=$TITLE2  > $PSPLOT2  
+#$PLOTX  < $FILE3  title=$TITLE3  > $PSPLOT
+$PLOTX f1=1.5 < $FILE3  title=$TITLE3  > $PSPLOT3
+$PLOTR < $FILE4  title=$TITLE4  > $PSPLOT4 
+cp $FILE5 $PSPLOT5
+$PLOTR f1=1.5 < $FILE6  title=$TITLE5  > $PSPLOT6
+cp $FILE7 $PSPLOT7
+cp $FILE8 $PSPLOT8
+cp $FILE9 $PSPLOT9
+
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.42,0.42 translate=0,3 translate=3,3 translate=6,3  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+*)
+#psmerge in=$PSPLOT1 in=$PSPLOT2 in=$PSPLOT3 in=$PSPLOT4  in=$PSPLOT6 in=$PSPLOT7 in=$PSPLOT8 in=$PSPLOT9 in=$PSPLOT5 scale=0.37,0.37  translate=0,7 translate=2.5,7 translate=5,7 translate=0,3.5  translate=5,3.5 translate=0,0 translate=2.5,0 translate=5.0,0 translate=2.5,4.5 > ~/ps/$FILE
+supsmerge in=$PSPLOT5 in=$PSPLOT1 in=$PSPLOT2 in=$PSPLOT3 in=$PSPLOT4  in=$PSPLOT6 in=$PSPLOT7 in=$PSPLOT8 in=$PSPLOT9 scale=0.37,0.37 translate=3.5,5.5  translate=0,7 translate=2.5,7 translate=5,7 translate=0,3.5  translate=5,3.5 translate=0,0 translate=2.5,0 translate=5.0,0  > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

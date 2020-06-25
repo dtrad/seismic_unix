@@ -1,0 +1,7 @@
+#! /bin/sh
+FILE=misscn0.su
+cp /mnt/cdrom/$FILE .
+susort tracl < $FILE | suwind j=2 s=1 | sugain tpow=2.0  > pp
+
+
+

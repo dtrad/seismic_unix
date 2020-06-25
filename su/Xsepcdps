@@ -1,0 +1,46 @@
+#! /bin/sh
+# Xsepcdps --- separate cdps from a file 
+######################################################################
+# Author: Daniel Trad August 8
+set -x
+
+filein=$1
+
+# Uncomment these two lines if all cdps are going to be output
+# to a single file# Uncomment these two lines if all cdps are going to be output
+
+fileout=$filein"sel"
+rm $fileout
+
+cdpmin=500
+cdpmax=4500
+
+dcdp=200
+
+
+cdp=$cdpmin
+while [ $cdp -le $cdpmax ]
+do
+file="cdp${cdp}.su"
+suwind < $filein key=cdp min=$cdp max=$cdp | suwind key=offset max=5000 > $file
+cat $file >> $fileout
+Xsetntr $file
+Xsetntr $fileout
+
+suxwigb < $file key=$3 perc=98 xbox=$2 title="${cdp}" &
+
+
+cdp=` expr $cdp + $dcdp`
+
+done
+
+exit 0
+
+
+
+
+
+
+
+
+

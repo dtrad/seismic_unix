@@ -1,0 +1,58 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a 
+
+LFLAGS= $(PRELFLAGS) -L$L -L../bin -lsu -lpar -lcwp -lm -ldan $(POSTLFLAGS)
+
+PROG=suradonfkvel
+
+FLAG=-c -O3 -Wall
+
+OBJ=  $(PROG).o  radonfk_wtcglsvel.o radonstoltvel.o \
+	radonstolt_one_trace2.o \
+	adjtestradonfk.o stretching2.o save_gather_freq.o modelweight.o \
+	axbcomplex.o mutemask.o 
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ) $(CWPROOT)/lib/libdan.a 
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp $(LIBC)/radonfk.h
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+radonfk_wtcglsvel.o: $(LIBC)/radonfk_wtcglsvel.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonstoltvel.o: $(LIBC)/radonstoltvel.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonstolt_one_trace2.o: $(LIBC)/radonstolt_one_trace2.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+adjtestradonfk.o: $(LIBC)/adjtestradonfk.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+stretching2.o: $(LIBC)/stretching2.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_gather_freq.o: $(LIBC)/save_gather_freq.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+axbcomplex.o: $(LIBC)/axbcomplex.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+mutemask.o: $(LIBC)/mutemask.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)	
+
+
+
+
+
+
+
+
+
+
+
+
+
+

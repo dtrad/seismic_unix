@@ -1,0 +1,10 @@
+#!/bin/sh
+# copy one header word key1 from file1 tp file2 
+# Example 
+#  Xcopyheader file1 file2 key1
+
+set -x
+
+sugethw key=$3 output=binary  < $1 > binaryfile
+sushw key=$3 infile=binaryfile  < $2 > pp
+mv pp $2

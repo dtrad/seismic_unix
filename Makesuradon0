@@ -1,0 +1,87 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=suradon0
+
+FLAG=-c -O -Wall
+
+OBJ=  $(PROG).o radint_sparse3.o dot.o  \
+	radonop.o radonopi.o rho_filter.o radon_param.o \
+	interval.o testadjrad.o smoothing.o radon.o testadjop.o \
+	radsparse2.o lpcgnr.o mpcgnr.o wpcgnr.o Lumley_precond.o rhofilt.o \
+	save_vector.o modelweight.o mpcgne.o pcgnr.o wtcglsop.o irregaxis.o \
+	findgaps.o taper.o
+
+
+
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+radint_sparse3.o: $(LIBC)/radint_sparse3.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dot.o: $(LIBC)/dot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonop.o: $(LIBC)/radonop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonopi.o: $(LIBC)/radonopi.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rho_filter.o: $(LIBC)/rho_filter.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interval.o: $(LIBC)/interval.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+testadjrad.o: $(LIBC)/testadjrad.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+smoothing.o: $(LIBC)/smoothing.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon.o: $(LIBC)/radon.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+testadjop.o: $(LIBC)/testadjop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radsparse2.o: $(LIBC)/radsparse2.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+lpcgnr.o: $(LIBC)/lpcgnr.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+mpcgnr.o: $(LIBC)/mpcgnr.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wpcgnr.o: $(LIBC)/wpcgnr.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Lumley_precond.o: $(LIBC)/Lumley_precond.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rhofilt.o: $(LIBC)/rhofilt.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_vector.o: $(LIBC)/save_vector.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+mpcgne.o: $(LIBC)/mpcgne.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+pcgnr.o: $(LIBC)/pcgnr.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wtcglsop.o: $(LIBC)/wtcglsop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+irregaxis.o: $(LIBC)/irregaxis.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+findgaps.o: $(LIBC)/findgaps.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+taper.o: $(LIBC)/taper.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+
+
+

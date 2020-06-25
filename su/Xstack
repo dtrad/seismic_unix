@@ -1,0 +1,19 @@
+#!/bin/sh
+set -x
+#sunmo par=stkvel.line159ar0.su < line159ar_${1}_${2}.demul.su | sustack > line159ar_${1}_${2}.demul.stack.su
+
+
+#sunmo par=stkvel.line159a.su < line159ar.su | sustack > line159a.stack.su
+#sunmo par=stkvel.line159a.su < line159ar.demul.su | sustack > line159a.demul.stack.su
+#sunmo par=stkvel.line159a.su < ~/china2/line159br.su | sustack > line159b.stack.su
+#sunmo par=stkvel.line159a.su < line159br.demul.su | sustack > line159b.demul.stack.su
+#sunmo par=stkvel.line159a.su < line159cr.su | sustack > line159c.stack.su
+
+#sunmo par=stkvel.line159a.su < line159cr.demul.su | sustack > line159c.demul.stack.su
+
+
+# Stack without NMO for multiple removal interpolation test
+sufilter f=90,100 amps=1,0 < $1 > $1'f'
+suxwigb key=offset < $1'f' title="$1" &
+sustack key=cdp < $1'f' > $1's'
+suxwigb key=offset < $1's' wbox=200 xbox=600 title="$1" &

@@ -1,0 +1,202 @@
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Tue Jul  2 16:14:58 2002
+;; Emacs version 20.7.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring '("wr" "mutemas" "stol" "wmax" "vko" "k" "vko"))
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+
+;; Buffer section:
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radonstoltvelfft.cpp"
+  "radonstoltvelfft.cpp"
+  'c++-mode
+  '(nil)
+  61
+  '(1104 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radonstolt_one_trace.cpp"
+  "radonstolt_one_trace.cpp"
+  'c++-mode
+  '(nil)
+  5392
+  '(5156 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xplotsuradonfk_tx_data_asym"
+  "Xplotsuradonfk_tx_data_asym"
+  'sh-mode
+  '(nil)
+  1513
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radonstolt.cpp"
+  "radonstolt.cpp"
+  'c++-mode
+  '(nil)
+  5398
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radonfk.h"
+  "radonfk.h"
+  'c-mode
+  '(nil)
+  689
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonfk0"
+  "Makesuradonfk0"
+  'fundamental-mode
+  '(nil)
+  498
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonfkvel.cpp"
+  "suradonfkvel.cpp"
+  'c++-mode
+  '(nil)
+  11266
+  '(10895 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonfk0vel"
+  "Makesuradonfk0vel"
+  'fundamental-mode
+  '(nil)
+  609
+  '(855 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xsuradonfk_data_asym"
+  "Xsuradonfk_data_asym"
+  'sh-mode
+  '(nil)
+  2755
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonfk0.cpp"
+  "suradonfk0.cpp"
+  'c++-mode
+  '(nil)
+  11268
+  '(10895 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radonfk_wtcglsvel.cpp"
+  "radonfk_wtcglsvel.cpp"
+  'c++-mode
+  '(nil)
+  6854
+  '(6596 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radonstoltvel.cpp"
+  "radonstoltvel.cpp"
+  'c++-mode
+  '(nil)
+  1176
+  '(1043 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radonstolt_one_trace2.cpp"
+  "radonstolt_one_trace2.cpp"
+  'c++-mode
+  '(nil)
+  3637
+  '(3812 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xplotsuradonfk_ken_secret"
+  "Xplotsuradonfk_ken_secret"
+  'sh-mode
+  '(nil)
+  1363
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/kendata/Xpreprocessken"
+  "Xpreprocessken"
+  'sh-mode
+  '(nil)
+  1124
+  '(1198 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Velanken0"
+  "Velanken0"
+  'sh-mode
+  '(nil)
+  1
+  '(1 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/kendata/Xsuradonken"
+  "Xsuradonken"
+  'sh-mode
+  '(nil)
+  2002
+  '(2087 t)
+  nil
+  nil
+  nil)
+

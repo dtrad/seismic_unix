@@ -1,0 +1,69 @@
+#! /bin/sh
+# Xsuradonfk_ken --- Attenuation of difractions with  
+# non apex centered Radon Transform.
+# Data contain multiples of diffractions. 
+#
+# data preprocessing:
+# Althouth the data is a real data set, for this example we need to take a
+# window, and make the data to look symmetric 
+# from  kencmpsnonmo.su take cdp 5300 and window from 5.5s to end.
+# Data name kencmpwin0.su
+# then make the data symmetric by 
+# suchw key1=offset key2=offset b=-1 < kencmpwin0.su > pp
+# cat pp kencmpwin0.su > kencmpwin.su
+# sushw key=delrt a=0 < kencmpwin.su > pp
+# susort +offset < pp >  kencmpwin.su
+# Xsetntr kencmpwin.su
+######################################################################
+# Author: Daniel Trad- November 2001
+set -x
+#filen=lineken0b
+#filein=$filen".su"
+# Uncomment these two lines if all cdps are going to be output
+# to a single file
+
+#fileout=$filen"a.su"
+#rm $fileout
+
+cdpmin=5705
+cdpmax=5799
+
+
+dcdp=10
+
+xwindow="x1beg=5.4 x1end=6.4 x2beg=0 x2end=120 curve=curve1 npair=5 hbox=900 wbox=700 cmap=hsv4 "
+xwindow="hbox=900 wbox=700 cmap=hsv4 perc=98 x1beg=6.4 x1end=7.4 x2beg=1 x2end=60 "
+
+cdp=$cdpmin
+while [ $cdp -le $cdpmax ]
+do
+cdporig="cdp${cdp}orig.su"
+cdpdif="cdp${cdp}dif.su"
+cdpdiff="cdp${cdp}diff.su"
+cdpclean="cdp${cdp}clean.su"
+
+
+#suwind key=offset min=0  < $cdpdif | suaddzeros f1=5.4 > $cdpdiff
+
+#Xsetntr $cdpdiff
+
+#suadapdiff $cdporig  $cdpdiff > $cdpclean
+
+suximage < $cdporig title=$cdporig $xwindow xbox=0 &
+suximage < $cdpclean title=$cdpclean $xwindow xbox=600 
+
+#suximage < $cdpdiff title=$cdpdiff $xwindow xbox=600 f2=0
+cdp=` expr $cdp + $dcdp`
+
+
+done
+
+exit 0
+
+
+
+
+
+
+
+

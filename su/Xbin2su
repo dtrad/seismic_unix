@@ -1,0 +1,14 @@
+#! /bin/sh
+set -x
+TEMP=ppp
+ns=4096
+ntr=100
+dt=50000
+
+suaddhead < "${1}.bin"  > "${1}.su"   ns=$ns
+sushw < "${1}.su"  key=offset  infile="${1}.off" | sushw key=ntr a=$ntr | sushw key=dt a=$dt > $TEMP 
+
+mv $TEMP "${1}.su"
+
+suxwigb key=offset < "${1}.su" perc=99
+

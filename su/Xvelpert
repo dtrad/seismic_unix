@@ -1,0 +1,242 @@
+#! /bin/sh
+# shell for generating prestack synthetic data gathers 
+set -x
+output=data
+model="y"
+# build velocity model using "unif2"
+
+nz=51 dz=50 fz=0 nx=81 dx=50 fx=0.0 #velocity file size
+fxt=500 nxt=61 dxt=50 fzt=0 nzt=51 dzt=50 # traveltime file size
+fxo=500 nxo=201 dxo=15  fzo=0 nzo=251 dzo=10  # output from Kirchhoff
+dt=0.004  nt=501
+ninf=0 npmax=201 
+
+velfilesize="nz=${nz} dz=${dz} fz=${fz} nx=${nx} dx=${dx} fx=${fx}"
+traveltsize="fxt=${fxt} nxt=${nxt} dxt=${dxt} fzt=${fzt} nzt=${nzt} dzt=${dzt}"
+migoutput="fxo=${fxo} nxo=${nxo} dxo=${dxo}  fzo=${fzo} nzo=${nzo} dzo=${dzo}"
+
+labelx="Distance (m)"
+labelz="Depth (m)"
+
+if [ $model = 'y' ];then
+
+#note correct velocity is v00=2000
+unif2 <input >vfile1  ninf=$ninf  npmax=$npmax \
+	$velfilesize v00=2000 
+
+# build synthetic seismograms with "susynvxz"
+ft=0.0 tmin=0.2 nxm=201 dxm=15 fxm=500 
+dxoff=200 nxoff=5 fxoff=100  fpeak=30 ls=1 nxb=50 nxd=5 
+
+ susynvxz<vfile1  nt=$nt dt=$dt ft=$ft nxm=$nxm dxm=$dxm fxm=$fxm  fxo=$fxoff\
+      dxo=$dxoff nxo=$nxoff tmin=$tmin $velfilesize \
+      nxb=$nxb nxd=$nxd fpeak=$fpeak  ls=$ls \
+ 	ref="1:0,500;4000,500" >$output
+
+
+# Plot Synthetic data 
+# nt=501 dt=0.004 ft=0.0  n2=201
+# suxmovie < data  perc=99.5 n1=$nt n2=$n2 loop=1 \
+#	label1="Time (sec)" label2="Trace number"  \
+# 	-geometry 550x400+100+550 \
+#	title="COS Data: Offset=(%g*200 - 100)m" &
+
+
+# shell for plotting synthetic data and migrated data
+
+supsimage<data  perc=99.5\
+	label1="Time (s)" label2="Midpoint (m)" \
+	ybox=4 hbox=4 \
+	title="Synthetic Data"  > syndata.eps
+
+gv syndata.eps &
+
+fi
+
+# Plotting migrated data
+
+# shell for uniformly sampling velocity from a layered model
+# building velocity model for ray tracing
+# Note true velocity is unknown
+v00=1500
+unif2 < input > vfile  ninf=$ninf  npmax=$npmax \
+	$velfilesize v00=$v00 
+
+#ximage n1=$nz d1=$dz n2=$nx d2=$dx < vfile title="vfile" &
+
+# building velocity derivative model for ray tracing
+unif2 <input >pvfile  ninf=$ninf  npmax=$npmax \
+	$velfilesize v00=1 
+
+# ximage n1=$nz d1=$dz n2=$nx d2=$dx < vfile title="pvfile" &
+# Generate traveltime by ray tracing
+# generate tables of traveltime, traveltime derivative, and cosine of
+# emergence angles
+
+# velocity file
+# rays 
+
+fxs=0 nxs=41 dxs=100 # source
+
+rayt2dmod < vfile $traveltsize dt=$dt nt=$nt \
+fxs=$fxs nxs=$nxs dxs=$dxs  $velfilesize aperx=2000 \
+fa=-60 na=61 da=2 amax=75 fac=0.01 ms=10 ek=1 npv=1 jpfile=jpfile.ray tfile=tfile \
+pvfile=pvfile  csfile=csfile
+
+
+pscube< tfile  n1=$nzt d1=$dzt f1=$fzt n2=$nxt d2=$dxt f2=$fxt n3=$nxs d3=$dxs \
+	label1="Depth (m)" label2="Midpoint (m)"  label3="Shots (m)"  \
+	ybox=3 hbox=4 \
+	bclip=2 d1num=500 d2num=1000 d3num=500  brgb=1,0,0 \
+	title="Traveltime Tables"  legend=0 > time.eps
+
+gv time.eps &
+
+
+# shell for Kirchhoff depth migration
+
+off0=100 noff=5 doff=200 
+sukdmig2d < data $traveltsize \
+	    fs=$fxs ns=$nxs ds=$dxs \
+	    $migoutput aperx=1000 dxm=$dxo ntr=10000 ls=1 \
+off0=$off0 noff=$noff doff=$doff \
+f0=25 nf=4 df=10 ftaper=5 \
+v0=$v00 dvz=0 \
+offmax=2000 angmax=60 fmax=55 \
+jpfile=jpfile.kz \
+ttfile=tfile \
+npv=1 tvfile=tvfile csfile=csfile \
+dataout1=dataout1 > kd.data
+
+#sukdmig2d < data  par=kdmig.par  >kd.data 
+
+
+
+
+
+# Plot Synthetic data 
+# The cdp spacing is 15 meters but there are 5 offsets.
+suximage < kd.data  perc=99 d2=3 \
+	label1="Depth (m)" label2="Midpoint (m)"  \
+	xbox=680 \
+	title="Test Migration" &
+
+
+
+# Residual moveout analyses for the cip gathers
+# residual moveout is represented by z(h)^2 = z(0)^2+r*h^2
+# 	where h is half an offset
+# NOTE: Comment lines preceeding user input start with  ##
+
+## Set parameters
+input=kd.data
+rpicks=res.p1
+cdpmin=800
+cdpmax=2000
+dcdp=600
+fold=5
+
+## Set r-parameter sampling
+nr=51 dr=0.01 fr=-0.25
+
+
+## Do the residual moveout analyses.
+echo 
+echo "Pick r-parameters by moving mouse and typing 's', type 'Q' when done"
+echo 
+echo "Use the plot from Xmig as a guide to picking"
+
+cdp=$cdpmin
+while [ $cdp -le $cdpmax ]
+do
+	ok=false
+	while [ $ok = false ]
+	do
+		echo "Starting Residual moveout analysis for cip $cdp"
+		suwind <$input key=cdp min=$cdp max=$cdp count=$fold |
+		surelan nr=$nr dr=$dr fr=$fr |
+		suximage bclip=0.95 wclip=0.0 f2=$fr d2=$dr \
+			label1="Depth (m)" label2="r-parameter " \
+			title="r-parameter Scan for CIP $cdp" \
+			grid1=solid grid2=solid cmap=rainbow \
+			mpicks=mpicks.$cdp blank=.7
+
+		pause
+
+		echo -n "Picks OK? (y/n) " >/dev/tty
+		read response
+		case $response in
+		n*) ok=false ;;
+		*) ok=true ;;
+		esac
+
+	done </dev/tty
+	cdp=`bc -l <<END
+		$cdp + $dcdp
+END`
+
+done
+
+set +x
+
+
+### Combine the individual picks into a composite par file
+echo "Editing pick files ..."
+>$rpicks
+cdp=$cdpmin
+while [ $cdp -le $cdpmax ]
+do
+	echo -n "cip=$cdp," >temp
+	cat temp mpicks.$cdp>>$rpicks
+	cdp=`bc -l <<END
+		$cdp + $dcdp
+END`
+done
+
+sed "s/  /,/g"<$rpicks >cig.par
+
+echo "dzdv par file: cig.par is ready"
+
+
+### Clean up
+cdp=$cdpmin
+while [ $cdp -le $cdpmax ]
+do
+	rm mpicks.$cdp 
+	cdp=`bc -l <<END
+		$cdp + $dcdp
+END`
+done
+rm temp $rpicks
+
+
+# determine depth derivatives from ratios from two migration outputs
+
+
+suwind<kd.data key=cdp min=800 max=2000 | sustrip>infile 
+suwind<dataout1 key=cdp min=800 max=2000 | sustrip>afile 
+
+nx=5  nxw=2 nzw=2
+
+> dzfile \
+dzdv <infile par=cig.par nx=$nx nz=$nzo fx=$cdpmin fz=$fzo dx=$dxo dz=$dzo \
+ afile=afile dfile=dfile  \
+ off0=$off0 noff=$noff doff=$doff nxw=$nxw nzw=$nzw
+
+echo "Add the value of dlambda to the original velocity to obtain new velocity"
+      
+
+
+
+# estimate velocity parameter perturbation from covariance of imaged
+# depths
+
+
+ ncip=5
+ moff=3
+
+velpert<dfile dzfile=dzfile ncip=$ncip noff=$noff moff=$moff  \
+>deltap 
+
+exit 0
+

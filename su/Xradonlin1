@@ -1,0 +1,201 @@
+#! /bin/sh
+# Xradon --- Hyperbolic Radon Transform.
+######################################################################
+# Example: real  sucdps2, sumiss2
+# 
+#######################################################################
+# Author: Daniel Trad- November 1999
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+HBOX=400
+WBOX=350
+
+
+set -x
+NT=512 
+NH=111
+NP=150
+DT=4000
+
+VNMO=1500,2000,3000
+TNMO=0.5,1,2
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+
+FILEN=data1
+FILE=$FILEN'.su'
+FILETEMP=pp
+FILETEMP2=ppp
+FILENMO=$FILEN'nmo'
+FILEGAP=$FILEN'gap'
+FILEOFF=$FILEN'off'
+FILERAD=$FILEN'rad'
+FILEREC=$FILEN'rec'
+FILERADOFF=$FILEN'radoff'
+FILERAD2=$FILEN'radb'
+FILEREC2=$FILEN'recb'
+FILEMOD=$FILE'mod'
+FILEOFF2=$FILE'off2' # Final offset in which data will be resampled 
+
+# Options
+OPTIONGAP='y'
+OPTIONSETNTR='y'
+OPTIONGETH='y'
+OPTIONFILT='n'
+OPTIONAGC='n'
+OPTIONRAD='n'
+OPTIONENMO='n'
+OPTIONENMO1='y'
+OPTIONREC='n'
+OPTIONREC2='y'
+
+# PASS BAND FILTER
+F=1,10,70,80
+AMPS=0,1,1,0
+# RADON (see suhrrtf for more details)
+METHOD=2 # 
+EPS1=1  # Variance of the noise
+ITER_END=1 ; # External iterations 
+QMIN=-0.7e-3;
+QMAX=0.7e-3;
+NQ=130      # NP traces
+FMAX=70     # max freq to compute
+RTMETHOD=1 # 1=LRT 2=PRT 3=HRT
+COSTFLAG=0 # =1 PLOT COST FUNCTIONS (SLOWER)
+ITERCG=14  # CG ITERATIONS
+EPS=0      # =0 FOR METHOD 2 
+NORM=1     # L1 NORM
+STEP=0.8  # Step less 1
+THRES=0.5 
+FACTOR=1
+SMOOTH=0
+perc=98
+TVEL=0.03568,0.5481,0.7395,0.9373,1.148,1.343,2.024
+VEL=1396,1470,1681,1874,2062,2285,2433
+#TVEL=0,2
+#VEL=1000,2500
+
+cp $FILE $FILETEMP
+
+case $OPTIONGETH in
+y*)
+sugethw key=offset output=geom < $FILE > $FILEOFF2
+;;
+esac
+
+case $OPTIONGAP in
+y*)
+suwind key=offset abs=1 min=200 max=700 < $FILETEMP > $FILETEMP2
+cp $FILETEMP2 $FILETEMP 
+$PLOTX < $FILETEMP &
+;;
+esac
+
+
+case $OPTIONSETNTR in
+y*)
+ntr=`surange < $FILE | sed 1q | sed 's/traces://'`
+cp $FILETEMP $FILETEMP2
+sushw key=ntr a=$ntr < $FILETEMP2 > $FILETEMP 
+;;
+esac
+
+case $OPTIONFILT in
+y*)
+sufilter f=$F amps=$AMPS < $FILETEMP > $FILETEMP2
+cp $FILETEMP2 $FILETEMP
+;;
+esac
+
+
+# Save offset  for inverse radon transform
+case $OPTIONGETH in
+y*)
+sugethw key=offset output=geom < $FILE > $FILEOFF
+;;
+esac
+
+case $OPTIONRAD in
+y*)
+#Forward  Radon transform: Time domain
+suhrrtf method=1 eps1=1 iter_end=$NITER qmin=$QMIN nq=$NQ freq=$FMAX rtmethod=1  costflag=0 itercg=35 eps=0 norm=1 step=.5 factor=$FACTOR < $FILETEMP  > $FILERAD 
+
+#Forward  Radon transform: Time domain
+#suradtd method=$METHOD  eps1=$EPS1 iter_end=$ITER_END qmin=$QMIN qmax=$QMAX nq=$NQ freq=$FMAX rtmethod=$RTMETHOD costflag=$COSTFLAG itercg=$ITERCG eps=$EPS norm=$NORM step=$STEP thres=$THRES smooth=$SMOOTH factor=$FACTOR testadj=1 < $FILETEMP  > $FILERAD 
+
+$PLOTR < $FILERAD perc=$perc &
+;;
+esac
+
+
+case $OPTIONENMO in
+y*)
+suenmo model=0 smooth=0 < $FILERAD itercg=5 vmin=900 testadj=0 nv=40 \
+iter_end=3 eps1=1e-3 eps2=1e-3  > $FILERAD2
+$PLOTR < $FILERAD2 perc=$perc &
+;;
+esac
+
+
+
+case $OPTIONENMO1 in
+y*)
+#sugain scale=1e4 < $FILERAD > pp; cp pp $FILERAD
+suenmo2 model=1 smooth=1 < $FILERAD itercg=15 vmin=10 testadj=1 nv=30 \
+iter_end=1 eps1=1 norm=0 eps2=1e-3 taper=0 vel=$VEL  tvel=$TVEL dv=0.05 step1 eps=0.01 method=0 modelfile=$FILEMOD  > $FILERAD2
+$PLOTR < $FILERAD2 perc=$perc &
+$PLOTR < $FILEMOD &
+;;
+esac
+
+#Inverse Radon Transformr
+case $OPTIONREC in
+y*)
+suhrrti rtmethod=$RTMETHOD offsetfile=$FILEOFF  fmax=$FMAX < $FILERAD  > $FILEREC
+#suradtdi rtmethod=$RTMETHOD fmax=$FMAX offsetfile=$FILEOFF2 smooth=$SMOOTH < $FILERAD > $FILEREC
+$PLOTX < $FILEREC perc=$perc &
+;;
+esac
+
+case $OPTIONREC2 in
+y*)
+#Inverse Radon Transformr
+suhrrti rtmethod=$RTMETHOD offsetfile=$FILEOFF2  fmax=$FMAX < $FILERAD2  > $FILEREC2
+#suradtdi rtmethod=$RTMETHOD fmax=$FMAX offsetfile=$FILEOFF2 smooth=$SMOOTH < $FILERAD2 > $FILEREC2
+$PLOTX < $FILEREC2 perc=$perc &
+;;
+esac
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

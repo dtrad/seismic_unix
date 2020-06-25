@@ -1,0 +1,44 @@
+#! /bin/sh
+plotx="suxwigb key=offset perc=97"
+set -x
+NAME="sx0"
+
+FILE=$NAME".su"
+FILEGAP=$NAME"gap.su"
+FILEOUT=$NAME"gap.sufk"
+FILEGAPNMO=$NAME"gap.sunmo"
+FILEOUTNMO=$NAME"gap.sufknmo"
+FILEMIX=$NAME"gap.sumix"
+FILERES=$NAME"gap.sures"
+MODELFILE=$NAME"gap.mig.su"
+
+
+OFFSETFILE="sx0.suoff"
+
+vmig=9000,10000
+vmig=14000,15000
+tmig=0.1224,6.944
+vnmo=7000,7000 
+tnmo=0,7
+
+sunmo vnmo=$vnmo tnmo=$tnmo < $FILEGAP > $FILEGAPNMO
+
+#suinterpfk2 < $FILEGAP  vel=4000 offsetfile=$OFFSETFILE plot=0 itercg=5 iter_end=2 step=1 testadj=1 eps1=0.9 eps2=0.9 modelfile=$MODELFILE > $FILEOUT
+
+suinterpfk3 < $FILEGAPNMO  vmig=$vmig tmig=$tmig offsetfile=$OFFSETFILE plot=0 itercg=10 iter_end=3 step=1 testadj=0 eps1=1e-7 eps2=1e-7 modelfile=$MODELFILE ascale=1 > $FILEOUTNMO
+sunmo vnmo=$vnmo tnmo=$tnmo invert=1 < $FILEOUTNMO > $FILEOUT
+$plotx < $FILE title=$FILE &
+$plotx < $FILEGAP title=$FILEGAP &
+$plotx < $FILEOUT title=$FILEOUT &
+$plotx < $MODELFILE title=$MODELFILE &
+
+sumixgathers  $FILEGAP $FILEOUT | susort +offset > $FILEMIX
+
+$plotx < $FILEMIX title=$FILEMIX &
+suop2 $FILE $FILEMIX > $FILERES 
+
+
+
+$plotx < $FILERES title=$FILERES &
+
+

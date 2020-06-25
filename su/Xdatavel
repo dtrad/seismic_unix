@@ -1,0 +1,95 @@
+#! /bin/sh
+# Xradon --- Example of interpolation with high resolution radon.
+######################################################################
+# This example needs sudata1 generated with Xsusyn0
+# No extra files are needed.
+# method 1 and 2 stands for Usual Radon and High resolution RT.
+# First the header of full offset data are saved in file=headers 
+# and offset in sudata1.off
+# The sudata1.off file is  used by suhrrti to create data at given offsets 
+# from the model.
+# The headers file is used after suhrrti to put back the header.
+# The suwind is used to create gaps that are filled with suhrrtf and suhrrti
+# Main purpose of the program is to compare gap filling capabilities of
+# HRRT (method=2) with the usual RT (method=1).
+# If you change the data check the values at the beginning.
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+NT=512 
+NH=64
+NP=120
+DT=4000
+VNMO=7000,8000,9000
+TNMO=0.0,0.65,1.0
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+FILE=sudata1
+FILEGAP=$FILE'gap'
+FILERAD=$FILE'rad'
+FILEREC=$FILE'rec'
+FILEOFF=$FILE'off'
+FILERADOFF=$FILE'radoff'
+
+FILERAD2=$FILE'radb'
+FILEREC2=$FILE'recb'
+FILEOFF2=$FILE'off'  # Final offset in which data will be resampled 
+
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILE > $FILEOFF
+#suxwigb < $FILE   key=offset wbox=550 hbox=650 & 
+#Create Gaps
+suwind abs=1 key=offset min=500 max=3200 < $FILE | 
+
+#suxwigb < $FILEGAP  key=offset hbox=$HBOX wbox=$WBOX &
+############Aperture effects
+#sushw key=ntr a=44 < pp  > $FILEGAP
+#suxwigb < $FILEGAP  key=offset hbox=$HBOX wbox=$WBOX &
+#Forward  Radon transform
+NITER=2
+suvelanrt method=2 iter_end=$NITER step=.5 eps=0.01 eps1=1e-3 eps2=1e-3 Vmin=1000 Vmax=5000 nq=100 itercg=10 reorth=1 thres=0.3  < $FILE | sufilter  f=5,10,60,70 amps=1,1,1,0  > $FILERAD
+#| sufilter  f=5,10,60,70 amps=1,1,1,0  > $FILERAD 
+#xgraph d1=1 style=normal n=$NITER x1beg=0 x1end=$NITER < Jtottemp &
+
+# For gap example: 
+# method=2 eps1=0.1 iter_end=10  itercg=25 eps=1e-10 
+# method=10 eps=1e-4 method=7 eps=1e-7
+# method=4 eps=1e-4 
+
+suxwigb < $FILERAD   key=f2 wbox=550 hbox=650 &
+#sumute < $FILERAD > $FILERAD2 key=f2 xmute=4e-7,8e-7 tmute=2,2
+
+#Inverse Radon Transform
+suvelanrti offsetfile=$FILEOFF  < $FILERAD | sufilter  f=5,10,60,70 amps=1,1,1,0   > $FILEREC
+suxwigb < $FILEREC   key=offset  wbox=550 hbox=650  &
+
+#binary file with radon parameter  
+#cp myfile $FILERADOFF
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

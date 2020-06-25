@@ -1,0 +1,57 @@
+#! /bin/sh
+# PLOTS 
+# Plot for semblance analysis.
+# The ps files must be produced first with Velan5  (OPTIONPS='y')
+# Daniel Trad- UBC Nov 1999
+set -x  
+FILE=fig1avo.ps
+
+FILEN=data2
+
+FILE1D="$FILEN.su"
+FILE1=p
+FILE2="$FILEN.su.1.ps"
+FILE3D="$FILEN.avo.su"
+FILE3=pp
+FILE4="$FILEN.avo.su.1.ps"
+OPTIONNUM='4'
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+
+LABELT="time (sec)" 
+LABELO="offset(m)"
+LABELR="s/m^2"
+LABELTAU="tau (sec)"
+LABELFREQ="Freq(Hz)"
+LABELFREQ2="q"
+
+PLOTX="supswigp f1=0 f2=0 key=offset label1=$LABELT label2=$LABELO "
+
+$PLOTX < $FILE1D > $FILE1
+$PLOTX < $FILE3D > $FILE3
+
+case $OPTIONNUM in
+2*)
+psmerge in=$FILE1 in=$FILE2  scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=$FILE1 in=$FILE2 in=$FILE3  scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0  > ~/ps/$FILE
+;;
+4*)
+psmerge in=$FILE1 in=$FILE2 in=$FILE3 in=$FILE4 scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+

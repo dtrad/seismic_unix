@@ -1,0 +1,45 @@
+#! /bin/sh
+
+
+set -x 
+
+clip1=3
+clip2=3
+x1beg=2
+x1end=6
+
+
+#FILE=cdp1000.su
+
+case "$3" in
+    1)
+	x1beg=$x1beg
+	x1end=$x1end
+	x2beg=-1e-4
+	x2end=0    
+	;;
+    2)
+	x1beg=$x1beg
+	x1end=$x1end
+	x2beg=-1e-4
+	x2end=-$x2beg 
+	;;
+    3)
+	x1beg=$x1beg
+	x1end=$x1end
+	x2beg=-1e-4
+	x2end=-$x2beg 
+	;;
+esac
+
+suxwigb < "$1" key=f2 x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end clip=$clip1 \
+title="$1" &
+
+
+suxwigb < "$2" key=f2 x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end clip=$clip2 \
+title="$2" &
+
+
+
+
+

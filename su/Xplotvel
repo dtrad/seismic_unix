@@ -1,0 +1,23 @@
+#! /bin/sh
+# PLOTS 
+# Plot  velocity values to use together with Xplotvelan.
+# Daniel Trad- UBC Jan 2000
+
+cdp=$1  
+FILE=figvel$cdp
+FILE=$FILE'.ps'
+nv=50
+dv=50.0
+fv=1500.0
+dxout=0.004
+ns=256
+npairs=1
+parfile=unisamb.$cdp
+
+#FILE1=stkvel0.moddata2.csp.su
+
+#sed < $FILE1 ' s/vnmo/yin/' | sed ' s/tnmo/xin/ ' > unisam.p
+
+unisam par=$parfile nout=$ns dxout=$dxout fxout=0 method=linear npairs=$npairs | psgraph x2beg=1500 x2end=4000  d1=$dxout n=$ns  style=seismic tickwidth=0 d2num=5000 d1num=2 nplot=$npairs  > ~/cseg/$FILE
+
+gv ~/cseg/$FILE &

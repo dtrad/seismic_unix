@@ -1,0 +1,61 @@
+#!/bin/sh
+# Script to generate the files for Xplotdemult
+# Xsuradonline ==> generates files with standard names
+# Xrename      ==> rename the files and generates ps files for semblance
+# Xplotdemult_cdp1000 ==> creates the final figure
+#METHOD="TFD"
+#METHOD="SOLcgfft"
+METHOD="${1}"
+
+cdp=1000  
+FILEN="cdp${cdp}"
+. $HOME/shell/lib/libshellsu.sh
+
+FILE1="${FILEN}.su_metric" 
+FILE2="${FILEN}.supri_${METHOD}"
+FILE3="${FILEN}.sumul_${METHOD}"
+FILE4="${FILEN}.surad_${METHOD}"
+FILE5="arrow-4.ps"
+FILE6="${FILEN}.suradmul_${METHOD}"
+FILE7="${FILEN}.su_metric.1000.ps"
+FILE8="${FILEN}.supri_${METHOD}.1000.ps"
+FILE9="${FILEN}.sumul_${METHOD}.1000.ps"
+
+
+cp misscn_gain_cdp.demul.su $FILE2
+
+if [ $METHOD = "HRT" ]; then
+    #suadapdiff $FILE1 $FILE2 > $FILE3
+    suaddzeros < multiples.su f1=1.5 | sushw key=cdp a=$cdp > $FILE3
+    suaddzeros < mutedmodel.su f1=1.5 | sushw key=cdp a=$cdp > $FILE4
+    #sushw key=f1 a=1.5 < multiples.su > $FILE3
+else
+    sunmo invert=1 <  multiples.su > $FILE3 par=stkvel.misscn.su
+    sushw key=cdp a=$cdp < $FILE3 > $FILE3'temp'
+    mv $FILE3'temp' $FILE3
+    cp model.su $FILE4
+fi
+
+cp model.su $FILE4
+cp mutedmodel.su $FILE6
+
+
+feet2meter_offset $FILE2
+feet2meter_offset $FILE3
+feet2meter_f2 $FILE4
+feet2meter_f2 $FILE6
+
+
+Velan1 $FILE1 ${cdp} ${cdp} 1 0.3 "(f)"
+Velan1 $FILE2 ${cdp} ${cdp} 1 0.3 "(g)"
+Velan1 $FILE3 ${cdp} ${cdp} 1 0.3 "(h)"
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,54 @@
+#! /bin/sh
+# EOM migration plus multiple attenuation by RT along a line
+# Jan 30 -2002
+# Daniel Trad - UBC
+
+
+set -x
+
+x2beg=259
+perc=99 
+FILEN=line77
+#torum
+FILE0=$FILEN".su"
+FILE1=$FILEN"b.stack.su"
+FILE2=$FILEN"b.demul.agres3.su.stack"
+FILE2=$FILEN"b.rest.stack.su" 
+FILE3=$FILEN".vel.su"
+#scott pickford 
+
+FILE1=$1
+FILE2=$2
+
+clip="bclip=28.0698 wclip=-27.7393"
+
+#sureadveli par=stkvel.line159a.su > line159.vel.su cdpmin=301 cdpmax=4701 nt=1515
+
+
+#sunmo par=stkvel.line159a.su < $FILE0 > $FILEN"a.nmo.su" 
+#sustack < $FILEN"a.nmo.su"  key=cdp > $FILE1
+
+
+
+
+#suximage  <  $FILE1 title=$FILE1 $clip f2=300  &
+#suximage < $FILE2 title=$FILE2 $clip f2=259 xbox=600 &
+#suximage < $FILE3 title=$FILE3 perc=$perc legend=1 f2=$x2beg d2=10 x2end=820 ybox=600 hbox=400 &
+
+
+window="x2beg=$3 x2end=$4 x1beg=$5 x1end=$6 "
+suximage  <  $FILE1 title=$FILE1 perc=$perc f2=259 $window d2=1  &
+suximage < $FILE2 title=$FILE2 perc=$perc f2=300 xbox=600 $window d2=1 &
+
+
+exit 0
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,85 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+set -x 
+sufix=''
+
+METHOD='fk'
+METHOD=$1
+
+FILE='suinterpfk_data_sparse3nb.ps'  
+
+
+# PLot model
+
+FILEN=data_asym
+CLIP=
+
+if [ $METHOD = 'fk' ]; then
+    LEGEND='fk'
+else 
+    LEGEND=''
+fi
+
+LEGEND=''
+sufix="_sparse3n"
+
+FILE1=$FILEN'.su'
+FILE2=${FILEN}${sufix}'.su'
+FILE3=${FILEN}${sufix}'.mig.sufk'
+FILE4=${FILEN}${sufix}'.surecfkf'
+FILE5=${FILEN}${sufix}'.suresfk'
+
+TITLE1="(a) data"
+TITLE2="(b) data_with_gaps"
+TITLE3="(c) migrated "
+TITLE4="(d) data_interpolated"
+TITLE5="(e) Stacks"
+
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)"
+LABELR2="Offset(m)"
+LABELR1="Tau(sec)"
+LABELRF1="f(Hz)"
+
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELR1 label2=$LABELR2 perc=100"
+PLOTRF="supswigp key=f2 label1=$LABELRF1 label2=$LABELR2 perc=100"
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 perc=100"
+PLOTX2="supswigp key=offset x2beg=-1500 x2end=1500 label1=$LABEL1 label2=$LABEL2"
+PLOTX2="supswigp label1=$LABEL1 label2=traces d2num=1"
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=2.5 x2beg=-1550 x2end=1550"
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR"
+
+$PLOTX < $FILE1  title=$TITLE1  > p  
+$PLOTX < $FILE2  title=$TITLE2  > pp
+$PLOTX < $FILE3  title=$TITLE3  > ppp 
+$PLOTX < $FILE4  title=$TITLE4  > pppp
+#suwind < $FILE1 key=offset max=0 abs=1  > $FILE1"b"
+sustack < $FILE1 key=cdp > $FILE1"b"
+sustack < $FILE2 key=cdp | sugain scale=0.5 > $FILE2"b"
+sustack < $FILE3 key=cdp > $FILE3"b"
+sustack < $FILE4 key=cdp > $FILE4"b"
+
+cat  $FILE1"b"  $FILE2"b" $FILE3"b" $FILE4"b"  > $FILE5"c"
+Xsetntr $FILE5"c"
+$PLOTX2 < $FILE5"c" title="(e)" perc=100 > ppppp
+
+supsmerge in=p in=pp in=ppp in=pppp  in=ppppp scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.35,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2> ~/ps/$FILE
+
+#psmerge in=p in=pp scale=0.5,0.5  translate=0,2 translate=4,2  > ~/ps/$FILE
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+
+

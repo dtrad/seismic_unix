@@ -1,0 +1,29 @@
+#!/bin/sh
+set -x
+
+file1=$1 
+
+
+suaddhead < $1".noise.bin" ns=256 | sushw key=dt a=8000 | susetntr > $1".noise.su"
+
+sugain < ${1}".su" scale=0 > ${1}"header.su" 
+
+
+suop2 ${1}"header.su" ${1}".noise.su" op=sum > pp
+
+mv pp ${1}".noise.su"
+
+suop2 ${1}".su" ${1}".noise.su" > ${1}".den.su"
+
+suxwigb key=offset < ${1}".noise.su" xbox=0 title="GRnoise" perc=98 &
+suxwigb key=offset < ${1}".den.su" xbox=800 title="GRden" perc=98 &
+
+
+suaddhead < $1".RNden.bin" ns=256 | sushw key=dt a=8000 | susetntr > $1".RNden.su"
+
+# Add header 
+suop2 ${1}"header.su" ${1}".RNden.su" op=sum > pp
+
+mv pp ${1}".RNden.su"
+
+suxwigb key=offset < ${1}".RNden.su" xbox=400 title="RNden" perc=98 &

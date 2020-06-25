@@ -1,0 +1,63 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+  
+FILE=fig_miss1_cdp_from_csp.ps
+clipx=30
+clipx2=5
+clipx3=2.5
+
+# PLot model
+
+FILEN=cdp1000
+x1beg=1.5
+x1end=7
+x2beg=-16000
+x2end=0
+
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.csp.all.su'
+FILE3=$FILEN'.csp.no_cdp1000.su'
+FILE4=$FILE1'.1000.ps'
+FILE5=$FILE2'.1000.ps'
+FILE6=$FILE3'.1000.ps'
+
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+TITLE5="(e)"
+TITLE6="(f)"
+
+
+LABEL1="time(sec)" 
+LABEL2="offset(feet)"
+LABELR="q(s^2/feet^2)"
+
+
+PLOTD="supswigp x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end key=offset label1=$LABEL1 label2=$LABEL2 perc=99"
+PLOTX="supswigp  x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end key=offset label1=$LABEL1 label2=$LABEL2 perc=99"
+PLOTX2="supswigp x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end key=offset label1=$LABEL1 label2=$LABEL2 perc=99"
+
+
+
+$PLOTD < $FILE1  title=$TITLE1  > p  
+$PLOTX < $FILE2  title=$TITLE2  > pp
+$PLOTX2 < $FILE3  title=$TITLE3  > ppp 
+cp $FILE4 pppp
+cp $FILE5 ppppp
+cp $FILE6 pppppp
+
+
+
+psmerge in=p in=pp in=ppp in=pppp in=ppppp in=pppppp scale=0.58,0.58 translate=0,6 translate=4,6  translate=8,6 translate=0,0 translate=4,0 translate=8,0 > $HOME'/ps/'$FILE
+
+gv ~/ps/$FILE &
+
+
+
+
+

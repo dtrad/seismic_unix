@@ -1,0 +1,18 @@
+#! /bin/sh
+# Xsentr : set the keyword ntr
+# Use :
+# Xsetntr file
+# 
+#######################################################################
+#  Daniel Trad- September 2000
+
+FILE="$1"
+if [ -z $FILE ]; then
+    echo "USAGE: Xsetntr file"
+    exit 1
+fi
+
+ntr=`surange < $FILE | sed 1q | sed 's/traces://'`
+cp $FILE ppppp
+sushw key=ntr a=$ntr < ppppp > $FILE 
+rm ppppp

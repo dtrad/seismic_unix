@@ -1,0 +1,41 @@
+#!/bin/sh
+set -x
+
+FILE="/home/dtrad/ps/ridgesmalldatagr.ps"
+
+filen=smalldatagr
+
+file1=${filen}.su
+file2=${filen}.rec.su
+file3=${filen}.noise.su
+
+
+file4=${filen}".ridge"
+file5=${filen}".ridgethresh"
+
+
+suaddhead < ${file4}".bin" ns=256 | sushw key=dt a=4000 | susetntr > ${file4}".su"
+
+suaddhead < ${file5}".bin" ns=256 | sushw key=dt a=4000 | susetntr > ${file5}".su"
+
+
+Xsuwrite2 ${filen} rec
+Xsuwrite2 ${filen} noise
+
+
+PLOTX="supswigp key=offset label1=Time(s) label2=Offset(m) perc=98 "
+PLOTR="supsimage clip=0.0001"
+
+#suop2 $file1 $file2 > $file3
+
+$PLOTX < $file1 > p1 title='(a)'
+$PLOTX < $file3 > p2 title='(b)'
+$PLOTX < $file2 > p3 title='(c)'
+$PLOTR < $file4".su" > p4 title='(d)'
+$PLOTR < $file5".su" > p5 title='(e)'
+
+
+#supsmerge in=p1 in=p2 in=p3 in=p4  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.6  translate=0,5 translate=4,5 translate=0,0 translate=4,-1 > $FILE
+
+supsmerge in=p1 in=p2 in=p3 in=p4 in=p5  scale=0.37,0.37 scale=0.37,0.37 scale=0.37,0.37 scale=0.37,0.37 scale=0.37,0.37 scale=0.37,0.37 translate=1,7  translate=4,7 translate=7,7 translate=2.5,3.5  translate=5.5,3.5 > $FILE
+

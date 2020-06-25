@@ -1,0 +1,169 @@
+#! /bin/sh
+# shell for Radon filtering
+# Daniel Trad - UBC
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650 perc=99"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=99"
+
+OPTION='RAD'
+
+NAME=ozdata.10
+NAME1=$NAME'.su'
+NAME2=$NAME'.su'
+NAME3=$NAME'.stack.su'
+FILE=$NAME'.su'
+FILECDP=$NAME'.cdp.su'; 
+FILERAD=$NAME'.rad.su'
+offsetfile="ozdata.25.neg.suoff"
+offsetfile="${NAME}.suoff"
+par="stkvel.ozdata.10.su"
+
+if ! [ -f $offsetfile ]; then 
+ sugethw key=offset < $NAME1 output=geom  > $offsetfile   
+fi
+
+
+verbose=0
+fold=1
+buffer=10; 
+nhe=130;
+ncmp=2
+ntrmax=900000 
+lsmethod="$1"
+iter_end=2
+sinc=0;
+parmute=15e-8
+parmute=25e-8
+nq=100
+under=0.999
+over=1.001
+modelfile="${NAME}.${lsmethod}.iter${iter_end}.surad"
+eps1=30e-2
+eps2=30e-2
+CDPMIN=1
+DXCDP=1
+CDPMAX=1
+nmofactor=0
+qmin=-2e-8
+factor=4
+pseudohyp=1
+qmin1=3e-4
+qmin2=0e-4
+#qmin2=-5e-8
+factor1=1
+factor2=2
+rtmethod1=1
+rtmethod2=3
+depth1=1000
+depth2=1000
+nq1=100
+nq2=50
+mute1=0
+mute2=0
+fmax1=70;
+fmax2=70;
+amps=0,0,1,1
+ffilter=1,55,70,80
+factor1=4.5
+factor2=3
+fmax1=70;
+fmax2=70;
+
+
+
+
+
+if [ -z "$lsmethod" ]; then
+    exit 1
+fi
+
+if [ $lsmethod -eq 9 ]; then
+    pseudohyp=0
+    nq=`expr $nq1 + $nq2`
+    echo "nq=${nq}"
+fi
+
+if [ $rtmethod2 -eq 2 ]; then
+    pseudohyp=0
+    nq=`expr $nq1 + $nq2`
+    echo "nq=${nq}"
+    qmin2=-2e-8;
+fi
+
+if [ $pseudohyp -eq 1 ]; then
+    echo "Using Pseudo hyperbolic RT "
+    qmin=-1e-4
+    depth="$2";
+    if [ -z "$depth" ]; then
+	exit 1
+    fi
+    factor=4;
+fi
+
+###################################
+
+PLOTOPT='XPLOT2'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+case $OPTION in
+RAD*)
+echo " .................SORT YOUR DATA BY CDP and OFFSET ..................." 
+suradtestfreq < $FILE cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$DXCDP verbose=$verbose nhe=$nhe fold=$fold par=$par itercg=25 iter_end=$iter_end eps2=$eps2 eps1=$eps1  testadj=0 smooth=0 nq=$nq qmin=$qmin  cdpspace=$cdpspace ntrmax=$ntrmax tmpdir='.' norm=0 lsmethod=$lsmethod nmofactor=$nmofactor smute=3.0 step=0.95 factor=$factor buffer=$buffer  mute=0  parmute=$parmute offsetfile=$offsetfile under=$under over=$over modelfile=$modelfile  quantil=0.7 keepdata=0 pseudohyp=$pseudohyp depth=$depth comb_method=$comb_method qmin1=$qmin1 qmin2=$qmin2 nq1=$nq1 nq2=$nq2 factor1=$factor1 factor2=$factor2 rtmethod1=$rtmethod1 rtmethod2=$rtmethod2 depth1=$depth1 depth2=$depth2 mute1=$mute1 mute2=$mute2 fmax1=$fmax1 fmax2=$fmax2 amps=$amps ffilter=$ffilter > $FILECDP
+;;
+esac
+
+case $OPTION in
+RAD*)
+case $PLOTOPT in
+    XPLOT2*)
+    
+    cdp=$CDPMIN
+      
+    while [ $cdp -le $CDPMAX ]
+    do
+    title=$cdp' CDP'
+    suwind key=cdp min=$cdp max=$cdp  < $FILECDP | $PLOTX  title=$title &
+    suwind key=cdp min=$cdp max=$cdp  < $modelfile | $PLOTT  title=$title &
+cdp=`bc -l <<END
+		$cdp + $DXCDP
+END`
+
+    done
+    ;;
+esac
+
+;;
+esac
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

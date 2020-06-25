@@ -1,0 +1,21 @@
+#! /bin/sh
+# Xsuradon: test suradon 
+#####################################################################
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+set -x 
+FILE=sudata14
+FILERAD=pp
+FILEOUT=ppp
+supswigb key=offset  < $FILE | ghostview - &
+suradon < $FILE > $FILERAD pmin=0 pmax=2000 offref=1600 \
+igopt=3 dp=14 f1=75 f2=80
+
+supswigb n2=120  < $FILERAD | ghostview - &
+#supsimage n2=120 perc=99 < $FILERAD | ghostview - &
+ 
+suradon < $FILERAD > $FILEOUT pmin=0 pmax=2000 offref=1600 \
+igopt=3 dp=14 f1=75 f2=80 choose=4
+
+supswigb  key=offset  < $FILEOUT | ghostview - &

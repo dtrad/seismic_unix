@@ -1,0 +1,51 @@
+#!/bin/sh
+
+susynth2 dh=25 nh=256 nt=256 vel=7000 tau=0.1 dt=0.004 shape=1 hnear=0 | sushw key=tracl a=1 b=1 > line1.su
+
+susynth2 dh=25 nh=256 nt=256 vel=7000 tau=0.2 dt=0.004 shape=1 hnear=0  | sushw key=tracl a=1 b=1 > line2.su
+
+suxwigb key=offset < line1.su xbox=0 &
+suxwigb key=offset < line2.su xbox=600 &
+
+suwind <  line1.su key=tracl  max=64 > line1b.su
+
+suwind <  line2.su key=tracl  min=65 > line2b.su
+
+cat line1b.su line2b.su > line3.su
+
+
+
+
+
+suxwigb key=offset < line3.su xbox=100 &
+
+
+
+susynth2 dh=25 nh=256 nt=256 vel=10000000 tau=0.5 dt=0.004 shape=1 hnear=0 | sushw key=tracl a=1 b=1 > line1.su
+
+susynth2 dh=25 nh=256 nt=256 vel=10000000 tau=0.6 dt=0.004 shape=1 hnear=0  | sushw key=tracl a=1 b=1 > line2.su
+
+suxwigb key=offset < line1.su xbox=0 &
+suxwigb key=offset < line2.su xbox=600 &
+
+suwind <  line1.su key=tracl  max=128 > line1b.su
+
+suwind <  line2.su key=tracl  min=129 > line2b.su
+
+cat line1b.su line2b.su > line4.su
+
+
+
+
+suop2 line3.su line4.su op=sum > faultline.su
+
+
+
+
+
+
+
+
+
+
+exit 0

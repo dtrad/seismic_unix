@@ -1,0 +1,151 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=suradtestfreq
+
+FLAG=-c -O -Wall
+
+OBJ=  $(PROG).o  Complex.o interpovv.o dot.o testadjop.o wtcglsop.o \
+		 smoothing.o  modelweight.o wpcgnr.o save_vector.o \
+		 radontestfreq.o nmo.o radftoep.o ctoeplitz.o  \
+		 fftgo.o fftback.o Atimesx.o matrix_3.o	freqweight.o \
+		 radon_param.o interval.o radfinv.o radonwtcgls.o radonwtcgls_td.o \
+		 wtcgls1.o wtcgls5.o rcdot.o xequaly.o taper.o sethflag.o \
+		 radoncg_levinson.o AtimesBm.o xtimesy.o xminusy.o xplusy.o ctoephcg.o \
+		 htmult.o circ_mult.o  radon_cholund.o nrutil.o modgrad2.o choldc.o \
+		 cholsl.o modnorm2.o misfit.o radonwtcgls_tfd.o radon_mpcgnec.o \
+		 mpcgne_c.o radoncg_levinson_alias.o radon_mpcgnec_alias.o \
+		 radoncg_levinson_beam.o radonwtcgls_beam.o radon_param_beam.o \
+		 radoninv_beam.o radontestfreq_beam.o
+	
+		 
+
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Complex.o: $(LIBC)/Complex.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interpovv.o: $(LIBC)/interpovv.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dot.o: $(LIBC)/dot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+testadjop.o: $(LIBC)/testadjop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wtcglsop.o: $(LIBC)/wtcglsop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+smoothing.o: $(LIBC)/smoothing.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wpcgnr.o: $(LIBC)/wpcgnr.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_vector.o: $(LIBC)/save_vector.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radontestfreq.o: $(LIBC)/radontestfreq.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nmo.o: $(LIBC)/nmo.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radftoep.o: $(LIBC)/radftoep.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+ctoeplitz.o: $(LIBC)/ctoeplitz.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+AtimesDiag.o: $(LIBC)/AtimesDiag.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fftgo.o: $(LIBC)/fftgo.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fftback.o: $(LIBC)/fftback.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Atimesx.o: $(LIBC)/Atimesx.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+matrix_3.o: $(LIBC)/matrix_3.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+freqweight.o: $(LIBC)/freqweight.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interval.o: $(LIBC)/interval.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radfinv.o: $(LIBC)/radfinv.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonwtcgls.o: $(LIBC)/radonwtcgls.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR) 
+radonwtcgls_td.o: $(LIBC)/radonwtcgls_td.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR) 
+wtcgls1.o: $(LIBC)/wtcgls1.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wtcgls5.o: $(LIBC)/wtcgls5.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+xequaly.o: $(LIBC)/xequaly.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rcdot.o: $(LIBC)/rcdot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+taper.o: $(LIBC)/taper.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+sethflag.o: $(LIBC)/sethflag.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+AtimesBm.o: $(LIBC)/AtimesBm.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+xtimesy.o: $(LIBC)/xtimesy.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+xminusy.o: $(LIBC)/xminusy.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+xplusy.o: $(LIBC)/xplusy.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+ctoephcg.o: $(LIBC)/ctoephcg.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+circ_mult.o: $(LIBC)/circ_mult.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+htmult.o: $(LIBC)/htmult.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_cholund.o: $(LIBC)/radon_cholund.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoncg_levinson.o: $(LIBC)/radoncg_levinson.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nrutil.o: $(LIBC)/nrutil.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR) 
+modgrad2.o: $(LIBC)/modgrad2.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+choldc.o: $(LIBC)/choldc.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+cholsl.o: $(LIBC)/cholsl.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modnorm2.o: $(LIBC)/modnorm2.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+misfit.o: $(LIBC)/misfit.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonwtcgls_tfd.o: $(LIBC)/radonwtcgls_tfd.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_mpcgnec.o: $(LIBC)/radon_mpcgnec.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+mpcgne_c.o: $(LIBC)/mpcgne_c.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoncg_levinson_alias.o: $(LIBC)/radoncg_levinson_alias.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_mpcgnec_alias.o: $(LIBC)/radon_mpcgnec_alias.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoncg_levinson_beam.o: $(LIBC)/radoncg_levinson_beam.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonwtcgls_beam.o: $(LIBC)/radonwtcgls_beam.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param_beam.o: $(LIBC)/radon_param_beam.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoninv_beam.o: $(LIBC)/radoninv_beam.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radontestfreq_beam.o: $(LIBC)/radontestfreq_beam.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+

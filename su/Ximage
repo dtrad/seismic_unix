@@ -1,0 +1,8 @@
+#!/bin/sh
+xwd -out data1.xwd
+xwud -in data1.xwd
+#xwd -nobdrs -out data1.xwd
+#xwd -frame -out data1.xwd
+convert data1.xwd ../jpg/data1.jpeg
+convert ../ps/fig3seg.ps figtest.jpeg
+

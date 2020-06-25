@@ -1,0 +1,93 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+
+set -x 
+  
+FILE=fig3cseg2000.ps
+
+FILEN=marmousi
+FILE1=$FILEN'.int.su'
+#FILE1=$FILEN'.mig.su'
+FILE2=$FILEN'.stack.su'
+FILE3=$FILEN'.eom0.su'
+FILE4=$FILEN'.vel0.su'
+
+OPTIONPLOT='w'  # a (agc), i (supsimage), w (supswigp)
+OPTIONNUM='4'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+TITLEM="Model"
+LABEL1="time (sec)" 
+LABEL2="CDP(m)"
+LABEL1M="Depth (m)"
+
+case $OPTIONPLOT in
+a*)
+PLOTM="psimage n1=300 n2=200 d1=5 d2=5 label1=$LABEL1M label2=$LABEL2"
+GAIN="sugain agc=1 wagc=0.5"
+PLOTC="supswigp f1=0 f2=0 key=cdp label1=$LABEL1 label2=$LABEL2 perc=99"
+;;
+i*)
+PLOTM="psimage n1=300 n2=200 d1=5 d2=5 label1=$LABEL1M label2=$LABEL2"
+PLOTC="supswigp f1=0 f2=0 key=cdp label1=$LABEL1 label2=$LABEL2 perc=90"
+IMAGE="supsimage f1=0 f2=0  label1=$LABEL1 label2=$LABEL2 perc=80"
+;;
+w*)
+PLOTM="psimage n1=300 n2=200 d1=5 d2=5 label1=$LABEL1M label2=$LABEL2"
+PLOTC="supswigp f1=0 f2=0 key=cdp label1=$LABEL1 label2=$LABEL2 perc=90"
+IMAGE="supsimage f1=0 f2=0  label1=$LABEL1 label2=$LABEL2 perc=90"
+;;
+esac
+
+
+case $OPTIONPLOT in
+a*)
+$PLOTM < $FILE1  title=$TITLE1  > p  
+$GAIN < $FILE2 | $PLOTC  title=$TITLE2  > pp
+$GAIN < $FILE3 | $PLOTC  title=$TITLE3  > ppp 
+$GAIN < $FILE4 | $PLOTC  title=$TITLE4  > pppp
+;;
+i*)
+$IMAGE d2=0.12 < $FILE1  title=$TITLE1  > p  
+#$IMAGE d2=10 < $FILE1  title=$TITLE2  > p
+$IMAGE d2=1 < $FILE2  title=$TITLE2  > pp
+$IMAGE d2=1 < $FILE3  title=$TITLE3  > ppp 
+$IMAGE d2=1 < $FILE4  title=$TITLE4  > pppp
+;;
+w*)
+$IMAGE d2=0.12 < $FILE1  title=$TITLE1  > p  
+#$IMAGE d2=10 < $FILE1  title=$TITLE2  > p
+$PLOTC d2=1 < $FILE2  title=$TITLE2  > pp
+$PLOTC d2=1 < $FILE3  title=$TITLE3  > ppp 
+$PLOTC d2=1 < $FILE4  title=$TITLE4  > pppp
+esac
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+

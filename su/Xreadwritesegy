@@ -1,0 +1,11 @@
+#!/bin/sh
+
+segyread tape=psdn11_TbsdmF_Far_Nov_11_32bit.segy trmax=646784 | segyclean > p
+suresamp nt=1000 < p > pshort
+rm p
+suwind key=cdp min=1129 max=1512 < pshort > pshortb
+rm pshort
+segyhdrs < pshortb | segywrite tape=australiasmall.segy
+mv pshortb ../su/australiasmall.su
+rm header
+rm binary

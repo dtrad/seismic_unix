@@ -1,0 +1,306 @@
+#! /bin/sh
+# Xradon_cdps2_demul --- Multiple attenuation with  Radon Transform.
+# Keyword: chapter_radonfreq0_cdp2
+######################################################################
+# Author: Daniel Trad- November 2001
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+set -x
+
+METHOD='SOL'
+#METHOD='TFD'
+#METHOD='HRF'
+#METHOD='TD'
+
+RADONFORW='y'
+REMOVEMUL='n'
+
+
+sufix=${METHOD}
+echo $METHOD
+
+if [ ${METHOD} = 'SOL' ]; then
+    sufix="${1}"
+fi
+
+FILE=cdps2.mute.su; clip=3.5  #clip corresponding to perc=97
+
+FILEN=$FILE
+FILETEMP=pp
+FILETEMP2=ppp
+FILEOFF=$FILE'off'
+FILERAD=${FILEN}'rad_'${sufix}
+FILEMULT=${FILEN}'mul_'${sufix}
+FILEPRIM=${FILEN}'pri_'${sufix}
+FILERAD2=${FILEN}'radmul_'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILERESAMP=$FILE'resamp'${sufix}
+RESAMPLE='n'
+PAR="stkvel.cdps2.mute.su"
+par=$PAR
+
+# Options
+SETNTR='n'
+GETH='n'
+FILT='n'
+TAPER='n'
+
+# PASS BAND FILTER
+F=1,10,70,80
+AMPS=0,1,1,0
+# RADON
+#***Freq############################ 
+
+VERBOSE=1
+fold=1
+buffer=10; 
+iter_end=4
+sinc=0;
+parmute=3e-9
+parmute=22e-9
+nq=240
+under=0.999
+over=1.001
+qmin=-3e-7
+factor=4
+fmax=80
+cdp=547
+
+if [ $METHOD = 'HRF' ]; then
+    eps1=5e-3
+    eps2=5e-3
+    lsmethod=1
+    PROGRAM=suradonwtcgls
+elif [ $METHOD = 'toep' ]; then
+    eps1=5e-2
+    eps2=5e-2
+    lsmethod=0
+    PROGRAM=suradontoep
+
+elif [ $METHOD = 'SOL' ]; then
+    eps1=1e-2
+    eps2=1e-2
+    factor=1.5
+    norm=0
+    eps=1e-7
+    rtmethod=2
+    itercg=25
+    verbose=0
+    depth=1000
+    PROGRAM=suradonsolver
+    solver="$1"
+elif [ $METHOD = 'TFD' ]; then
+    eps1=1e-2
+    eps2=1e-2
+    factor=1.5
+    norm=0
+    eps=1e-7
+    rtmethod=2
+    itercg=25
+    verbose=0
+    depth=1000
+    PROGRAM=suradonwtcgls_tfd
+    solver="$1"
+elif [ $METHOD = 'TD' ]; then
+    eps1=1e-3
+    eps2=1e-3
+    PROGRAM=suradontd0
+    eps=0.01
+    dperv=0.03;
+    dperv=0.03;
+    pervmin=0.5e-9;
+    centralq=30
+    nq=70
+    perc=100
+    step=0.9
+    itercg=5
+    iter_end=3
+    smoothf=0
+    smoothi=0
+    testadj=0
+    filtout=0
+    restart=1
+    LI=1
+    t0=1.85
+    clip=63 #clip corresponding to perc=100
+    norm=1
+    nw=21
+    fpeak=25
+    nw=0
+    dtres=0.008
+    ntres=875
+
+else 
+    PROGRAM=donothing
+fi
+
+scale=1.1
+CDPMIN=${cdp}
+DXCDP=1
+CDPMAX=${cdp}
+
+if [ $RADONFORW = 'n' ]; then
+    PROGRAM="skipforward"
+fi
+
+############################*****
+perc=100
+
+cp $FILE $FILETEMP
+
+if [ $SETNTR = 'y' ]; then 
+    Xsetntr $FILETEMP
+fi
+
+if [ $FILT = 'y' ]; then
+    sufilter f=$F amps=$AMPS < $FILETEMP > $FILETEMP2;
+    cp  $FILETEMP2 $FILETEMP
+fi
+
+# Save offset  for inverse radon transform
+if [ $GETH = 'y' ]; then
+    sugethw key=offset output=geom < $FILE > $FILEOFF    
+fi
+
+if [ $TAPER = 'y' ]; then
+    sutaper < $FILETEMP > $FILETEMP2; cp $FILETEMP2 $FILETEMP
+fi
+
+if [ $RESAMPLE = 'y' ]; then
+    suresamp < $FILETEMP dt=$dtres nt=$ntres > $FILETEMP2
+    cp $FILETEMP2 $FILETEMP
+    cp $FILETEMP2 $FILERESAMP
+fi
+
+
+case $PROGRAM in
+suradtest*)
+
+    suradtestfreq < $FILETEMP cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$DXCDP verbose=1 nhe=$nhe fold=$fold par=$PAR itercg=40 iter_end=$iter_end eps2=$eps2 eps1=$eps1  testadj=0 smooth=0 nq=$nq qmin=-2e-9 cdpspace=$cdpspace ntrmax=$ntrmax tmpdir='.' norm=0 lsmethod=$lsmethod nmofactor=1 smute=3 step=0.95 factor=1.5 buffer=$buffer  mute=0  parmute=$parmute offsetfile=$FILEOFF under=$under over=$over modelfile=$FILERAD keepdata=0 quantil=1  > $FILEREC
+sugain scale=$scale < $FILEREC > $FILETEMP 
+
+cp $FILETEMP $FILEREC
+
+;;
+suradonsolver*)
+    $PLOTX < $FILETEMP &
+	
+    suradonsolver < $FILETEMP verbose=$verbose par=$par itercg=$itercg iter_end=$iter_end solver=$solver rtmethod=$rtmethod  depth=$depth eps2=$eps2 eps1=$eps1 eps=$eps testadj=0  nq=$nq qmin=$qmin norm=$norm nmofactor=1 smute=3.0  step=0.95 factor=$factor fmax=$fmax modelfile=$FILERAD  quantil=1 > $FILEREC
+
+    $PLOTX clip=$clip < $FILEREC title="Reconstructed data from suradonsolver " &
+
+;;
+suradonwtcgls_tfd*)
+    $PLOTX < $FILETEMP &
+	
+    suradonwtcgls_tfd < $FILETEMP verbose=$verbose par=$par itercg=$itercg iter_end=$iter_end solver=$solver rtmethod=$rtmethod  depth=$depth eps2=$eps2 eps1=$eps1 eps=$eps testadj=0  nq=$nq qmin=$qmin norm=$norm nmofactor=1 smute=3.0  step=0.95 factor=$factor fmax=$fmax modelfile=$FILERAD  quantil=1 > $FILEREC
+
+    $PLOTX clip=$clip < $FILEREC title="Reconstructed data from suradonwtcgls_tfd " &
+
+;;
+
+
+suradontoep*)
+	    
+    suradontoep < $FILETEMP verbose=$verbose par=$par  eps1=$eps1  nq=$nq qmin=$qmin norm=0 \
+    nmofactor=1 smute=3.0 step=0.95 factor=$factor fmax=$fmax modelfile=$FILERAD quantil=1 > $FILEREC
+
+    $PLOTX clip=$clip < $FILEREC title="Reconstructed data from suradontoep " &
+;;
+suradonwtcgls*)
+    
+    suradonwtcgls < $FILETEMP verbose=$verbose par=$par itercg=25 iter_end=$iter_end \
+    eps2=$eps2 eps1=$eps1  testadj=0  nq=$nq qmin=$qmin norm=0 nmofactor=1 smute=3.0 \
+    step=0.95 factor=$factor modelfile=$FILERAD  fmax=$fmax quantil=1 > $FILEREC
+
+;;
+suradontd0*)
+    suradontd0 eps1=$eps1 eps2=$eps2 iter_end=$iter_end nq=$nq itercg=$itercg eps=$eps \
+    step=$step  smooth=0 testadj=$testadj verbose=$verbose par=$PAR pervmin=$pervmin \
+    dperv=$dperv modelfile=$FILERAD centralq=$centralq norm=$norm nw=$nw fpeak=$fpeak \
+    filtout=$filtout restart=$restart LI=$LI t0=$t0 < $FILETEMP > $FILEREC
+;;
+skipforward*)
+echo "Skipping forward model"
+;;
+esac
+
+
+
+$PLOTR perc=$perc < $FILERAD title="Modified Radon transform"  &
+$PLOTX clip=$clip < $FILEREC title="Reconstructed data from suradontoep " &
+
+
+if [ $REMOVEMUL = 'y' ]; then
+    # If picks have been already done use directly sumute, otherwise use Xmuterad
+    #Xmuterad $FILERAD $FILERAD2
+    sumute < $FILERAD key=f2 xfile=xfileb tfile=tfileb nmute=6 below=0  > $FILERAD2
+    case $PROGRAM in
+    suradontd0*)
+    if [ $RESAMPLE = 'y' ]; then
+	suradontdi0 modelfile=$FILERAD2 vgridfile="vgrid" datafile=$FILERESAMP  \
+	offsetfile=$FILEOFF > $FILEMULT
+	suresamp < $FILEMULT dt=0.004 nt=1751 > $FILETEMP
+	cp $FILETEMP $FILEMULT
+    else
+	suradontdi0 modelfile=$FILERAD2 vgridfile="vgrid" datafile=$FILE  \
+	offsetfile=$FILEOFF > $FILEMULT
+    fi
+    
+    ;;
+    *)
+    suradoninv $FILE $FILERAD2 fmax=$fmax par=$par nq=$nq nmofactor=1 smute=3.0 > $FILEMULT    
+    ;;
+    esac
+    sugain scale=$scale < $FILEMULT > $FILETEMP ; cp $FILETEMP $FILEMULT
+    suop2 $FILE $FILEMULT op=diff > $FILEPRIM
+    #suadapdiff $FILE $FILEMULT > $FILEPRIM
+
+    $PLOTX clip=$clip < $FILEPRIM title="Primaries" &    
+    $PLOTX clip=$clip < $FILEMULT title="Multiples" &
+    Velan1 $FILEMULT ${cdp} ${cdp} 1 0.4 "(h) Semblance: Multiples"
+    Velan1 $FILEPRIM ${cdp} ${cdp} 1 0.4 "(g) Semblace: Primaries"
+    Velan1 $FILE ${cdp} ${cdp} 1 0.4 "(f) Semblance: Data"
+fi
+
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,45 @@
+FLAG=-c -O 
+OBJ=  rtpar0.o cholesky2.o p_stack.o h_stack.o fx_go.o fx_symmetry.o fft.o \
+	 matrix_2.o gauss_gauss_0.o cauchy_gauss_0.o sum_slope.o \
+	radon_param.o gauss_gauss_t0.o herm.o interval.o norma.o
+LIB=/home/dtrad/radon/flibrary
+
+# dependence 
+rtpar0: rtpar0.o cholesky2.o p_stack.o h_stack.o fx_go.o fx_symmetry.o fft.o \
+	nmoc.o matrix_2.o gauss_gauss_0.o cauchy_gauss_0.o sum_slope.o \
+	radon_param.o gauss_gauss_t0.o herm.o interval.o norma.o
+	g77 -o rtpar0 $(OBJ)
+rtpar0.o: rtpar0.f 
+	g77 $(FLAG) r,nh,Qp);
+
+//- Gradient steps
+//- NQ loop
+
+         resid=rcdot(nh,g1,g1);
+         k=0; //power=1; 
+
+         while ((k!=nh)&&(sqrt(resid)>(eps*bb))&&(k<itercg)){
+            k++;
+	    ///// Compute Beta
+            if (k==1) xequaly(g2,g1,nh);
+            else{ 
+	      betanum=rcdot(nh,g1,g1);
+	      betaden=residold; 
+              //fprintf(stderr,"betaden=%f\n",betaden);
+              //if (betaden<eps) break;
+              beta=betanum/(betaden+eps);
+              //if (abs(beta)>(1/eps)) beta=0.5*betaAG)  $(LIB)/gauss_gauss_0.for
+cauchy_gauss_0.o:  $(LIB)/cauchy_gauss_0.for
+	g77 $(FLAG)  $(LIB)/cauchy_gauss_0.for
+sum_slope.o:  $(LIB)/sum_slope.for
+	g77 $(FLAG)  $(LIB)/sum_slope.for
+radon_param.o:  $(LIB)/radon_param.for
+	g77 $(FLAG)   $(LIB)/radon_param.for
+gauss_gauss_t0.o:   $(LIB)/gauss_gauss_t0.for
+	g77 $(FLAG)  $(LIB)/gauss_gauss_t0.for
+herm.o:  $(LIB)/herm.for
+	g77 $(FLAG) $(LIB)/herm.for
+interval.o: $(LIB)/interval.for
+	g77 $(FLAG) $(LIB)/interval.for
+norma.o: $(LIB)/norma.for
+	g77 $(FLAG) $(LIB)/norma.for

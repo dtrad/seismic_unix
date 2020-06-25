@@ -1,0 +1,73 @@
+#! /bin/sh
+# shell for Kirchhoff modeling for linear v(x,z)
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+NAME=moddata
+FILEIN=$NAME'.su'
+FILEOUT=$NAME'.filt.su'
+
+rm pppp
+
+sxmin=200
+sxmax=900
+dxsx=20
+sx=$sxmin
+      
+while [ $sx -le $sxmax ]
+do
+title=$sx' CSP'
+suwind key=sx min=$sx max=$sx  < $FILEIN > pp
+
+sx=`bc -l <<END
+		$sx + $dxsx
+END`
+
+    ok=false
+    while [ $ok = false ]
+	    do
+	    cp pp temp
+            below=0
+
+	    $PLOTX < temp title=$title  mpicks=/home/dtrad/work/ppp 
+	    NMUTE=`readmute << END`
+
+	    sumute < temp key=offset xfile=xfileb tfile=tfileb nmute=$NMUTE below=$BELOW  > pp
+	    $PLOTX < pp title=$title &
+	   
+	    echo  "MUTE FINISHED? (y/n) "  | tr -d "\012" >/dev/tty
+	    read response
+	    case $response in
+	    n*) ok=false ;;
+	    *) ok=true ;;
+	    esac
+
+
+	done </dev/tty
+	cat pp pppp > p; cp p pppp;
+
+done
+
+ntr=`surange < pppp | sed 1q | sed 's/traces://'`
+sushw key=ntr a=$ntr < pppp > $FILEOUT 
+
+rm pppp
+rm pp
+rm p 
+
+
+
+
+
+
+
+
+
+
+

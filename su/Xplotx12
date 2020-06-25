@@ -1,0 +1,42 @@
+#! /bin/sh
+# PLOTS 
+# Plot for semblance analysis.
+# The ps files must be produced first with Velan5  (OPTIONPS='y')
+# Daniel Trad- UBC Nov 1999
+  
+FILE=fig4mig.ps
+
+FILE0=data5.csp.su
+FILEN=data5.csp.su
+
+
+OPTIONNUM='4'
+PLOTPS="supswigp key=offset label1=$LABELT label2=$LABELO perc=100"
+
+suwind key=cdp min=500  max=500  < $FILE0 | $PLOTPS title="CSP 500"  > p 
+suwind key=cdp min=1000 max=1000 < $FILE0 | $PLOTPS title="CSP 1000" > pp 
+suwind key=cdp min=1500 max=1500 < $FILE0 | $PLOTPS title="CSP 1500" > ppp 
+suwind key=cdp min=2000 max=2000 < $FILE0 | $PLOTPS title="CSP 2000" > pppp 
+
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp  scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+

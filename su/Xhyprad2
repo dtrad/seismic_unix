@@ -1,0 +1,89 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+  
+FILE=fig2hyprad_after.ps
+
+# PLot model
+
+FILEN=cdps2.res
+
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.surad'
+FILE3=$FILEN'.surec'
+FILE4=$FILEN'.surec2'
+
+OPTIONAGC='n'
+OPTIONNUM='4'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+
+LABEL1="time(sec)" 
+LABEL2="offset(m)"
+LABELR="q(s^2/m^2)"
+
+
+case $OPTIONAGC in
+y*)
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABEL1 label2=$LABELR"
+PLOTI="supswigp f1=0 f2=0 key=offset label1=$LABEL1 label2=$LABELR"
+PLOTX="supswigp f1=0 f2=0 key=offset label1=$LABEL1 label2=$LABEL2 perc=99"
+GAIN="sugain agc=1 wagc=2"
+;;
+n*)
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABEL1 label2=$LABELR perc=100"
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 perc=97"
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 perc=97"
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR perc=97"
+;;
+esac
+
+
+case $OPTIONAGC in
+y*)
+#$PLOTM < $FILE1  title=$TITLE1  > p  
+$GAIN < $FILE1 | $PLOTX  title=$TITLE1  > p
+$GAIN < $FILE2 | $PLOTR perc=99.5  title=$TITLE2  > pp
+#$PLOTR < $FILE2  title=$TITLE2  > pp
+$GAIN < $FILE3 | $PLOTX  title=$TITLE3  > ppp 
+$GAIN < $FILE4 | $PLOTR perc=99.5 title=$TITLE4  > pppp
+#$PLOTR < $FILE4  title=$TITLE4  > pppp
+
+;;
+n*)
+$PLOTX < $FILE1  title=$TITLE1  > p  
+$PLOTI < $FILE2  title=$TITLE2  > pp
+$PLOTX < $FILE3  title=$TITLE3  > ppp 
+$PLOTX < $FILE4  title=$TITLE4  > pppp
+;;
+esac
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.42,0.42 translate=0,3 translate=3,3 translate=6,3  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+

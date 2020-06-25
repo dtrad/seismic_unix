@@ -1,0 +1,67 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+set -x 
+
+METHOD='_Raddemul'
+  
+FILE='riv04b'${METHOD}'.ps'
+
+# PLot model
+
+FILEN=riv04b
+perc=99
+
+
+LEGEND=''
+
+FILE1=$FILEN'.sutemp'
+FILE2=$FILEN'.surad'
+FILE3=$FILEN'.surecmul'
+FILE4=$FILEN'.surecprim'
+
+
+
+TITLE1="(a) data"
+TITLE2="(b) RT "
+TITLE3="(d) Multiples"
+TITLE4="(e) Primaries"
+
+LABEL1="time" 
+LABEL2="location"
+LABELR2="q(ms/m)"
+LABELR1="tau"
+
+
+PLOTR="supsimage f2=0 d2=7.7000e-05  key=f2 label1=$LABELR1 label2=$LABELR2 perc=100"
+PLOTX="supsimage f2=0 d2=1 label1=$LABEL1 label2=$LABEL2 clip=$clip1 "
+SUGAIN="sugain agc=0 wagc=0.03"
+
+$SUGAIN < $FILE1 | $PLOTX title=$TITLE1  > p  
+$PLOTR < $FILE2  title=$TITLE2  > pp
+#sufft < $FILE3 | suamp | $PLOTRF title=$TITLE3 > ppp
+$SUGAIN < $FILE3 | $PLOTX title=$TITLE3  > ppp 
+$SUGAIN < $FILE4 | $PLOTX title=$TITLE4  > pppp
+
+#psmerge in=p in=pp in=ppp in=pppp in=ppppp  scale=0.37,0.37 translate=2.5,7 translate=1,3.5 translate=4,3.5 translate=0,0 translate=5,0  > ~/ps/$FILE
+
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5  translate=0,5 translate=4,5 translate=0,0 translate=4,0  > ~/ps/$FILE
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,88 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+  
+FILE=fig2seg2000.ps
+
+FILEN=moddata2n
+FILE1=moddata2.int.su
+#FILE1=$FILEN'.mig.su'
+FILE1=$FILEN'.eom0.su'
+FILE2=$FILEN'.lsm0.su'
+FILE4=$FILEN'.vel.su'
+
+OPTIONAGC='x'
+OPTIONNUM='2'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+TITLEM="Model"
+LABEL1="time (sec)" 
+LABEL2="CDP(m)"
+LABEL1M="Depth (m)"
+
+case $OPTIONAGC in
+y*)
+PLOTM="psimage n1=300 n2=200 d1=5 d2=5 label1=$LABEL1M label2=$LABEL2"
+GAIN="sugain agc=1 wagc=0.5"
+PLOTC="supswigp f1=0 f2=0 key=cdp label1=$LABEL1 label2=$LABEL2 perc=99"
+;;
+n*)
+PLOTM="psimage n1=300 n2=200 d1=5 d2=5 label1=$LABEL1M label2=$LABEL2"
+PLOTC="supswigp f1=0 f2=0 key=cdp label1=$LABEL1 label2=$LABEL2 perc=90"
+IMAGE="supsimage f1=0 f2=0  label1=$LABEL1 label2=$LABEL2 perc=99"
+;;
+x*)
+PLOTC="supswigp f1=0 f2=0 key=cdp label1=$LABEL1 label2=$LABEL2 perc=99"
+esac
+
+
+case $OPTIONAGC in
+y*)
+$PLOTM < $FILE1  title=$TITLE1  > p  
+$GAIN < $FILE2 | $PLOTC  title=$TITLE2  > pp
+$GAIN < $FILE3 | $PLOTC  title=$TITLE3  > ppp 
+$GAIN < $FILE4 | $PLOTC  title=$TITLE4  > pppp
+;;
+n*)
+$IMAGE d2=5 < $FILE1  title=$TITLE1  > p  
+#$IMAGE d2=10 < $FILE1  title=$TITLE2  > p
+$IMAGE d2=5 < $FILE2  title=$TITLE2  > pp
+$IMAGE d2=5 < $FILE3  title=$TITLE3  > ppp 
+$IMAGE d2=5 < $FILE4  title=$TITLE4  > pppp
+;;
+x*)
+$PLOTC d2=5 < $FILE1  title=$TITLE1  > p  
+$PLOTC d2=5 < $FILE2  title=$TITLE2  > pp
+#$PLOTC d2=5 < $FILE3  title=$TITLE3  > ppp 
+#$PLOTC d2=5 < $FILE4  title=$TITLE4  > pppp
+;;
+esac
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp rotate=90 scale=0.7,0.7 translate=8,0 translate=8,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+

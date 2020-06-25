@@ -1,0 +1,27 @@
+#!/bin/sh
+set -x
+name="data3_asym"
+
+nh=63
+dh=50
+#susynth2 nh=$nh dh=$dh tau=0.5,1.2 vel=4000,3200 fpeak=20 coef=1,0 > datapp1.su
+susynth2 nh=$nh dh=$dh tau=0.6,0.8,1,1.2,1.3 vel=3500,3800,3900,4000,4100 fpeak=20 coef=1,0.4,-0.7,1,0.4 > datapp1.su
+#susynth2 nh=$nh dh=$dh tau=0.9,1,1.5 hnear=1000 vel=3000,3100,3500 fpeak=20 coef=0,-0,0 > datapp2.su
+susynth2 nh=$nh dh=$dh tau=1,1.4,1.5 hnear=500 vel=3900,4200,4300 fpeak=20 coef=1,-1,1 > datapp2.su
+
+suop2 datapp1.su datapp2.su  op=sum > ${name}.su
+#cp  datapp1.su ${name}.su
+rm datapp1.su datapp2.su
+
+#suwind < ${name}.su key=offset reject=-1000,-1050 >  ${name}gap.su
+#suwind < ${name}gap.su key=offset min=100 abs=1 >  ${name}gap2.su
+
+suwind < ${name}.su key=offset reject=-1000,-1050  >  ${name}gap.su
+suwind < ${name}gap.su key=offset min=100 abs=1 >  ${name}gap2.su
+
+
+Xsetntr  ${name}gap3.su
+
+suxwigb key=offset < ${name}gap3.su &
+
+

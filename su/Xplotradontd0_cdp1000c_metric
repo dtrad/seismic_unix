@@ -1,0 +1,131 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+
+set -x 
+
+EXAMPLE='toep'
+EXAMPLE='HRF'
+EXAMPLE='LI1' 
+
+  
+FILE="fig2hyprad_${EXAMPLE}_metric.ps"
+
+param=1
+
+if [ $param -eq 1 ]; then
+    FILEN=cdp1000g
+    clipx=100
+    clip2=95
+elif [ $param -eq 2 ]; then
+    FILEN=cdp1000
+    clipx=18
+    clip2=16
+fi
+
+clip3=`echo "scale=1; 3.5 * $clip2" | bc `
+echo $clip3
+
+# PLot model
+
+
+
+x1beg=1.85
+x1end=7
+x2beg=-5000
+x2end=0
+
+
+FILE1="${FILEN}.sugap"
+FILE2="${FILEN}.surad_${EXAMPLE}"
+FILE3="${FILEN}.sumix_${EXAMPLE}"
+#FILE4="${FILEN}.su_gaps_${EXAMPLE}"
+FILE4="${FILEN}.sures_${EXAMPLE}"
+
+FILE1=$FILE1'_metric'  
+FILE2=$FILE2'_metric'  
+FILE3=$FILE3'_metric'  
+FILE4=$FILE4'_metric'
+
+OPTIONPLOT='ps'
+OPTIONNUM='4'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+
+LABEL1="time(s)" 
+LABEL2="offset(m)"
+LABELR="q(s2/m2)"
+LABELG="trace #"
+
+
+case $OPTIONPLOT in
+ps*)
+PLOTR="supswigp  x1beg=$x1beg f1=0 f2=0 key=f2 label1=$LABEL1 label2=$LABELR perc=99.7"
+PLOTX="supswigp  x1beg=$x1beg x2beg=$x2beg x2end=$x2end key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx"
+PLOTX2="supswigp x1beg=$x1beg x2beg=$x2beg x2end=$x2end key=offset label1=$LABEL1 label2=$LABEL2 clip=$clip2"
+PLOTG="supswigp  x1beg=$x1beg label1=$LABEL1 label2=$LABELG clip=$clip3"
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clip"
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR clip=$clip"
+
+;;
+esac
+
+
+case $OPTIONPLOT in
+ps*)
+$PLOTX < $FILE1  title=$TITLE1  > p  
+$PLOTR < $FILE2  title=$TITLE2  > pp
+$PLOTX2 < $FILE3  title=$TITLE3  > ppp 
+$PLOTX2 < $FILE4  title=$TITLE4  > pppp 
+
+#$PLOTG < $FILE4  title=$TITLE4  > pppp
+;;
+esac
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.42,0.42 translate=0,3 translate=3,3 translate=6,3  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

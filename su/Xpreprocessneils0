@@ -1,0 +1,25 @@
+#! /bin/sh 
+
+set -x
+
+# applied inmo v=2500
+file=cdpsneilsnonmo.su
+
+cdp=neil
+
+suwind  < $file key=tracl min=1784 max=1901  | suwind key=offset max=10200 tmin=0.5 tmax=1.800  | susetntr > pp1
+
+#suwind  < $file key=tracl min=3091 max=3209  | suwind key=offset max=4200 tmin=0.6 tmax=1.800  | susetntr > pp1
+
+susort +offset < pp1 > pp2
+
+suchw key1=offset key2=offset b=-1  < pp2 > pp3
+
+cat pp3 pp2 > pp4
+
+sushw key=delrt a=0 < pp4 > pp5
+
+susort +offset < pp5 | sugain scale=0.00003 | susetntr > "cdp${cdp}.su"
+
+
+suximage < "cdp${cdp}.su" perc=98 &

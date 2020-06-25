@@ -1,0 +1,61 @@
+#! /bin/sh
+# shell for muting
+# Daniel Trad - UBC - CDSST 
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650 perc=95 "
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+key=offset
+
+NAME=$1
+FILEIN=$NAME'.su'
+FILEOUT=$NAME'.mute.su'
+
+
+#FILEIN=$NAME''
+      
+cp $FILEIN pp
+ok=false
+while [ $ok = false ]
+	    do
+	    cp pp temp
+           
+            echo  "Would you prefer above or below muting? (a/b)" | tr -d "\012" >/dev/tty
+	    read response1
+	    case $response1 in
+		a*) BELOW=0 ;;
+		b*) BELOW=1 ;;
+	    esac
+
+	    $PLOTT key=$key < temp title=$title  mpicks=./filempicks 
+	    NMUTE=`readmute << END`
+
+	    sumute < temp key=$key xfile=xfileb tfile=tfileb nmute=$NMUTE below=$BELOW  > pp
+	    $PLOTT key=$key < pp title=$title &
+	   
+	    echo  "MUTE FINISHED? (y/n) "  | tr -d "\012" >/dev/tty
+	    read response
+	    case $response in
+	    n*) ok=false ;;
+	    *) ok=true ;;
+	    esac
+
+done </dev/tty
+
+ntr=`surange < pp | sed 1q | sed 's/traces://'`
+sushw key=ntr a=$ntr < pp > $FILEOUT 
+
+
+rm pp
+
+
+
+
+
+
+

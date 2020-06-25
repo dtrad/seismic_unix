@@ -1,0 +1,20 @@
+last name,first name,student#,lab01,lab02(/31),assign#1(/27)
+Anand,Preeti,,check,27.5,15
+Ashman,Timothy,,check,30,26.5
+Bubela,Rozlyn,,check,26,26
+Carswell,Kelly,,check,
+Chin,Alana,,check,25
+Eso,Robert,,check,22
+Gibbons,Chris,,check,16
+Hansen,Adrian,50374008,check,
+Hume,Kim,,check,29,22
+King,Matt,,check,31
+Lord,Jean-Francois,,check,31.5,26.5
+Marques,Victor,54433008,check,24,24
+Medcalf,Scott,,check,28,22.5
+Monro,Kim,,check,27.5,24.5
+Napier,Scott,,check,28.5,22.5
+Nouch,Susie,,check,30,23.5
+Skinner,Pamela,,,10.5
+Tam,Colin,78799996,check
+Zeng,Fafu,,check,

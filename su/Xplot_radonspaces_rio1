@@ -1,0 +1,49 @@
+#!/bin/sh
+# Script to plot the Radon transform calculated by different methods
+# For paper radonsparse
+# Daniel Trad - July 17 2001
+
+FILE=figRTcomp_rio1.ps
+perc=99.9
+
+METHOD1=SOLtoep
+METHOD2=SOLcgfft
+METHOD3=TFD
+METHOD4=DEALIAScgfft
+#METHOD5=DEALIAScgfft
+
+cdp=1000  
+FILEN="rio1"
+
+
+FILE1="${FILEN}.su"
+FILE2="${FILEN}.surad${METHOD2}"
+FILE3="${FILEN}.surad${METHOD3}"
+FILE4="${FILEN}.surad${METHOD4}"
+
+# PLot model
+x1beg=0
+x1end=2
+
+LABEL1X="time(s)" 
+LABEL2X="offset(m)"
+LABEL1="tau(s)" 
+LABEL2="q(s/m2)"
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+
+PLOTX="supswigp  key=offset label1=$LABEL1X label2=$LABEL2X perc=100 "
+PLOTR="supswigp  x1beg=$x1beg f1=0 f2=0 key=f2 label1=$LABEL1 label2=$LABEL2  "
+
+$PLOTX < $FILE1  title=$TITLE1  > p 
+$PLOTR perc=99.9 < $FILE2  title=$TITLE2  > pp
+$PLOTR perc=100 < $FILE3  title=$TITLE3  > ppp
+$PLOTR perc=100 < $FILE4  title=$TITLE4  > pppp
+
+supsmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+
+gv ~/ps/$FILE &
+

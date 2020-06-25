@@ -1,0 +1,143 @@
+#! /bin/sh
+# Velocity analyses for the cmp gathers
+# Authors: Dave Hale, Jack K. Cohen, with modifications by John Stockwell
+# NOTE: Comment lines preceeding user input start with  ##
+set -x
+
+## Set parameters
+velpanel=$1
+vpicks=stkvel.$velpanel
+#vpicks=junk
+title="$6"; # put title here 
+normpow=0
+slowness=0
+cdpmin="$2";
+cdpmax="$3"
+dcdp="$4" 
+fc="$5"    # This number should be around .1 or .2 for real data 
+conv=
+xbox="$6"
+
+if [ $conv = "conv" ];then
+    . $HOME/shell/lib/libshellsu.sh    
+    feet2meter_offset $velpanel
+fi
+
+units=m
+
+if [ -z $cdpmin ] || [ -z $cdpmax ] || [ -z $dcdp ] || [ -z $fc ] ;
+then  exit 1
+fi 
+
+#cdpmin=500
+#cdpmax=3000
+#dcdp=500
+fold=500  # only have 12 shots, otherwise would be 64/2=32 for dsx=dgx
+OPTIONPS='y'  # Plotx ps contour files
+OPTIONGAIN='n'
+OPTIONNOISE=1    # When working with synthetic clean data add a little noise
+OPTIONFILT=0
+SN=1000
+
+## Set velocity sampling and band pass filters
+nv=50
+# For feet
+dv=100.0
+fv=4000.0
+dxout=0.004
+#For meters
+dv=50
+fv=1000
+## set filter values
+f=1,10,100,120
+amps=0,1,1,0
+
+## number of contours in contour plot
+nc=20
+
+
+### Get header info
+nout=`sugethw key=ns <$velpanel | sed 1q | sed 's/.*ns=//'`
+dt=`sugethw key=dt <$velpanel | sed 1q | sed 's/.*dt=//'`
+dxout=`bc -l <<END
+	$dt / 1000000
+END`
+
+#echo $nout
+#echo $dt
+#echo $dxout
+
+cdp=$cdpmin
+
+#echo $cdp
+#echo $dxout
+echo $fv
+
+while [ $cdp -le $cdpmax ]
+do
+		echo "Starting velocity analysis for cdp $cdp"
+		case $OPTIONGAIN in
+		y*)
+		suwind < $velpanel key=cdp min=$cdp max=$cdp count=$fold |
+		sugain tpow=2.0 > panel.$cdp
+                ;;
+                n*)
+		suwind < $velpanel key=cdp min=$cdp max=$cdp  count=$fold  > panel.$cdp
+		;;
+                esac
+
+		if [ $OPTIONNOISE -eq 1 ]
+		then 
+		suaddnoise sn=$SN < panel.$cdp > pp; cp pp panel.$cdp
+		fi
+		suxwigb < panel.$cdp key=offset title="CDP gather for cdp=$cdp" \
+		xbox=700 wbox=550 hbox=650 perc=98 &
+
+		if [ $OPTIONFILT -eq 1 ]; then 
+		    sufilter f=$f amps=$amps < panel.$cdp | suvelan nv=$nv dv=$dv fv=$fv > pp
+		else
+		    suvelan nv=$nv dv=$dv fv=$fv < panel.$cdp > pp
+		fi
+
+                case $OPTIONPS in
+                y*)
+                supscontour < pp nc=$nc bclip=0.2 wclip=0.0 f2=$fv d2=$dv \
+			units="semblance" fc=$fc \
+			label1="Time(sec)" label2="Velocity (${units}/sec)" \
+			title="line  T0770693, cdp=${cdp} " \
+                        > $velpanel.$cdp.'ps' &
+                ;;
+                esac
+		suxcontour < pp nc=$nc bclip=0.2 wclip=0.0 f2=$fv d2=$dv \
+			units="semblance" fc=$fc \
+			label1="Time(sec)" title="${velpanel},cdp=${cdp}" label2="Velocity (${units}/sec)" xbox=$xbox \
+		        mpicks=mpicks.$cdp &
+
+	#rm panel.$cdp
+	cdp=`bc -l <<END
+		$cdp + $dcdp
+END`
+
+
+done
+zap wigb
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

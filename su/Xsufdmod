@@ -1,0 +1,126 @@
+#! /bin/sh
+# Sufdmod2 --- example script for sufdmod2
+# finite-difference modeling: Test of the  PML transparent boundary conditions
+# Author: John Stockwell
+WIDTH=450
+HEIGHT=450
+WIDTHOFF1=50
+WIDTHOFF2=530
+HEIGHTOFF1=50
+HEIGHTOFF2=530
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+
+hsfile=moddata.su
+velfile=vel2.out
+model=testfile3
+
+
+optionfd='y'
+resample='y'
+gain='y'
+
+
+n1=300 d1=5 f1=0.0 label1="Depth (km)"
+n2=200 d2=5 f2=0.0 label2="Distance (km)"
+zs=200 hsz=200 vsx=250 verbose=0
+vsfile="vseis.pml.out" ssfile="sseis.pml.out" 
+tmax=1 mt=1 pml=0 pml_thick=10
+
+
+#makevel nx=$n2 nz=$n1 v000=3000  verbose=1  >vel.out
+
+unif2 < $model  ninf=5 nx=$n2 nz=$n1 dx=$d2 \
+v00=2000,2000,2500,3000,3500  dz=$d1 > $velfile
+
+psimage < $velfile n2=$n2 n1=$n1 d2=$d2 \
+v00=2000,2000,2500,3000,3500  d1=$d1 | gv - &
+
+xsmin=200
+dxs=20
+xsmax=900
+
+xs=$xsmin
+
+rm ppp
+
+
+case $optionfd in
+y*) 
+while [ $xs -le $xsmax ]
+do
+
+#hsfile=$hsfile0.$xs
+
+echo $hsfile
+echo $xs
+
+    sufdmod2m < $velfile nz=$n1 dz=$d1 nx=$n2 dx=$d2  \
+	xs=$xs zs=$zs hsz=$hsz vsx=$vsx hsfile=$hsfile \
+	vsfile=$vsfile ssfile=$ssfile verbose=$verbose fmax=60 \
+	tmax=$tmax abs=1,1,1,1 mt=$mt pml=$pml pml_thick=$pml_thick > cube.out
+
+    rm cube.out
+    
+    cat $hsfile >> ppp
+
+xs=`bc -l <<END
+		$xs + $dxs
+END`
+
+done
+cp ppp $hsfile
+rm ppp
+;;
+esac
+
+ntr=`surange < $hsfile | sed 1q | sed 's/traces://'`
+sushw key=ntr a=$ntr < $hsfile |
+suchw  key1=gx  key2=sx key3=offset b=1 c=1 d=1 | 
+suchw  key1=cdp key2=gx key3=sx b=1 c=1 d=2 |
+sushw key=d2 a=0 | susort cdp offset > pp 
+
+#suaddnoise sn=50 f1=4.0 f2=8.0 f3=30.0 f4=25.0 | susort cdp offset > pp
+
+case $resample in
+n*)
+cp pp $hsfile
+;;
+y*)
+suresamp dt=0.004 nt=256 < pp > $hsfile
+;;
+esac
+
+case $gain in
+y*)
+sugain tpow=2.0 < $hsfile > pp; cp pp $hsfile
+;;
+esac
+
+
+#sugain tpow=2 < pp > $hsfile  
+
+
+#suxmovie  clip=1.0 \
+#	title="Acoustic Finite-Differencing" \
+#	windowtitle="Movie" \
+#	label1="$label1" label2="$label2" \
+#	n1=$n1 d1=$d1 f1=$f1 n2=$n2 d2=$d2 f2=$f2 \
+#	cmap=gray loop=0 interp=0 \
+#	-geometry ${WIDTH}x${HEIGHT}+${WIDTHOFF1}+${HEIGHTOFF1} &
+
+
+
+exit 0
+
+
+
+
+
+
+
+

@@ -1,0 +1,69 @@
+#!/bin/sh
+# Figures for FKRT  paper (interpolation with migration operators)
+# Figures interpolation with FK (small window)
+
+# Figure 1: powerpoint 
+# Figure 2: model, shot gather, cdp gather
+
+set -x
+
+TITLE1="title=(a)" 
+TITLE2="title=(b)" 
+TITLE3="title=(c)" 
+TITLE4="title=(d)" 
+TITLE5="title=(e)" 
+TITLE6="title=(f)"
+TITLE7="title=(g)"
+TITLE8="title=(h)"
+TITLE9="title=(i)"
+
+
+
+#shot
+filen=datasumc
+sufix='cg7-1-0'
+
+FILE1=${filen}".su"
+FILE2=${filen}".surec"${sufix}
+FILE3=${filen}".surad"${sufix}
+FILE4=${filen}".sures"${sufix}
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)" 
+ROTATE="rotate=90"
+#################################################################
+FILE=/home/dtrad/ps/fig1${sufix}.ps
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 x1beg=0.25 x1end=1.5 x2beg=-1000 x2end=0 perc=99 "
+PLOTFK="supsimage f2=-5000 d2=20 label1=time(s) label2=offset(m) perc=99"
+
+$PLOTFK < $FILE1 > p1 $TITLE1 
+$PLOTFK < $FILE2 > p2 $TITLE2 
+$PLOTFK < $FILE3 > p3 $TITLE3 curve=curve2 npair=5
+$PLOTFK < $FILE4 > p4 $TITLE4 
+
+#suspecfk dx=50 < $FILE1 | $PLOTFK > p2  $TITLE2
+#suspecfk dx=50 < $FILE2 | $PLOTFK > p4  $TITLE4
+#suspecfk dx=50 < $FILE3 | $PLOTFK > p6  $TITLE6
+#suspecfk dx=50 < $FILE4 | $PLOTFK > p6  $TITLE6
+
+supsmerge in=p1 in=p2 in=p3 in=p4 scale=0.38,0.32 translate=0,0 translate=0,3 translate=3,0 translate=3,3 $ROTATE > $FILE
+
+#cp p1 fig4b_a.ps
+#cp p2 fig4b_b.ps
+#cp p3 fig4b_c.ps
+#cp p4 fig4b_d.ps
+#cp p5 fig4b_e.ps
+#cp p6 fig4b_f.ps
+#cp p7 fig4b_g.ps
+#cp p8 fig4b_h.ps
+#cp p9 fig4b_i.ps
+
+
+kghostview $FILE --scale=2
+
+
+
+
+
+
+

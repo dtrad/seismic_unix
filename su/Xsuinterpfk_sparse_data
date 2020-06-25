@@ -1,0 +1,96 @@
+#! /bin/sh
+plotx="suxwigb key=offset perc=100"
+plotpar="x1beg=0 x1end= x2beg=-1500 x2end=1500"
+#plotpar="x1beg=0.5 x1end=1.5 x2beg=-20 x2end=660"
+plotpar2="x1beg=0.5 x1end=1.7 x2beg=-1500 x2end=-1500"
+set -x
+NAME="data_asym"
+
+
+CASE=$1
+taper="y"
+
+if [ $CASE = "tx" ]; then
+    PROGRAM="suinterptx"
+elif [ $CASE = "fk" ]; then
+    PROGRAM="suinterpfk"
+elif [ $CASE = "fk2" ]; then
+    PROGRAM="suinterpfk"
+
+else
+    PROGRAM="skip"
+fi
+    
+
+GAP="_sparse"
+
+FILE=$NAME".su"
+FILEGAP=${NAME}${GAP}".su"
+FILEOUT=${NAME}${GAP}".surec"$CASE
+FILEMIX=${NAME}${GAP}".sumix"$CASE
+FILERES=${NAME}${GAP}".sures"$CASE
+MODELFILE=${NAME}${GAP}".mig.su"$CASE
+
+OFFSETFILE="data_asym.suoff"
+
+sugethw key=offset output=geom < $FILE > $OFFSETFILE
+
+#suinterpfk2 < $FILEGAP  vel=4000 offsetfile=$OFFSETFILE plot=0 itercg=5 iter_end=2 step=1 testadj=1 eps1=0.9 eps2=0.9 modelfile=$MODELFILE > $FILEOUT
+
+if [ $taper = "y" ] ; then
+    sutaper ntaper=0 < $FILEGAP > $FILEGAP'T'
+else
+    cp  $FILEGAP  $FILEGAP'T'
+fi
+
+case $PROGRAM in
+suinterpfk*)
+vmig=3200,4900    
+suinterpfk3 < $FILEGAP'T'  vmig=3200,4900 tmig=0,2 offsetfile=$OFFSETFILE plot=0 itercg=10 iter_end=5 step=0.98 testadj=0 eps1=8e-1 eps2=8e-1 modelfile=$MODELFILE ascale=0.6 fpeak=20 nw=0 typewav=4 > $FILEOUT
+
+;;
+suinterptx*)
+    suinterptx eps1=1e-1 eps2=1e-1 itercg=20  iter_end=5 eps=1e-3 \
+    step=0.99  verbose=1 par=stkvel.data_asym.su   \
+    modelfile=$MODELFILE offsetfile=$OFFSETFILE norm=0 nw=0  \
+    LI=0 t0=0 < $FILEGAP'T' > $FILEOUT
+
+;;
+*)
+echo " skipforward .............."
+;;
+esac
+
+sufilter f=45,55 amps=1,0 < $FILEOUT > $FILEOUT'f'
+$plotx < $FILEOUT'f' title=$FILEOUT'f' $plotpar &
+#$plotx < $FILE title=$FILE $plotpar &
+#$plotx < $FILEGAP title=$FILEGAP $plotpar &
+#$plotx < $FILEOUT title=$FILEOUT $plotpar &
+
+$plotx < $MODELFILE title=$MODELFILE $plotpar  &
+sumixgathers  $FILEGAP $FILEOUT'f' | susort +offset > $FILEMIX
+$plotx < $FILEMIX title=$FILEMIX $plotpar xbox=650 &
+
+exit 0
+
+suop2 $FILE $FILEMIX > $FILERES 
+
+##### interpolate wirh zero traces #############
+sugain scale=0 <  $FILEOUT > $FILEOUT'z'
+sumixgathers  $FILEGAP $FILEOUT'z' | susort +offset > $FILEMIX'z'
+
+
+
+
+$plotx < $FILERES title=$FILERES $plotpar clip=2.18 &
+$plotx < $FILERES title=$FILERES $plotpar2 clip=2.18 &
+
+Xstack $FILE
+Xstack $FILEGAP
+Xstack $FILEOUT'f'
+
+
+
+
+
+

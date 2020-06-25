@@ -1,0 +1,44 @@
+#!/bin/sh
+# Interpolation tests using suinterp
+# Apply nmo + suinterp + inverse nmo 
+# Example in the command line
+# sunmo <  kencmp0.su vnmo=1700 |  suinterpm dx=25 | sunmo invert=1 vnmo=1700 > pp1; suspecfk < pp1 dx=25 | suximage perc=98 &
+# 
+# Daniel Trad - UBC - October 2002
+
+
+set -x
+
+filen=kencmp0ds
+
+file=$filen".su"
+filetemp=pp1;
+filetemp2=pp2;
+filetemp3=pp3;
+
+vnmo=1700
+dx=50
+
+# Apply nmo to eliminate alias 
+sunmo < $file vnmo=$vnmo > $filetemp
+
+# Check aliasing 
+suspecfk < $filetemp dx=$dx | suximage perc=98 &
+
+# Once the vnmo parameter is correct comment out the next line
+# exit 0
+
+# If  preliminar downsampling
+# suwind key=cdpt j=2 < $filetmp | susetntr > $filetemp3
+# mv $filetemp3 $filetemp
+
+suinterpm dx=50 < $filetemp | susetntr > $filetemp2
+
+suspecfk < $filetemp2 | suximage title=$1 perc=98 cmap=hsv1 &
+
+sunmo invert=1 vnmo=$vnmo < $filetemp2 > $filen"int.su"
+
+suximage <  $filen"int.su" perc=98 &
+
+exit 0
+

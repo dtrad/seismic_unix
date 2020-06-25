@@ -1,0 +1,109 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+EXAMPLE="enmo_gap"
+  
+FILE="${HOME}/ps/paper/fig_cdp1000_${EXAMPLE}.ps"
+
+# PLot model
+
+FILEN=cdp1000g
+clipr=2
+clipr2=2
+clipx=63
+clipx2=63
+perc=99
+
+
+FILE1=$FILEN'.su'
+FILE1b=$FILEN'.sugap'
+FILE1c=$FILEN'.sugapflip'
+FILE2=$FILEN'.surad_'${EXAMPLE} # Sland stack form incomplete data set
+FILE3=$FILEN'.surad_enmo' # Sland stack form complete data set
+FILE4=$FILEN'.sumod_'${EXAMPLE}'3'
+FILE5=$FILEN'.suradb_'${EXAMPLE}'3' # Sland stack form incomplete data set + enmo
+#FILE6=$FILEN'.suradb_res_enmo_gap_nogap'
+
+OPTIONNUM='9'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+TITLE5="(e)"
+TITLE6="(f)"
+TITLE7="(g)"
+TITLE8="(h)"
+TITLE9="(i)"
+
+
+PSPLOT1=p1
+PSPLOT2=p2
+PSPLOT3=p3
+PSPLOT4=p4
+PSPLOT5=p5
+PSPLOT6=p6
+PSPLOT7=p7
+PSPLOT8=p8
+PSPLOT9=p9
+
+LABEL1="time(sec)" 
+LABELT="tau(sec)" 
+LABEL2="offset(feet)"
+LABELR="p(s/feet)"
+LABELM="Vel(feet/s)"
+LABELK="Kx"
+LABELF="freq(Hz)"
+
+
+PLOTR="supswigp x2beg=-1e-4 x2end=1e-4 x1beg=1 x1end=4 f1=0 f2=0 key=f2 label1=$LABELT label2=$LABELR  "
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx "
+PLOTX2="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx2 "
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx x2beg=-16000 x2end=0"
+PLOTD2="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx3 x2beg=-16000 x2end=0"
+PLOTD3="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=$clipx2 x2beg=-16000 x2end=16000"
+PLOTM="supswigp f1=0 f2=0 key=f2 label1=$LABEL1 label2=$LABELM perc=99.5"
+PLOTIMAGE="supsimage label1=$LABELF label2=$LABELK perc=99"
+
+$PLOTD < $FILE1  title=$TITLE1  > $PSPLOT1
+$PLOTD2 < $FILE1b title=$TITLE2  > $PSPLOT2
+$PLOTD3 < $FILE1c title=$TITLE3  > $PSPLOT3
+#suspecfk < $FILE1b | $PLOTIMAGE title=$TITLE3 >  $PSPLOT3
+$PLOTR < $FILE3  title=$TITLE4  clip=$clipr > $PSPLOT4
+$PLOTR < $FILE2  title=$TITLE5  clip=$clipr2 > $PSPLOT5
+suadapdiff $FILE3 $FILE2 | $PLOTR title=$TITLE6 clip=$clipr > $PSPLOT6
+$PLOTM < $FILE4  title=$TITLE7  > $PSPLOT7
+$PLOTR < $FILE5  title=$TITLE8 clip=$clipr2 > $PSPLOT8
+suadapdiff $FILE3 $FILE5 | $PLOTR  title=$TITLE9 clip=$clipr > $PSPLOT9
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.4,0.4 translate=0,3 translate=3,3 translate=6,3  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+6*)
+psmerge in=pp1 in=pp2 in=pp3 in=pp4 in=pp5 in=pp6 scale=0.5,0.5 translate=0,5 translate=4,5  translate=8,5 translate=0,0 translate=4,0 translate=8,0 > "${FILE}"
+;;
+9*)
+psmerge in=$PSPLOT1 in=$PSPLOT2 in=$PSPLOT3 in=$PSPLOT4 in=$PSPLOT5 in=$PSPLOT6 in=$PSPLOT7 in=$PSPLOT8 in=$PSPLOT9 scale=0.36,0.36  translate=0,7 translate=2.8,7 translate=5.6,7  translate=0,3.5 translate=2.8,3.5 translate=5.6,3.5 translate=0,0 translate=2.8,0 translate=5.6,0 > "${FILE}"
+;;
+esac
+
+gv $FILE &
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,181 @@
+#! /bin/sh
+# PLOTS 
+# Plot for interpolation of mixed shots using suinterpfk4
+# Daniel Trad- UBC Nov 1999
+set -x 
+sufix=''
+FIGURE="1"
+METHOD='fk'
+FIGURE="$1"
+plotpar="x1beg=1.85 perc=98 x2beg= x2end= "
+plotpar2="x1beg=1.85 perc=98 "
+parimage="f2=-1545 d2=81 x1beg=1.85 x1end=4 perc=98" # Feet
+parimage="f2=-472 d2=8 x1beg=1.85 x1end=6 perc=98" # meters 
+
+
+# PLot model
+
+FILEN=sx1ext0
+CLIP=
+
+if [ $METHOD = 'fk' ]; then
+    LEGEND='fk'
+else 
+    LEGEND=''
+fi
+
+LEGEND=''
+
+FILE1=$FILEN'.sum'
+FILE2=$FILEN'.sugapm'
+FILE2=$FILEN'.suzeroes'
+FILE5=$FILEN'.suradFKm'
+FILE3=$FILEN'.sumixFKm'
+FILE4=$FILEN'.suresFK'
+
+TITLE1="(a) data"
+TITLE2="(b) data_with_gaps"
+TITLE3="(d) data_interpolated"
+TITLE5="(c) migrated "
+TITLE4="(e) residuals"
+
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)"
+LABELR2="q(s/m^2)"
+LABELR1="tau(sec)"
+LABELRF1="f(Hz)"
+
+if [ $FIGURE -eq 1 ];then 
+
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELR1 label2=$LABELR2 perc=100"
+PLOTRF="supswigp key=f2 label1=$LABELRF1 label2=$LABELR2 perc=100"
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 ${plotpar}  "
+PLOTX2="supsimage key=offset label1=$LABEL1 label2=$LABEL2 $parimage  "
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=2.5 x2beg=-1550 x2end=1550"
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR"
+
+image=1 # image
+#image=0 # wigle plot 
+if [ $image -eq 1 ]; then
+FILE='suinterpfk_sx0ext0b.ps'  
+$PLOTX2 < $FILE1  title=$TITLE1  > p  
+$PLOTX2 < $FILE2  title=$TITLE2  > pp
+$PLOTX2 < $FILE5  title=$TITLE5  > ppp
+$PLOTX2 < $FILE3  title=$TITLE3  > pppp 
+else
+FILEB='suinterpfk_sx0ext0.ps' 
+j=2
+suwind j=$j < $FILE1 | $PLOTX title=$TITLE1  > p  
+suwind j=$j < $FILE2 | $PLOTX title=$TITLE2  > pp
+suwind j=$j < $FILE5 | $PLOTX title=$TITLE5  > ppp
+suwind j=$j < $FILE3 | $PLOTX title=$TITLE3  > pppp 
+fi
+
+
+PLOTX="supswigp  label1=$LABEL1 label2=trace "
+
+accept1=-1716,-1036,-968,-900,-628,-220,696,764,884,1020,1360
+suwind < $FILE1 key=offset min=-100 max=100 accept=$accept1  > $FILE1"b"
+suwind < $FILE3 key=offset min=-100 max=100 accept=$accept1  > $FILE3"b"
+suwind < $FILE4 key=offset min=-100 max=100 accept=$accept1 | sugain scale=0 > $FILE4"0"
+
+#suwind < $FILE4 key=offset max=100 abs=1 reject=-16,0,16  > $FILE4"b"
+
+Xsetntr $FILE1"b"
+Xsetntr $FILE3"b"
+#suadapdiff $FILE1"b" $FILE3"b" > $FILE4"b"
+suop2 $FILE1"b" $FILE3"b" > $FILE4"b"
+
+cat  $FILE1"b"  $FILE3"b" $FILE4"b" $FILE4"0"| susort +offset > $FILE4"c"
+#suxwigb  < $FILE4"c" perc= &
+Xsetntr $FILE4"c"
+$PLOTX < $FILE4"c"   perc=100 x1beg=0 > sx0ext0.sures.ps
+#gv ppppp &
+
+supsmerge in=p in=pp in=ppp in=pppp  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.45,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2 > ~/ps/$FILE
+gv ~/ps/$FILE &
+
+elif [ $FIGURE -eq 2 ];then
+
+# Second Figure with the data, migrated data and interpolated part of the file 
+# Generate suximage 
+
+sugain scale=0 < $FILE3 > $FILE3'tmp'
+sumixgathers $FILE1 $FILE3'tmp' | susort +offset > $FILE1'tmp'
+sumixgathers $FILE2 $FILE3'tmp' | susort +offset > $FILE2'tmp'
+Xsetntr  $FILE1'tmp'
+Xsetntr  $FILE1'mixFK'
+Xsetntr  $FILE2'tmp'
+
+PLOTX2="supsimage  label1=$LABEL1 label2=$LABEL2 f2=-2057 d2=17 x1beg=0.9 perc=99.5"
+#PLOTX="supsimage  label1=$LABEL1 label2=trace "
+${PLOTX2} < $FILE1'tmp' > p
+${PLOTX2} < $FILE2'tmp' > pp
+${PLOTX2} < $FILE1'radFK' > ppp
+${PLOTX2} < $FILE1'recbFK' > pppp
+${PLOTX2} < $FILE1'mixFK' > pppp
+
+supsmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILEB
+gv ~/ps/$FILEB &
+
+elif [ $FIGURE -eq 3 ];then
+PLOTX="supswigp  label1=$LABEL1 label2=trace "
+suwind < $FILE1 key=offset min=-190 max=190 | suwind key=offset abs=1 min=16 max=190 > $FILE1"b"
+suwind < $FILE3 key=offset min=-190 max=190 reject=-16,0,16 | suwind key=offset abs=1 min=16 max=190 > $FILE3"b"
+suwind < $FILE4 key=offset min=-190 max=190 reject=-16,0,16 | suwind  key=offset abs=1 min=16 max=190 | sugain scale=0 > $FILE4"0"
+
+#suwind < $FILE4 key=offset max=100 abs=1 reject=-16,0,16  > $FILE4"b"
+
+Xsetntr $FILE1"b"
+Xsetntr $FILE3"b"
+#suadapdiff $FILE1"b" $FILE3"b" > $FILE4"b"
+suop2 $FILE1"b" $FILE3"b" > $FILE4"b"
+
+cat  $FILE1"b"  $FILE3"b" $FILE4"b" $FILE4"0"| susort +offset > $FILE4"c"
+#suxwigb  < $FILE4"c" perc= &
+Xsetntr $FILE4"c"
+$PLOTX < $FILE4"c"  title=$TITLE4  perc=100 x1beg=0.9 > ppppp
+gv ppppp &
+
+
+elif [ $FIGURE -eq 4 ];then 
+plotpar="x1beg=1.85 perc=98 x2beg=1000 x2end=2200 "
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 ${plotpar}  "
+PLOTX2="supsimage key=offset label1=$LABEL1 label2=$LABEL2 $parimage  "
+
+
+FILE='sx1ext0detail.ps' 
+
+$PLOTX < $FILE1 title=$TITLE1  > p  
+$PLOTX < $FILE3 title=$TITLE2  > pp 
+
+
+
+supsmerge in=p in=pp scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.45,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2 > ~/ps/$FILE
+gv ~/ps/$FILE &
+
+
+fi
+
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

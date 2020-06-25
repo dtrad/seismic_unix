@@ -1,0 +1,59 @@
+#! /bin/sh
+# PLOTS 
+# Plot for radon outputs
+# Daniel Trad- UBC Nov 1999
+set -x  
+FILE=fig2avo.ps
+
+FILEN=data2.zeros.su
+
+FILE1=$FILEN
+FILE2=$FILEN"rec"
+FILE3=$FILEN"rec.posneg"
+FILE4=$FILEN"res.posneg"
+
+OPTIONNUM='4'
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+
+LABELT="time (sec)" 
+LABELO="offset(m)"
+LABELR="s2/m2"
+LABELTAU="tau(sec)"
+LABELFREQ="Freq(Hz)"
+LABELFREQ2="q"
+
+PLOTX="supswigp f1=0 f2=0 key=offset label1=$LABELT label2=$LABELO "
+PLOTR="supswigp f1=0 f2=0 key=offset label1=$LABELTAU label2=$LABELR "
+
+$PLOTX < $FILE1 > p title=$TITLE1 clip=2
+$PLOTX < $FILE2 > pp title=$TITLE2 clip=2
+#$PLOTR < $FILE2 > pp title=$TITLE2
+$PLOTX < $FILE3 > ppp title=$TITLE3 clip=2
+$PLOTX < $FILE4 > pppp title=$TITLE4 clip=2
+
+case $OPTIONNUM in
+2*)
+psmerge in=$FILE1 in=$FILE2  scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=$FILE1 in=$FILE2 in=$FILE3  scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+

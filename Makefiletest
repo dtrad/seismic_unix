@@ -1,0 +1,13 @@
+# Makefile for test funcion
+CC = gcc
+CFLAGS = -Wall
+OBJ= testfunc.o t2t0.o
+testfunc : $(OBJ)
+	$(CC) $(OBJ) -lm -o testfunc
+
+testfunc.o : testfunc.c testfunc.c
+	$(CC) $(CFLAGS) -c testfunc.c 
+	
+t2t0.o : ./clibrary/t2t0.c 
+	$(CC) $(CFLAGS) -c ./clibrary/t2t0.c
+

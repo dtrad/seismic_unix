@@ -1,0 +1,166 @@
+#! /bin/sh
+# shell for EOM migration 
+# Daniel Trad - UBC
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+#OPTION='RAD'
+OPTION='CSP'
+OPTION='MIG';label="EOM stk0"
+#OPTION='KIR';label="Kirchhoff stk1"
+#OPTION='GAZ';lavel="GAZDAG mig"
+#OPTION='LSM';label="LSM stk0"
+#OPTION='VEL';label="VEL stk2"
+
+NAME=misscn1
+NAME1=$NAME'.su'
+NAME2=$NAME'.su'
+NAME3=$NAME'.stack.su'
+PAR=stkvel.$NAME2
+PAR2=stkvel.misscn1.mig.su
+FILE=$NAME'.su'
+FILEOUT=$NAME'.eom.su'
+FILEOUT2=$NAME'.lsm.su'
+FILEOUT3=$NAME'.mig.su'
+FILEOUT4=$NAME'.vel.su'
+FILEGAZ=$NAME'.gaz.su'
+FILECSP=$NAME'.csp.su'
+FILERAD=$NAME'.rad.su'
+FILEREC=$NAME'.rec.su'
+FILEOFF=$NAME'.eom.off'
+FILECSP1=$NAME'.csp1.su'
+FILECSP2=$NAME'.csp2.su'
+FILECSP3=$NAME'.csp3.su'
+FILECSP4=$NAME'.csp4.su'
+
+CDPMIN=800
+CDPMAX=3000
+dxcdp=10
+
+OUTPUT=1
+BETA=90;
+TESTHE=0;
+PRECISE=0;
+HEMIN=-15000;
+HEMAX=0;
+VERBOSE=1
+dfold=0.1
+buffer=10; 
+nhcsp=100;
+output=2
+# If CSP define limits 
+CSPMIN=900
+DXCSP=100
+CSPMAX=1400
+###################################
+
+
+
+
+PLOTOPT='XPLOT2'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+case $OPTION in
+MIG*)
+sueomig3 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp  output=1 hemin=$HEMIN hemax=$HEMAX  nhcsp=$nhcsp par=$PAR beta=$BETA testhe=$TESTHE precise=$PRECISE beta=$BETA verbose=$VERBOSE dfold=$dfold ntrmax=200000 cdpspace=44 tmpdir=/home/dtrad/work/.  > $FILEOUT
+#supswigp key=cdp < $FILEOUT | gv - &
+suximage perc=90  < $FILEOUT title=$label &
+;;
+
+KIR*)
+sukmig4 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=1 par=$PAR verbose=$VERBOSE dfold=$dfold cdpspace=44 ntrmax=500000  > $FILEOUT3
+#supswigp key=cdp < $FILEOUT | gv - &
+suximage perc=90 < $FILEOUT3  title=$label  &
+;;
+
+GAZ*)
+sugazmig < $FILE  d2=44 dx=44 par=$PAR2 > $FILEGAZ
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEGAZ  title=$label  &
+;;
+
+VEL*)
+sueomig3 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=6  beta=$BETA hemin=$HEMIN hemax=$HEMAX nhcsp=$nhcsp par=$PAR itercg=5 iter_end=3 testhe=$TESTHE precise=$PRECISE eps2=1e-3 eps1=1e-3  testadj=0 smooth=0 nq=10 qmin=-150 qmax=150 verbose=$VERBOSE dfold=$dfold buffer=$buffer > $FILEOUT4
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEOUT4  title=$label  &
+;;
+
+LSM*)
+sueomig3 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=3  beta=$BETA hemin=$HEMIN hemax=$HEMAX nhcsp=$nhcsp par=$PAR itercg=5 iter_end=3 testhe=$TESTHE precise=$PRECISE eps2=1e-2 eps1=1e-2  testadj=0 smooth=0 nq=10 qmin=-150 qmax=150 verbose=$VERBOSE dfold=$dfold buffer=$buffer > $FILEOUT2
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEOUT2  title=$label  &
+;;
+
+
+# PLOT CSP gathers
+
+CSP*) 
+sueomig3 < $FILE  cdpmin=$CSPMIN cdpmax=$CSPMAX dxcdp=$DXCSP  output=$output verbose=1 hemax=$HEMAX hemin=$HEMIN nhcsp=$nhcsp par=$PAR itercg=5 iter_end=1 beta=$BETA eps2=1e-3 eps1=1e-3  testadj=0 smooth=0 nq=31 qmin=-300 qmax=300 precise=$PRECISE testhe=$TESTHE  > $FILECSP
+
+;;
+
+# Compute Radon for CSP gathers
+RAD*)  
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILECSP > $FILEOFF
+
+suradtd method=2 iter_end=2 step=.9 eps=0.01 eps1=1e-3 eps2=1e-3 qmin=-1e-7. qmax=4e-7 nq=32 itercg=10 thres=0.3  < $FILECSP | sufilter  f=5,10,60,70 amps=1,1,1,0  > $FILERAD
+
+supswigp key=f2 < $FILERAD | gv - &
+
+suradtdi offsetfile=$FILEOFF  < $FILERAD | sufilter  f=5,10,60,70 amps=1,1,1,0   > $FILEREC
+
+supswigp key=offset < $FILEREC | gv - &
+;;
+
+esac
+
+case $OPTION in
+CSP*)
+case $PLOTOPT in
+    PSPLOT*)
+    PLOTPS="supswigp key=offset label1=$LABELT label2=$LABELO perc=100"
+    suwind key=cdp min=500  max=500  < $FILECSP | $PLOTPS title="CSP gather for cdp=500"  > $FILECSP'.500.ps' &
+    suwind key=cdp min=1000 max=1000 < $FILECSP | $PLOTPS title="CSP gather for cdp=1000" > $FILECSP'.1000.ps' &
+    suwind key=cdp min=1500 max=1500 < $FILECSP | $PLOTPS title="CSP gather for cdp=1500" > $FILECSP'.1500.ps' &
+    suwind key=cdp min=2000 max=2000 < $FILECSP | $PLOTPS title="CSP gather for cdp=2000" > $FILECSP'.2000.ps' &
+    ;;
+
+
+    XPLOT2*)
+    
+    csp=$CSPMIN
+      
+    while [ $csp -le $CSPMAX ]
+    do
+    title=$csp' CSP'
+    suwind key=cdp min=$csp max=$csp  < $FILECSP | $PLOTX  title=$title &
+
+csp=`bc -l <<END
+		$csp + $DXCSP
+END`
+
+    done
+    ;;
+esac
+
+;;
+esac
+
+
+
+
+ 
+
+
+
+
+
+

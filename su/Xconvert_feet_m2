@@ -1,0 +1,68 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+
+set -x 
+
+EXAMPLE="enmo_gap"
+  
+FILE="${HOME}/ps/paper/fig_cdp1000_${EXAMPLE}_final_metric.ps"
+
+# PLot model
+
+FILEN=cdp1000g
+
+convertoffset="suchw key1=offset key2=offset b=0.3052"
+convertf2="suchw key1=f2 key2=f2 d=0.3052"
+convertvel="suchw key1=f2 key2=f2 b=0.3052"
+ 
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.suradb_enmo' # Sland stack form complete data set
+FILE3=$FILEN'.sugap'
+FILE4=$FILEN'.surad_'${EXAMPLE} # Sland stack form incomplete data set
+FILE5=$FILEN'.sumod_'${EXAMPLE}'4'
+FILE6=$FILEN'.suradb_'${EXAMPLE}'4' # Sland stack form incomplete data set + enmo
+#FILE6=$FILEN'.suradb_res_enmo_gap_nogap'
+
+
+
+#$convertoffset < $FILE1 > $FILE1'_metric'  
+#$convertf2 < $FILE2 > $FILE2'_metric'  
+#$convertoffset < $FILE3 > $FILE3'_metric'  
+#$convertf2 < $FILE4 > $FILE4'_metric'  
+$convertvel < $FILE5 > $FILE5'_metric'  
+#$convertf2 < $FILE6 > $FILE6'_metric'  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

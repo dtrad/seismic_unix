@@ -1,0 +1,18 @@
+#!/bin/sh
+FILE1=$1
+
+
+set -x 
+
+a=5500 #FK
+#a=0    #TX
+clip=3
+
+suwind key=offset min=0 < $FILE1 | sushw key=delrt a=$a > pp
+#suwind key=f2 min=0 < $FILE1 | sushw key=delrt a=$a > pp
+
+supsimage < pp title="CMP-5300" label2="Offset(m)" label1="Time(s)" x2beg=0  f2=213 d2=50 perc=99.5  > ~/ps/${1}.ps
+
+#supswigp < pp title="CMP-5300" label2="Offset(m)" label1="Time(s)" key=offset   perc=98 > ~/ps/${1}.ps
+
+gv ~/ps/${1}.ps

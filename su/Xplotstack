@@ -1,0 +1,33 @@
+#!/bin/sh
+set -x
+
+perc=$1
+
+#line 159a
+
+#sugain  tpow=0 <  line159a.stack.su  | suximage perc=$perc f2=1 x2beg=300  d2=1 title="stack" &
+#sugain  tpow=0 <  line159a.demul.stack.su  | suximage perc=$perc f2=300 d2=2 title="Demul.stack" &
+
+
+# line 159 total
+
+#sugain  tpow=1 <  line159.stack.su  | suximage perc=$perc f2=301 d2=2 title="stack" &
+
+#sugain  tpow=1 <  line159.demul.stack.su  | suximage perc=$perc f2=301 d2=2 title="Demul.stack" &
+
+# send to printer
+
+#sugain  tpow=1 <  line159.stack.su  | supsimage perc=$perc f2=301  d2=2 title="stack"  label1="t(s)" label2="cdp#"   > ~/china/line159.stack.ps  &
+
+#sugain  tpow=1 <  line159.demul.stack.su  | supsimage perc=$perc f2=301 d2=2 title="RT demul+stack" label1="t(s)" label2="cdp#" > ~/china/line159.demul.stack.ps   &
+
+# PLot small window
+x1beg=0
+x1end=2.6
+x2beg=2900
+x2end=3100
+window="x1beg=${x1beg} x1end=${x1end} x2beg=${x2beg} x2end=${x2end}"
+
+sugain  tpow=1 <  line159.stack.su  | suximage perc=$perc f2=301 d2=2 title="stack" $window &
+
+sugain  tpow=1 <  line159.demul.stack.su  | suximage perc=$perc f2=301 d2=2 title="Demul.stack" $window &

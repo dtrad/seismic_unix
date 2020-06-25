@@ -1,0 +1,16 @@
+#!/bin/sh
+set -x
+
+file1=$1 
+name="."$2
+
+suaddhead < ${1}${name}".bin" ns=256 | sushw key=dt a=8000 > ${1}${name}".su"
+
+sugain < ${1}".su" scale=0 | susetntr > ${1}"header.su" 
+
+
+suop2 ${1}"header.su" ${1}${name}".su" op=sum > pp
+
+mv pp ${1}${name}".su"
+
+

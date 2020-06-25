@@ -1,0 +1,4 @@
+#!/bin/sh
+set -x
+suswapbytes < "$1" > pp ; mv pp "$1"
+

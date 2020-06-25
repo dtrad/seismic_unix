@@ -1,0 +1,132 @@
+#! /bin/sh
+# shell for Radon filtering
+# Daniel Trad - UBC
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650 perc=99"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=99"
+
+OPTION=$1
+
+NAME=ozdata.10
+NAME1=$NAME'.su'
+NAME2=$NAME'.su'
+NAME3=$NAME'.stack.su'
+FILE=$NAME'.su'
+FILECDP=$NAME'.cdp.su'; 
+FILERAD=$NAME'.rad.su'
+offsetfile="${NAME}.suoff"
+par="stkvel.ozdata.10.su"
+
+if ! [ -f $offsetfile ]; then 
+ sugethw key=offset < $NAME1 output=geom  > $offsetfile   
+fi
+
+verbose=0
+iter_end=2
+
+sinc=0;
+modelfile="${NAME}.${1}.su"
+modelfile2="${NAME}.toep.mute.su"
+eps1=30e-2
+eps2=30e-2
+CDPMIN=1
+DXCDP=1
+CDPMAX=1
+pseudohyp=0
+nq=150
+rtmethod=2
+if [ $rtmethod -eq 1 ]; then
+    qmin=3e-4
+    nmofactor=0
+    factor=4.5    
+elif [ $rtmethod -eq 2 ]; then
+    qmin=-2e-8
+    nmofactor=1
+    factor=1
+fi
+
+
+fmax=70
+qmin1=3e-4
+qmin2=0e-4
+#qmin2=-5e-8
+amps=1,1,1,1
+ffilter=1,55,70,80
+factor1=4.5
+factor2=3
+fmax1=70;
+fmax2=70;
+pseudohyp=0
+
+###################################
+
+PLOTOPT='XPLOT2'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+case $OPTION in
+
+TOEP*|toep*)
+suradontoep_2 < $FILE verbose=$verbose par=$par  eps1=$eps1   nq=$nq qmin=$qmin tmpdir='.' norm=0 nmofactor=$nmofactor smute=3.0 step=0.95 factor=$factor modelfile=$modelfile  quantil=0.7 depth=$depth  amps=$amps ffilter=$ffilter fmax=$fmax rtmethod=$rtmethod > $FILECDP
+;;
+
+CGFFT*|cgfft*)
+suradoncgfft < $FILE verbose=$verbose par=$par itercg=25 iter_end=$iter_end eps2=$eps2 eps1=$eps1  testadj=0  nq=$nq qmin=$qmin tmpdir='.' norm=0 nmofactor=$nmofactor smute=3.0 step=0.95 factor=$factor modelfile=$modelfile  quantil=0.7 depth=$depth  amps=$amps ffilter=$ffilter > $FILECDP
+;;
+
+WTCGLS*|wtcgls*)
+suradonwtcgls < $FILE verbose=$verbose par=$par itercg=25 iter_end=$iter_end eps2=$eps2 eps1=$eps1  testadj=0  nq=$nq qmin=$qmin tmpdir='.' norm=0 nmofactor=$nmofactor smute=3.0 step=0.95 factor=$factor modelfile=$modelfile  quantil=0.7 depth=$depth  amps=$amps ffilter=$ffilter > $FILECDP
+;;
+
+TFD*|tfd*)
+suradonwtcgls_tfd < $FILE verbose=$verbose par=$par itercg=25 iter_end=$iter_end eps2=$eps2 eps1=$eps1  testadj=0  nq=$nq qmin=$qmin tmpdir='.' norm=0 nmofactor=$nmofactor smute=3.0 step=0.95 factor=$factor modelfile=$modelfile  quantil=0.7 depth=$depth  amps=$amps ffilter=$ffilter > $FILECDP
+;;
+
+INV*|inv*)
+suradon00inv $FILE $modelfile2 par=$par nq=$nq nmofactor=$nmofactor smute=3.0  pseudohyp=$pseudohyp depth=$depth  amps=$amps ffilter=$ffilter > $FILECDP
+;;
+
+BEAM*|beam*)
+
+suradon00inv_beam  $FILE $modelfile par=$par nq=$nq  tmpdir='.'  nmofactor=$nmofactor smute=3.0  pseudohyp=$pseudohyp depth=$depth  qmin1=$qmin1 qmin2=$qmin2 nq1=$nq1 nq2=$nq2 factor1=$factor1 factor2=$factor2 rtmethod1=$rtmethod1 rtmethod2=$rtmethod2 depth1=$depth1 depth2=$depth2 mute1=$mute1 mute2=$mute2 fmax1=$fmax1 fmax2=$fmax2 amps=$amps ffilter=$ffilter > $FILECDP
+
+;;
+
+esac
+
+$PLOTX < $FILECDP perc=90 &
+$PLOTR < $modelfile perc=90 &
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

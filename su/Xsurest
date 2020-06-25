@@ -1,0 +1,18 @@
+#!/bin/sh
+set -x 
+file="cdp${3}.su"
+filedif="cdp${3}dif.su"
+xwindow="x1beg=0.84 x1end=2.0 x2beg=110 x2end=200 curve=curve1 npair=5 hbox=900 wbox=700 cmap=hsv4 "
+
+#xwindow="x1beg=2.84 x1end=5.0 x2beg=110 x2end=200 curve=curve1 npair=5 hbox=900 wbox=700 cmap=hsv4 "
+
+sugain scale=$1 < $filedif  > ppp
+suop2 $file ppp > pppp
+
+sufill < $file | suximage perc=$2 title=original $xwindow xbox=0 &
+sufill  < pppp | suximage perc=$2 title=scale:$1 $xwindow xbox=600 &
+
+
+#suximage < xiter.su title=scale:$1 $xwindow xbox=600 perc=$2 &
+
+#sufill  < kencmpwin.surecRFK | suximage perc=$2 title=scale:$1 $xwindow xbox=0 &

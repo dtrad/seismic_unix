@@ -1,0 +1,46 @@
+#! /bin/sh
+# spike decon for EOM migration results 
+# Jan 30 -2002
+# Daniel Trad - UBC
+
+
+set -x
+
+x2beg=259
+perc=99 
+FILEN=line77
+FILE0=$FILEN".su"
+FILE1=$FILEN"b.stack.su"
+FILE1=$FILEN"b.demul.agres.eom.su"
+FILE1=$1
+FILE2=$4
+
+clip="bclip=28.0698 wclip=-27.7393 "
+suacor ntout=121 sym=0 < $FILE1 | suxwigb  title=$FILE1 perc=$perc x2beg=490 x2end=500 key=cdp 
+
+
+supef maxlag=$2 < $FILE1 | suacor ntout=121 sym=0 | suxwigb  title=$FILE1 perc=$perc x2beg=490 x2end=500 key=cdp 
+
+
+supef maxlag=$2 < $FILE1 | sufilter f=2,10,80,100 > $FILE1'dec'
+
+
+window="x2beg=600 x2end=800 x1beg=1.0 x1end=2.5"
+suximage  <  $FILE1 title=$FILE1 perc=$perc f2=300 $window  d2=$3  &
+suximage < $FILE1'dec' title=$FILE1'dec' perc=$perc f2=300 xbox=600 $window d2=$3 &
+suximage < line77.stack.su title='line77.stack.sudec' perc=$perc f2=300 xbox=0 $window d2=$3 &
+
+
+supef maxlag=$2 < $FILE2 | sufilter f=2,10,80,100 > $FILE2'dec'
+
+exit 0
+
+
+
+
+
+
+
+
+
+

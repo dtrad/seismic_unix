@@ -1,0 +1,66 @@
+#! /bin/sh
+# Create data from linear velocity models 
+HBOX=400
+WBOX=350
+VEL=3.0
+
+susynlv  nt=512 dt=0.008 nxo=50 dxo=0.05 fxo=0  \
+	 nxs=101 dxs=0.05 fxs=1  ref="1:0,1;7,11"  \
+	 v00=3.00 dvdz=0 dvdx=0 verbose=1 smooth=1 tmin=0.33  | 
+suchw key1=cdp key2=gx key3=sx b=1 c=1 d=50 > data.su 
+
+suaddnoise < data.su > pp
+cp pp data.su
+
+suwind < data.su key=cdp min=60 max=60 | 
+suvelan nv=50 dv=100 fv=1000 | sushw key=ntr a=50 | 
+suximage legend=1 f2=1000 d2=100 f1=0 d1=0.02 &
+
+suwind < data.su key=offset min=0 max=0 > data.off0.su
+
+suwind < data.su key=offset min=2000 max=2000 > data.off2000.su
+
+sunmo smute=2 < data.su vnmo=3000 tnmo=0 > data.nmo.su
+
+suwind < data.nmo.su key=offset min=2000 max=2000 > data.off2000.nmo.su
+
+suwind key=cdp min=40 max=200  < data.off2000.su | suxwigb key=cdp  perc=99 wbox=550 hbox=650 title="offset=2000" &
+
+suwind key=cdp min=40 max=200 < data.off2000.nmo.su | suxwigb  key=cdp perc=99 wbox=550 hbox=650 title="offset=2000- NMO" &
+
+suwind key=cdp min=40 max=200 < data.off0.su | suxwigb perc=99 key=cdp wbox=550 hbox=650 title="zero offset" &
+
+susort < data.nmo.su offset | sudmotx cdpmin=5 cdpmax=240  dxcdp=25 noffmix=2  vrms=3000 verbose=1 > data.nmo.dmo.su 
+
+susort < data.nmo.su cdp | sustack  > data.nmo.stack.su 
+
+susort < data.nmo.dmo.su cdp | sustack  > data.nmo.dmo.stack.su 
+
+supswigp < data.nmo.stack.su perc=99 key=cdp  title="NMO Stacked data" | gv - &
+
+supswigp < data.nmo.dmo.stack.su  perc=99 key=cdp  title="DMO Stacked data" |
+gv - &
+
+#sugazmig < data.su > pp vmig=2 tmig=0
+
+
+#segyhdrs < data.su 
+#segywrite < data.su tape=data.segy 
+
+#sushw < data.su key=sx a=130.5 b=0 c=1.0 d=0 j=60 |
+#sushw key=offset a=-1475 b=50 j=60 |
+#sushw key=gx a=101 b=1 c=1 d=0 j=60 |
+#suchw key1=cdp key2=gx key3=sx a=-1 b=1 c=1 |
+#susort > data.geom.cdp.su cdp offset # CMPs
+             
+#suwind key=offset min=1000 max=1070 <  data.geom.cdp.su cdp |
+#suwind key=cdp min=280 max=400 |
+#susort cdp > data0.su 
+
+
+
+
+
+
+
+

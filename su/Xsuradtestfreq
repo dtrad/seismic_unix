@@ -1,0 +1,110 @@
+#! /bin/sh
+# shell for Radon intrepolation 
+# Daniel Trad - UBC
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650 perc=95"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+OPTION='RAD'
+
+NAME=miss3
+NAME1=$NAME'.su'
+NAME2=$NAME'.su'
+NAME3=$NAME'.stack.su'
+PAR=stkvel.$NAME2
+PAR=stkvel.misscn3.su
+FILE=$NAME'.su'
+FILECDP=$NAME'.cdp.su'; 
+FILERAD=$NAME'.rad.su'
+
+VERBOSE=1
+fold=1
+buffer=10; 
+nhe=100;
+ncmp=2
+ntrmax=900000 
+lsmethod=3
+iter_end=4
+sinc=0;
+parmute=3e-9
+parmute=22e-9
+nq=60
+under=0.999
+over=1.001
+modelfile="${NAME}.${lsmethod}.iter${iter_end}.surad"
+eps1=10e-2
+eps2=10e-2
+CDPMIN=990
+DXCDP=1
+CDPMAX=994
+
+offsetfile="miss3.cdp990.suoff"
+offsetfile="miss2.suoff"
+
+###################################
+
+PLOTOPT='XPLOT2'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+case $OPTION in
+RAD*)
+echo " .................SORT YOUR DATA BY CDP and OFFSET ..................." 
+suradtestfreq < $FILE cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$DXCDP verbose=1 nhe=$nhe fold=$fold par=$PAR itercg=40 iter_end=$iter_end eps2=$eps2 eps1=$eps1  testadj=0 smooth=0 nq=$nq qmin=-3.5e-9 cdpspace=$cdpspace ntrmax=$ntrmax tmpdir='.' norm=0 lsmethod=$lsmethod nmofactor=1 smute=2 step=0.85 factor=1 buffer=$buffer  mute=0  parmute=$parmute offsetfile=$offsetfile under=$under over=$over modelfile=$modelfile keepdata=0 quantil=1  > $FILECDP
+;;
+esac
+
+case $OPTION in
+RAD*)
+case $PLOTOPT in
+    XPLOT2*)
+    
+    cdp=$CDPMIN
+      
+    while [ $cdp -le $CDPMAX ]
+    do
+    title=$cdp' CDP'
+    suwind key=cdp min=$cdp max=$cdp  < $FILECDP | $PLOTX  title=$title &
+    suwind key=cdp min=$cdp max=$cdp  < $modelfile | $PLOTR  title=$title &
+cdp=`bc -l <<END
+		$cdp + $DXCDP
+END`
+
+    done
+    ;;
+esac
+
+;;
+esac
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

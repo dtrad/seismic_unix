@@ -1,0 +1,18 @@
+#! /bin/sh
+# Xsuaddh1: converts matalab data from synth0 in sudata
+#####################################################################
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+set -x 
+FILE=model5.bin
+FILEOFF=model5.off
+FILEOUT=surio3b
+#a2b n1=1 < synth0.dat > pp
+#a2b n1=1 < synth0.off > p
+suaddhead < $FILE > ppp ns=512
+sushw key=ntr a=64 < ppp > pp
+sushw key=offset infile=$FILEOFF  < pp > ppp
+sushw key=dt a=4000 < ppp > $FILEOUT
+suxwigb key=offset wbox=550 hbox=650 < $FILEOUT  &
+ 

@@ -1,0 +1,83 @@
+#! /bin/sh
+# Xdeblending
+# Deblending using Stotl Radon (non apex centered Radon Transform).
+######################################################################
+# Author: Daniel Trad- Last update: Jun 2011
+
+set -x
+
+itercg=3
+iter_end=1
+step=0.5
+vmig="800,820,850,850"
+tmig="0,0.5,1,2"
+global=2
+
+FILE=shot0b.su; 
+    
+cp ${FILE} pp1
+
+suradonfk2 < pp1 > noise1 ihmin_m=0 ihmax_m=0  vmig=${vmig} tmig=${tmig} mute=1 itercg=$itercg iter_end=$iter_end step=$step mutePick=2 firstBreak="fb1" modelfile="asrt1.su" muteArea="mute1"
+
+suadapdiff pp1 noise1 global=$global > pp2
+suximage < asrt1.su &
+
+exit 0
+
+suradonfk2 < pp2 > noise2 ihmin_m=20 ihmax_m=0 vmig=${vmig} tmig=${tmig} mute=1 itercg=$itercg iter_end=$iter_end step=$step mutePick=2  firstBreak="fb2" modelfile="asrt2.su" muteArea="mute2"
+    
+suadapdiff pp2 noise2  global=$global > pp3
+
+suradonfk2 < pp3 > noise3 ihmin_m=40 ihmax_m=60 vmig=${vmig} tmig=${tmig} mute=1 itercg=$itercg iter_end=$iter_end step=$step mutePick=2  firstBreak="fb3" modelfile="asrt3.su" muteArea="mute3"
+
+suadapdiff pp3 noise3  global=$global > pp4
+    
+suradonfk2 < pp4 > noise4 ihmin_m=60 ihmax_m=80 vmig=${vmig} tmig=${tmig} mute=1 itercg=$itercg iter_end=$iter_end step=$step mutePick=2  firstBreak="fb4" modelfile="asrt4.su" muteArea="mute4"
+    
+suadapdiff pp4 noise4 global=$global   > pp5
+
+suradonfk2 < pp5 > noise5 ihmin_m=80 ihmax_m=100 vmig=${vmig} tmig=${tmig} mute=1 itercg=$itercg iter_end=$iter_end step=$step mutePick=4  firstBreak="fb5" modelfile="asrt5.su" muteArea="mute5"
+
+suadapdiff pp5 noise5  global=$global  > pp6
+
+Xplotdeblending2 1
+Xplotdeblending2 2
+
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

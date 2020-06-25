@@ -1,0 +1,83 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+set -x 
+sufix='SOL'
+METHOD='wtcgls'
+METHOD='toep'  
+#METHOD='adj'
+METHOD='cgfft'
+#METHOD='TFD'; sufix="";
+
+  
+#FILE='ch_freq_data1_fixL'${METHOD}'gap.ps'
+FILE='ch_freq_data1_'${METHOD}'gap.ps'
+# PLot model
+
+FILEN=data
+CLIP=4.0
+
+if [ $METHOD = 'toep' ]; then
+    LEGEND='non-sparse'
+else 
+    #LEGEND='sparse: '$METHOD
+    LEGEND='dq variable: '$METHOD
+fi
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.sugap'
+FILE3=$FILEN'.surad'${sufix}${METHOD}'gap'
+FILE4=$FILEN'.surad'${sufix}${METHOD}'gap'
+FILE5=$FILEN'.surecb'${sufix}${METHOD}'gap'
+FILE6=$FILEN'.sures'${sufix}${METHOD}'gap'
+
+TITLE1="(a) data"
+TITLE2="(b) data with gaps"
+TITLE3="(c) RT - ${LEGEND}"
+TITLE4="(d) RT spectrum - ${LEGEND}"
+TITLE5="(e) Interpolated"
+TITLE6="(f) Residuals"
+
+LABEL1="time(sec)" 
+LABEL2="offset(m)"
+LABELR2="q(s/m^2)"
+LABELR1="tau(sec)"
+LABELRF1="f(Hz)"
+
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELR1 label2=$LABELR2 perc=99"
+PLOTRF="supswigp key=f2 label1=$LABELRF1 label2=$LABELR2 perc=99"
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 "
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=${CLIP} x2beg=-1550 x2end=1550"
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR"
+
+$PLOTD < $FILE1  title=$TITLE1  > $FILE1.ps  
+$PLOTD < $FILE2  title=$TITLE2  > $FILE2.ps  
+$PLOTR < $FILE3  title=$TITLE3  > $FILE3.ps  
+sufft < $FILE4 | suamp | $PLOTRF title=$TITLE4 > ${FILE4}f.ps  
+$PLOTX < $FILE5  title=$TITLE5  > $FILE5.ps   
+$PLOTX < $FILE6  title=$TITLE6  > $FILE6.ps  
+
+#supsmerge in=p in=pp in=ppp in=pppp in=ppppp  in=pppppp scale=0.37,0.37 translate=1,7 translate=4,7 translate=1,3.5 translate=4,3.5 translate=1,0 translate=4,0  > ~/ps/$FILE
+
+
+
+
+#gv ~/ps/$FILE &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,68 @@
+#! /bin/sh
+# Xradon --- Example of interpolation with high resolution radon.
+######################################################################
+# This example needs sudata1 generated with Xsusyn0
+# No extra files are needed.
+# method 1 and 2 stands for Usual Radon and High resolution RT.
+# First the header of full offset data are saved in file=headers 
+# and offset in sudata1.off
+# The sudata1.off file is  used by suhrrti to create data at given offsets 
+# from the model.
+# The headers file is used after suhrrti to put back the header.
+# The suwind is used to create gaps that are filled with suhrrtf and suhrrti
+# Main purpose of the program is to compare gap filling capabilities of
+# HRRT (method=2) with the usual RT (method=1).
+# If you change the data check the values at the beginning.
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+NT=512 
+NH=64
+NP=100
+DT=4000
+VNMO=7000,8000,9000
+TNMO=0.0,0.65,1.0
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+
+# Save offset and headers for inverse radon transform
+sugethw key=offset output=geom < sudata2 > sudata2.off
+#sustrip < sudata1 > pp head=headers #Original header with all offsets
+#Create Gaps
+suwind abs=1 key=offset min=500 max=3200 < sudata1 > sudata1gap 
+#suxwigb < sudata1gap n1=512 dt=0.004 n2=all  key=offset hbox=$HBOX wbox=$WBOX &
+# Be sure ntr key is set and rename
+
+sushw key=ntr a=$NH < sudata1gap > sudata1b
+#supswigb < sudata1b   key=offset | ghostview -&
+#supswigb < sudata1b   key=offse/*
+  It computes the term Qp for the total gradient g=(L'L+Qp)u-L'd
+  This term corresponds to the probability model, so that
+  the distribution parameters sigma and norm are passed.
+  Qp is a vector of dimension nq, but in fact is the diagonal 
+  of the Qp matrix of size nq x nq.
+  Inqut 
+          u: model
+          nq: number of model traces
+          norm: implemented 1 Huber, 10 Cauchy
+          powd: energy for the model u
+  Output
+          Qp: Vector such Matrix(diag(Qp)) defines the
+          modeludata1rec
+
+#suxmovie title="RD Before NMO" < sudata1rec & 
+sunmo tnmo=$TNMO vnmo=$VNMO invert=1 < sudata1rec > sudata1recf
+#suxmovie f2=$F2 title="RD After NMO c" < sudata1recf &
+#suxwigb < sudata1recf n1=512 dt=0.004 n2=all  key=offset hbox=$HBOX wbox=$WBOX &  
+supswigb < sudata1recf   key=offset  | ghostview - &  
+#supswigb < sudata1recf   key=offset  > sudata1recf.ps &  
+exit 0  
+

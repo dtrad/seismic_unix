@@ -1,0 +1,100 @@
+#! /bin/sh
+# Xradon --- Example of interpolation with high resolution radon.
+######################################################################
+# This example needs sudata1 generated with Xsusyn0
+# No extra files are needed.
+# method 1 and 2 stands for Usual Radon and High resolution RT.
+# First the header of full offset data are saved in file=headers 
+# and offset in sudata1.off
+# The sudata1.off file is  used by suhrrti to create data at given offsets 
+# from the model.
+# The headers file is used after suhrrti to put back the header.
+# The suwind is used to create gaps that are filled with suhrrtf and suhrrti
+# Main purpose of the program is to compare gap filling capabilities of
+# HRRT (method=2) with the usual RT (method=1).
+# If you change the data check the values at the beginning.
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+NT=512 
+NH=100
+NP=170
+DT=30000
+
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+FILE=suradar2b
+FILERAD=suradar2radhr
+FILERADS=suradar2radhrs
+FILEREC=suradar2rechr
+FILERECS=suradar2rechrs
+FILEOFF=suradar2off
+FILERADOFF=suradar2radoff
+
+FILERAD2=suradar2radbhr
+FILERAD2S=suradar2radbhrs
+FILEREC2=suradar2recbhr
+FILEREC2S=suradar2recbhrs
+#FILEOFF2=suradar2off  # Final offset in which data will be resampled 
+
+# Save offset  for inverse radon transform
+#sugethw key=offset output=geom < $FILE > $FILEOFF
+#suxwigb < $FILE   key=offset wbox=550 hbox=650 & 
+#Create Gaps
+#suwind  tmin=0 tmax=512 < $FILE > pp
+ #sushw key=ntr a=$NH < pp  > $FILE2
+#suxwigbq < $FILEGAP  key=offset hbox=$HBOX wbox=$WBOX &
+
+
+#Forward  Radon transform
+#suhrrtf method=7 eps1=3  qmin=-5e-5 nq=$NP freq=70 rtmethod=1 costflag=0 itercg=50 eps=1e-5 eps2=1e-4  norm=10 < $FILE  > $FILERAD 
+
+
+# For gap example: 
+# method=2 eps1=0.1 iter_end=10  itercg=25 eps=1e-10 
+# method=10 eps=1e-4 method=7 eps=1e-7
+# method=4 eps=1e-4 
+
+#suxwigb < $FILERAD   key=f2 wbox=550 hbox=650 &
+#sumute < $FILERAD  key=f2 xmute=-2e-4,9e-4 tmute=0.4,0.4 taper=5 below=0 > pp 
+#sumute <  pp key=f2 xmute=-2e-4,9e-4 tmute=1.4,1.4 taper=5 below=1 > ppp
+#suop2  $FILERAD ppp op=diff  > pp   
+
+#sumute < pp key=f2 xmute=-2e-4,2e-4,2e-4,9e-4 tmute=0,0,2,2 taper=5  below=1 > ppp
+#sumute < ppp key=f2 xmute=6e-4,9e-4 tmute=2,2 taper=5  below=0 > $FILERAD2
+#sumute < pp key=f2 xmute=4e-4,6e-4 tmute=2,1.6 taper=5  below=1 > $FILERAD2
+#cp $FILERAD $FILERAD2
+suxwigb < $FILERAD2   key=f2 wbox=550 hbox=650 &
+#Inverse Radon Transform
+suhrrti rtmethod=1 offsetfile=$FILEOFF  fmax=70 < $FILERAD2  > $FILEREC2
+suxwigb < $FILEREC2   key=offset  wbox=550 hbox=650  &
+
+sustrip < $FILERAD > $FILERADS outpar=/home/dtrad/radon/param
+sustrip < $FILEREC > $FILERECS outpar=/home/dtrad/radon/param
+sustrip < $FILERAD2 > $FILERAD2S outpar=/home/dtrad/radon/param
+sustrip < $FILEREC2 > $FILEREC2S outpar=/home/dtrad/radon/param
+#binary file with radon parameter  
+#cp myfile $FILERADOFF
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

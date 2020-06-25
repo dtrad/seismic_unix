@@ -1,0 +1,7 @@
+#! /bin/sh
+
+suspike nt=256 nspk=1 ix1=16 ntr=32 > spike.su
+
+sushw < spike.su key=ntr a=32 | sushw key=cdp a=1 b=1 | sushw key=offset a=0 > pp
+
+mv pp spike.su

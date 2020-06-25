@@ -1,0 +1,93 @@
+#! /bin/sh
+# PLOTS 
+# Plot for velocity analysis.
+# Daniel Trad- UBC Jan 2000
+set -x  
+
+FILE=fig3seg.ps
+FILE2=fig3seg2000stk.ps
+FILEVEL=figvel;
+
+# PLot model
+
+cdp1=300.ps
+cdp2=500.ps
+cdp3=900.ps
+
+FILEN1=~/seg2000/moddata2.filt
+FILEN2=~/seg2000/moddata2.csp.B.stkvel
+FILEN3=~/seg2000/moddata2.csp.LSM.stkvel
+
+FILE11=$FILEN1'.su.'$cdp1
+FILE12=$FILEN1'.su.'$cdp2
+FILE13=$FILEN1'.su.'$cdp3
+FILE21=$FILEN2'.su.'$cdp1
+FILE22=$FILEN2'.su.'$cdp2
+FILE23=$FILEN2'.su.'$cdp3
+FILE31=$FILEN3'.su.'$cdp1
+FILE32=$FILEN3'.su.'$cdp2
+FILE33=$FILEN3'.su.'$cdp3
+
+FILEVEL1=~/seg2000/figvel"$cdp1"
+FILEVEL2=~/seg2000/figvel"$cdp2"
+FILEVEL3=~/seg2000/figvel"$cdp3"
+
+
+OPTIONNUM='9'
+OPTIONVEL='y'
+
+
+TITLE11="(a)"
+TITLE12="(b)"
+TITLE13="(c)"
+TITLE21="(d)"
+TITLE22="(e)"
+TITLE23="(f)"
+TITLE31="(g)"
+TITLE32="(h)"
+TITLE33="(i)"
+
+
+LABEL1="time (sec)" 
+LABEL2="vel(m/s)"
+
+
+case $OPTIONNUM in
+3*)
+#psmerge in=$FILE11  in=$FILE21  in=$FILE31 scale=0.4,0.4 rotate=-90  translate=2,10.5 translate=2,7  translate=2,3.5 > ~/ps/$FILE
+psmerge in=$FILE11  in=$FILE21  in=$FILE31 scale=0.33,0.33  translate=0,7 translate=2.8,7 translate=5.6,7  > ~/ps/$FILE
+;;
+9*)
+psmerge in=$FILE11 in=$FILE12 in=$FILE13 in=$FILE21 in=$FILE22 in=$FILE23 in=$FILE31 in=$FILE32 in=$FILE33  scale=0.33,0.33  translate=0,7 translate=2.8,7 translate=5.6,7 translate=0,3.5 translate=2.8,3.5 translate=5.6,3.5 translate=0,0 translate=2.8,0 translate=5.6,0 > ~/ps/$FILE
+;;
+esac
+
+
+case $OPTIONVEL in
+y*)
+
+if [ $OPTIONNUM -eq 9 ] 
+then 
+psmerge in=$FILEVEL1 in=$FILEVEL2 in=$FILEVEL3 in=$FILEVEL1 in=$FILEVEL2 in=$FILEVEL3 in=$FILEVEL1 in=$FILEVEL2 in=$FILEVEL3   scale=0.33,0.33  translate=0,7 translate=2.8,7 translate=5.6,7 translate=0,3.5 translate=2.8,3.5 translate=5.6,3.5 translate=0,0 translate=2.8,0 translate=5.6,0 > ~/ps/$FILEVEL
+elif [ $OPTIONNUM -eq 3 ]
+then
+#psmerge in=$FILEVEL1  in=$FILEVEL1  in=$FILEVEL1 scale=0.4,0.4 rotate=-90 translate=2,10.5 translate=2,7  translate=2,3.5 > ~/ps/$FILEVEL
+psmerge in=$FILEVEL1  in=$FILEVEL1  in=$FILEVEL1 scale=0.33,0.33  translate=0,7 translate=2.8,7 translate=5.6,7 > ~/ps/$FILEVEL
+fi
+psmerge in=~/ps/$FILE in=~/ps/$FILEVEL > ~/ps/$FILE2
+gv ~/ps/$FILE2 &
+;;
+n*)
+gv ~/ps/$FILE &
+;;
+esac
+
+
+
+
+
+
+
+
+
+

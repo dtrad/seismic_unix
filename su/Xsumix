@@ -1,0 +1,66 @@
+#!/bin/sh
+
+set -x
+# Original file before downsampling
+file0=kencmp0win.su
+# Downsampled file
+filen=kencmp0dswin
+
+sugain scale=$1 < ${filen}".surecFK" | susort +offset  > pp
+Xsetntr pp
+
+sumixgathers  ${filen}".sugap" pp | susetntr | susort +offset > ${filen}".sumix"
+
+# plot final mixfile
+suximage < ${filen}".sumix" perc=98 title='mixfile' &
+
+
+##########################################################
+# Residuals computations
+##########################################################
+if [ 0 = 1 ]; then
+# Generate an auxiliar file with the same offsets as filemix
+# for later comparison
+sugethw key=offset < ${filen}".sumix" output=geom > offset
+sufill option=1 offsetfile=offset  < ${filen}".su" | susetntr > ${filen}".suzero"
+#suwind key=offset reject=-6154,213 < "$filen".suzero > pp
+#mv pp "$filen".suzero
+suop2 ${filen}".suzero" ${filen}".sumix" > ${filen}".sures"
+##########################################################
+elif [ 1 = 1 ];then
+suop2 ${file0} ${filen}".surecFK" >  ${filen}".sures"
+suop2 ${file0} ${filen}".sumix" >  ${filen}".sures"
+suxwigb < ${filen}".sures" key=offset perc=98 title='residuals'&
+fi
+
+###########################################################
+# Generate the su interpolated data  for  comparison
+if [ 1 = 1 ]; then
+suinterpm dx=25 < ${filen}".su" | suwind key=offset reject=-163 | susetntr > ${filen}".suint"
+# residuals
+suwind key=offset abs=1 min=6120 < ${file0} | sugain scale=0 > pp
+cat pp ${filen}".suint" | susort +offset > ppp
+mv ppp  ${filen}".suint" 
+ 
+suop2 ${file0} ${filen}".suint" > ${filen}".suintres"
+fi
+
+
+suwind key=offset min=210 < ${filen}".sures" | susetntr > ${filen}"p.sures"
+suwind key=offset min=210 < ${filen}".sumix" | susetntr > ${filen}"p.sumix"
+suwind key=offset min=210 < ${filen}".su" | susetntr > ${filen}"p.su"
+suwind key=offset min=210 < ${filen}".suzero" | susetntr > ${filen}"p.suzero"
+suwind key=offset min=210 < ${filen}".surecFK" | susetntr > ${filen}"p.surec"
+exit 0
+
+# some figures
+supswigp < ${filen}".sumix" key=offset perc=99 title=interpolated x1beg=0.5 x2beg=000 x2end=3000 > pp.ps
+supswigp < ${filen}".su" key=offset perc=99 title=original x1beg=0.5 x2beg=000 x2end=3000 > p.ps
+
+gv p.ps
+gv pp.ps
+
+
+
+
+

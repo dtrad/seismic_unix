@@ -1,0 +1,312 @@
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Tue Apr 16 14:45:46 2002
+;; Emacs version 20.7.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring '("$1" "res" "rest" "s" "restSSS" "tr" "ix=" "tr" "parmute" "plo" "ntr" "tr2" "verbose"))
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+
+;; Buffer section:
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesureadveli"
+  "Makesureadveli"
+  'fundamental-mode
+  '(nil)
+  443
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/sureadveli.c"
+  "sureadveli.c"
+  'c-mode
+  '(nil)
+  3704
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/stopcriteria.cpp"
+  "stopcriteria.cpp"
+  'c++-mode
+  '(nil)
+  680
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radon_cgfft2.cpp"
+  "radon_cgfft2.cpp"
+  'c++-mode
+  '(nil)
+  3717
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonline"
+  "Makesuradonline"
+  'fundamental-mode
+  '(nil)
+  1008
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/taper.c"
+  "taper.c"
+  'c-mode
+  '(nil)
+  2461
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suadapdiff.cpp"
+  "suadapdiff.cpp"
+  'c++-mode
+  '(nil)
+  2559
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonline_stack.cpp"
+  "suradonline_stack.cpp"
+  'c++-mode
+  '(nil)
+  10830
+  '(5708 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radonsolver0_mute.cpp"
+  "radonsolver0_mute.cpp"
+  'c++-mode
+  '(nil)
+  1660
+  '(2102 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xsuradonlinetd"
+  "Xsuradonlinetd"
+  'sh-mode
+  '(nil)
+  1100
+  '(1004 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonlinetd.cpp"
+  "suradonlinetd.cpp"
+  'c++-mode
+  '(nil)
+  14652
+  '(8538 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/Makesuradonlinetd"
+  "Makesuradonlinetd"
+  'fundamental-mode
+  '(nil)
+  1568
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/save_vector.cpp"
+  "save_vector.cpp"
+  'c++-mode
+  '(nil)
+  1
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/suradonline.cpp"
+  "suradonline.cpp"
+  'c++-mode
+  '(nil)
+  13064
+  '(12119 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/doublemute.cpp"
+  "doublemute.cpp"
+  'c++-mode
+  '(nil)
+  1632
+  '(2850 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/rest_multiples.cpp"
+  "rest_multiples.cpp"
+  'c++-mode
+  '(nil)
+  3709
+  '(3687 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/clibrary/radontd_win.cpp"
+  "radontd_win.cpp"
+  'c++-mode
+  '(nil)
+  4085
+  '(2755 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xrestgathers"
+  "Xrestgathers"
+  'sh-mode
+  '(nil)
+  412
+  '(976 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xundo_segyclean"
+  "Xundo_segyclean"
+  'sh-mode
+  '(nil)
+  1
+  '(442 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/work/stkvel.line77.const.su"
+  "stkvel.line77.const.su"
+  'fundamental-mode
+  '(nil)
+  54
+  '(41 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xchange_velocities"
+  "Xchange_velocities"
+  'sh-mode
+  '(nil)
+  960
+  '(106 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Velan0"
+  "Velan0"
+  'sh-mode
+  '(nil)
+  2609
+  '(1966 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xcomp_offsetsec_poland"
+  "Xcomp_offsetsec_poland"
+  'sh-mode
+  '(nil)
+  602
+  '(620 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xsuradonline_poland"
+  "Xsuradonline_poland"
+  'sh-mode
+  '(nil)
+  485
+  '(1594 t)
+  nil
+  nil
+  '((overwrite-mode)))
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Velan1"
+  "Velan1"
+  'sh-mode
+  '(nil)
+  294
+  '(2317 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/poland/spick1/results/Xseeresults"
+  "Xseeresults"
+  'sh-mode
+  '(nil)
+  299
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/home/dtrad/seismic/su/Xfigures_poland_sp"
+  "Xfigures_poland_sp"
+  'sh-mode
+  '(nil)
+  1063
+  '(949 t)
+  nil
+  nil
+  nil)
+

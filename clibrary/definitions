@@ -1,0 +1,2 @@
+#define floatprint(expr) fprintf(stderr,#expr " = %f\n", expr)
+#define intprint(expr) fprintf(stderr,#expr " = %d\n", expr)

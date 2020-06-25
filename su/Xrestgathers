@@ -1,0 +1,47 @@
+#! /bin/sh
+# shell for dip filter
+# Daniel Trad - UBC - CDSST 
+# to obtain the segy words from the file use 
+#        sugethw < FILEIN key=sx output=geom | sort | uniq > sxwords
+set -x
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+
+NAME=$1
+
+FILE1=$NAME'sp.su'
+FILE2=$NAME'sp.HRT.su'
+FILEOUT=$NAME'sp.HRT.res.su'
+
+
+fold=$5
+fold=500
+cdpmin=$2
+cdpmax=$3
+dcdp=$4
+cdp=$cdpmin
+rm $FILEOUT
+while [ $cdp -le $cdpmax ]
+do
+       echo $cdp
+       #suwind < $FILEIN key=sx min=$sx max=$sx count=$fold > panel.$sx
+       suwind < $FILE1 key=cdp min=$cdp max=$cdp count=$fold > file1
+       suwind < $FILE2 key=cdp min=$cdp max=$cdp count=$fold > file2
+       Xsetntr file1
+       Xsetntr file2
+       suadapdiff file1 file2 >> $FILEOUT
+       #suxwigb key=offset perc=97 xbox=$6 title="cdp=${cdp}" < rest 
+       cdp=`bc -l <<END
+		$cdp + $dcdp
+END`
+
+done
+
+
+
+
+

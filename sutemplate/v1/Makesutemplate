@@ -1,0 +1,48 @@
+SHELL= /bin/sh
+OPTC= 
+IDIR=-I$(CWPROOT)/include -I.
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a 
+
+LFLAGS= $(PRELFLAGS) -L$L  -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=sutemplate
+
+FLAG=-c -O3 -Wall
+
+OBJ=  $(PROG).o dot.o save_vector.o cleansegy.o xtimesy.o fftgo.o fftback.o cdot.o process.o
+
+LIBC=.
+
+# dependence 
+$(HOME)/bin/$(PROG): $(OBJ) 
+	${C++} -o $(HOME)/bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp 
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dot.o: $(LIBC)/dot.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_vector.o: $(LIBC)/save_vector.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+cleansegy.o: $(LIBC)/cleansegy.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+xtimesy.o: $(LIBC)/xtimesy.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+process.o: $(LIBC)/process.cpp
+	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fftgo.o: $(LIBC)/fftgo.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fftback.o: $(LIBC)/fftback.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+cdot.o: $(LIBC)/cdot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+
+
+
+
+

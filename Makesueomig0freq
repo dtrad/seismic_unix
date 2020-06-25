@@ -1,0 +1,75 @@
+SHELL= /bin/sh
+
+IDIR=-I$(CWPROOT)/include  -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+OPTC= -O3 -Wall
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a $L/libdan.a
+
+LFLAGS= $(PRELFLAGS) -L$L -L$../bin -lsu -lpar -lcwp -lm -ldan $(POSTLFLAGS)
+
+PROG=sueomig0freq
+
+FLAG=-c -O3 -Wall
+
+
+OBJ=  $(PROG).o  equiv_offset_fold.o radonline_stack0.o stack_rteom_operator.o \
+		 axbcomplex.o eomig6.o rjwfilter.o filt.o t2t0.o \
+		 radon_matrix.o radon_param.o interval.o taper.o  \
+		 nmo.o interpovv.o getvelocities.o radoninv.o\
+	       	 radon_toeplitz.o doublemute.o 	
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ) $L/libdan.a
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+equiv_offset_fold.o: $(LIBC)/equiv_offset_fold.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radonline_stack0.o: $(LIBC)/radonline_stack0.cpp
+	g++  -c $(OPTC)  $(ENDIANFLAG) $? $(IDIR)
+stack_rteom_operator.o: $(LIBC)/stack_rteom_operator.cpp
+	g++  -c $(OPTC)  $(ENDIANFLAG) $? $(IDIR)
+axbcomplex.o: $(LIBC)/axbcomplex.cpp
+	g++  -c $(OPTC)  $(ENDIANFLAG) $? $(IDIR)
+eomig6.o: $(LIBC)/eomig6.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rjwfilter.o: $(LIBC)/rjwfilter.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+filt.o: $(LIBC)/filt.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+t2t0.o: $(LIBC)/t2t0.c
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_matrix.o: $(LIBC)/radon_matrix.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interval.o: $(LIBC)/interval.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+taper.o: $(LIBC)/taper.c
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nmo.o: $(LIBC)/nmo.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interpovv.o: $(LIBC)/interpovv.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+getvelocities.o: $(LIBC)/getvelocities.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoninv.o: $(LIBC)/radoninv.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_toeplitz.o: $(LIBC)/radon_toeplitz.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+doublemute.o: $(LIBC)/doublemute.cpp
+	g++  -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+
+
+

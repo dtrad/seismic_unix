@@ -1,0 +1,65 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+
+set -x 
+  
+FILEN=cdp1000
+
+METHOD="HRT"
+
+FILE1="${FILEN}.su"
+FILE2="${FILEN}.supri_${METHOD}"
+FILE3="${FILEN}.sumul_${METHOD}"
+FILE4="${FILEN}.surad_${METHOD}"
+FILE6="${FILEN}.suradmul_${METHOD}"
+FILE7="${FILEN}.su.1000.ps"
+FILE8="${FILEN}.supri_${METHOD}.1000.ps"
+FILE9="${FILEN}.sumul_${METHOD}.1000.ps"
+
+convertoffset="suchw key1=offset key2=offset b=0.3052"
+convertf2="suchw key1=f2 key2=f2 d=0.0931"
+ 
+
+
+
+$convertoffset < $FILE1 > $FILE1'_metric'  
+$convertoffset < $FILE2 > $FILE2'_metric'  
+$convertoffset < $FILE3 > $FILE3'_metric'  
+$convertf2 < $FILE4 > $FILE4'_metric'  
+$convertf2 < $FILE6 > $FILE6'_metric'  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

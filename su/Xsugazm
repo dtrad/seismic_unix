@@ -1,0 +1,2 @@
+#!/bin/sh
+sushw key=d2 a=12.5 < suhyp1 | sugazmig  tmpdir='/home/dtrad/temp/' tmig=0,0.2,0.4.,0.6 vmig=1000,1500,2000,2500 > pp &

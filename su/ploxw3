@@ -1,0 +1,29 @@
+#! /bin/sh
+
+FILE=cdp1000.su # original data
+
+x1beg=3
+x1end=4.5
+perc=99 
+
+case "$3" in
+    1)
+	x2beg=-5000
+	x2end=0    
+	
+	;;
+    2)
+	x2beg=-10000
+	x2end=-5000	
+	;;
+    3)
+	x2beg=-16000
+        x2end=-11000
+	;;
+esac
+
+suxwigb < "$1" key=offset x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end perc=$perc \
+title="$1" &
+
+suxwigb < "$2" key=offset x1beg=$x1beg x1end=$x1end x2beg=$x2beg x2end=$x2end perc=$perc \
+title="$2" &

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+susynth2 nh=256 nt=256 fpeak=35 tau=0.2,0.4,0.6 vel=4500,5000,5500 dh=25 avo=1,2,3 avof=0.5  > data7.su
+
+susynth2 nh=256 nt=256 fpeak=5 tau=0.01,0.01 shape=1 vel=2000,2500 dh=25 > groll.su
+
+suop2 data7.su groll.su op=sum > data7gr.su
+
+
+ 
+

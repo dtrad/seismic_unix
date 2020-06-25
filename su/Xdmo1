@@ -1,0 +1,34 @@
+#! /bin/sh
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+FILE=imp1
+FILE1=$FILE'.su'
+FILEDMO=$FILE'.dmo.su'
+FILERAD=$FILE'.dmo.rad.su'
+FILERAD2=$FILE'.dmo.rad2.su'
+FILEREC=$FILE'.dmo.rad.rec.su'
+suspike nspk=4 ntr=64 nt=512 \
+it1=60 ix1=10 it2=90 ix2=20 it3=120 ix3=30 it4=150 ix4=40 | 
+sushw key=cdp a=1 b=1 |
+sushw key=ntr a=64 > $FILE1
+sudmotx cdpmin=1 cdpmax=64 < imp1.su noffmix=2 dxcdp=10 > $FILEDMO
+$PLOTC < $FILEDMO  &
+sushw key=offset a=-320 b=10 < $FILEDMO |
+sushw key=f2 a=-0.00 b=0.0001  > pp
+#suhrrtf method=1 eps1=1  qmin=-0.1 nq=64 freq=70 rtmethod=1  < pp  > $FILERAD 
+suhrrti offsetfile=imp1.off  rtmethod=1 < pp  > $FILERAD
+
+$PLOTX < $FILERAD mpicks=./ppp 
+NMUTE=`readmute << END`
+sumute < $FILERAD  xfile=xfileb tfile=tfileb nmute=$NMUTE below=0 > $FILERAD2
+$PLOTX < $FILERAD2 mpicks=./ppp
+
+suhrrtf method=1 eps1=1 qmin=-0.0001 nq=64 freq=70 rtmethod=1 < $FILERAD2 > $FILEREC
+
+$PLOTT < $FILEREC &
+
+
+

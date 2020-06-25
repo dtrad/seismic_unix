@@ -1,0 +1,212 @@
+#! /bin/sh
+# Xradon --- Hyperbolic Radon Transform.
+######################################################################
+# Example: real  sucdps2, sumiss2
+# 
+#######################################################################
+# Author: Daniel Trad- November 1999
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+HBOX=400
+WBOX=350
+
+
+set -x
+
+FP=0
+DQ=2
+HBOX=400
+WBOX=350
+MIN=500
+MAX=15000
+
+
+FILE=sumiss2.1100
+FILEN=$FILE'TD2'
+FILENMO=$FILE'nmo'
+FILEGAP=$FILE'gap'
+FILEOFF=$FILE'off'
+FILERAD=$FILEN'rad'
+FILEREC=$FILEN'rec'
+FILERADOFF=$FILEN'radoff'
+FILERAD2=$FILEN'radb'
+FILEREC2=$FILEN'recb'
+#FILEOFF2=sumiss2.1100.off3 # Final offset in which data will be resampled 
+FILEOFF2=$FILEOFF
+
+# Options
+OPTIONSETNTR='n'
+OPTIONGETH='n'
+OPTIONFILT='n'
+OPTIONAGC='n'
+OPTIONRAD='y'
+OPTIONPLOTMASK='n'
+OPTIONPLOTF='y'
+OPTIONMUTE='n'
+OPTIONREC='y'
+OPTIONREC2='n'
+OPTIONRES='n'
+
+# PASS BAND FILTER
+F=1,10,70,80
+AMPS=0,1,1,0
+# RADON (see suhrrtf for more details)
+METHOD=0 # 0 Inverse satck 1 WTCGLS 2 WTCGLS with model Covar  3 LSQR
+EPS1=1e-2  # Variance of the noise
+EPS2=1
+ITER_END=1; # External iterations 
+QMIN=0  # Min q
+QMAX=0.6e-7
+NQ=50       # NP traces
+FMAX=80     # max freq to compute
+RTMETHOD=2 # 1=LRT 2=PRT
+COSTFLAG=0 # =1 PLOT COST FUNCTIONS (SLOWER)
+ITERCG=10  # CG ITERATIONS
+EPS=0      # =0 FOR METHOD 2 
+NORM=1     # L1 NORM
+STEP=0.9  # Step less 1
+THRES=0.5
+
+NT=`sugethw ns < $FILE | sed 1q | sed 's/.*ns=//'`
+
+case $OPTIONSETNTR in
+y*)
+ntr=`surange < $FILE | sed 1q | sed 's/traces://'`
+cp $FILE pp
+sushw key=ntr a=$ntr < pp > $FILE 
+;;
+esac
+
+case $OPTIONFILT in
+y*)
+sufilter f=$F amps=$AMPS < $FILE > pp; cp pp $FILE
+;;
+esac
+
+
+# Save offset  for inverse radon transform
+case $OPTIONGETH in
+y*)
+sugethw key=offset output=geom < $FILE > $FILEOFF
+;;
+esac
+
+case $OPTIONRAD in
+y*)
+#Forward  Radon transform
+suradtd method=$METHOD  eps1=$EPS1 iter_end=$ITER_END qmin=$QMIN qmax=$QMAX nq=$NQ freq=$FMAX itercg=$ITERCG eps=$EPS norm=$NORM step=$STEP thres=$THRES < $FILE  > $FILERAD 
+;;
+esac
+
+case $OPTIONMUTE in
+    y*)
+    cp $FILERAD $FILERAD2
+    ok=false
+    while [ $ok = false ]
+	    do
+	    cp $FILERAD2 temp
+	    echo "Starting Muting in Radon domain"
+
+	    echo  "Would you prefer above or below muting? (a/b)" | tr -d "\012" >/dev/tty
+	    read response1
+	    case $response1 in
+		a*) BELOW=0 ;;
+		b*) BELOW=1 ;;
+	    esac
+	    #****************************************************
+	    #The following steps are for muting in two steps. 
+	    #Press s on the output of suxwigb to generate the file ppp with the
+	    #x and t coordinates to mute
+	    #The program readmute reads ppp and produces the two binary files
+	    # xfileb and tfileb, and the number of points.
+	    #****************************************************
+			
+	    # First window to mute
+
+	    suxwigb < temp perc=99  key=f2 wbox=550 hbox=650 title="Radon domain"  mpicks=/home/dtrad/work/ppp 
+	    NMUTE=`readmute << END`
+
+	    sumute < temp key=f2 xfile=xfileb tfile=tfileb nmute=$NMUTE below=$BELOW ntaper=$NTAPER > $FILERAD2
+	    suxwigb < $FILERAD2  perc=99  key=f2 wbox=550 hbox=650 title="Filtered Radon domain"&
+	   
+	    echo  "MUTE FINISHED? (y/n) "  | tr -d "\012" >/dev/tty
+	    read response
+	    case $response in
+	    n*) ok=false ;;
+	    *) ok=true ;;
+	    esac
+
+
+    done </dev/tty
+
+
+
+;;
+esac
+
+
+
+
+suxwigb < $FILERAD  perc=99  key=f2 wbox=550 hbox=650 &
+
+case $OPTIONPLOTMASK in
+y*)
+ximage < semblance n1=$NT &
+;;
+esac
+
+case $OPTIONPLOTF in
+y*)
+sufft < $FILERAD | suamp | suximage perc=99.9 title="Freq-Q domain" &
+;;
+esac
+
+#Inverse Radon Transform
+case $OPTIONREC in
+y*)
+suradtdi rtmethod=$RTMETHOD fmax=$FMAX offsetfile=$FILEOFF2 < $FILERAD | 
+sufilter f=$F amps=$AMPS > $FILEREC
+suxwigb < $FILEREC  key=offset  wbox=550 hbox=650  &
+;;
+esac
+
+
+#Inverse Radon Transform
+case $OPTIONREC2 in
+y*)
+suradtdi rtmethod=$RTMETHOD fmax=$FMAX offsetfile=$FILEOFF2 < $FILERAD2 | 
+sufilter f=$F amps=$AMPS > $FILEREC2
+;;
+suxwigb < $FILEREC2   key=offset  wbox=550 hbox=650  &
+esac
+
+
+
+
+exit 0  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

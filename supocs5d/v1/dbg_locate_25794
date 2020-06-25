@@ -1,0 +1,2 @@
+P 25794 T 1341880421 N 2 L 2 src/utils/c/Daemon.c L 400: net_thishost: using sdshostname command (cgy315pc)
+P 25794 T 1341880421 N 3 L 2 src/utils/c/readwrite_args.c L 243: read_args: read arguments

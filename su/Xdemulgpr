@@ -1,0 +1,109 @@
+#! /bin/sh
+# Xradon --- Example of multiple removal with Radon T.
+######################################################################
+# Multiple elmination for GPR data. 
+# OPTION=forinv computes forward and inverse
+# OPTION=sep computes forward to a file and then inverse  
+#######################################################################
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+
+set -x
+FILE="riv04b.su"
+FILETEMP="riv04b.sutemp"
+FILERAD="riv04b.surad"
+FILEREC="riv04b.surec"
+FILEREC2="riv04b.surecmul"
+FILEREC3="riv04b.surecprim"
+OPTION="myradon"
+
+igopt=3
+pmin=-7000 
+pmax=10000 
+nxmax=390
+dp=60
+f1=60
+f2=80
+pmula=80
+pmulb=200
+
+sushw key=cdp a=1 < $FILE | sushw key=offset a=1 b=1 > $FILETEMP
+Xsetntr $FILETEMP
+
+case $OPTION in
+forinv*)
+suradon < $FILETEMP choose=3 igopt=$igopt pmin=$pmin pmax=$pmax nxmax=$nxmax dp=$dp  \
+f1=$f1 f2=$f2 > $FILEREC
+suxwigb < $FILEREC key=offset &
+;;
+
+sep)
+
+suradon < $FILETEMP choose=0 igopt=$igopt pmin=$pmin pmax=$pmax nxmax=$nxmax dp=$dp  \
+f1=$f1 f2=$f2 pmula=$pmula $pmulb=$pmulb > $FILERAD
+suximage < $FILERAD &
+
+
+#suradon < $FILERAD choose=4 igopt=$iogpt pmin=$pmin pmax=$pmax nxmax=$nxmax dp=$dp \
+#f1=$f1 f2=$f2 > $FILEREC
+suxwigb < $FILEREC key=offset &
+;;
+
+myradon*)
+
+qmin=-4e-3
+factor=4
+scale=1
+nq=150
+eps1=0.1
+eps2=0.1
+eps=1e-10
+itercg=25
+iter_end=5
+solver="toep"
+solver="wtcgls"
+rtmethod=1
+norm=0
+nmofactor=0
+verbose=0
+par="stkvel.data1.su"
+perc=100
+forward='n'
+
+if [ $forward = 'y' ]; then
+suradonsolver < $FILETEMP verbose=$verbose par=$par itercg=$itercg  iter_end=$iter_end \
+	solver=$solver rtmethod=$rtmethod  depth=$depth \
+	eps2=$eps2 eps1=$eps1 eps=$eps testadj=0  nq=$nq qmin=$qmin norm=$norm \
+        nmofactor=$nmofactor smute=3.0  step=0.95 factor=$factor modelfile=$FILERAD  \
+	quantil=1 > $FILEREC
+fi
+
+Xmuterad $FILERAD  $FILERAD'b'
+
+echo  $FILEREC2
+suradoninv $FILETEMP $FILERAD'b' par=$par nq=$nq nmofactor=0 rtmethod=$rtmethod \
+	    depth=$depth smute=3.0 offsetfile=$FILETEMP'off' > $FILEREC2
+
+
+suop2 $FILETEMP $FILEREC2 > $FILEREC3
+
+$PLOTR perc=$perc < $FILERAD title="Radon transform"  &
+
+$PLOTR perc=$perc < $FILERAD2 title="Muted Radon transform"  &
+
+$PLOTX clip=$clip < $FILEREC title="Recovered data " &
+
+$PLOTX clip=$clip < $FILEREC2 title="Multiples" &
+
+$PLOTX clip=$clip < $FILEREC3 title="Primaries" &
+
+;; 
+esac
+
+
+
+

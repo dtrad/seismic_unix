@@ -1,0 +1,4 @@
+#!/bin/sh 
+par="x1beg=0.4 x1end=0.8 x2beg=28 x2end=34"
+
+suxwigb < $1 title="$1" $par &

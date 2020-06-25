@@ -1,0 +1,244 @@
+#! /bin/sh
+# Xsuradonfk_ken --- Attenuation of difractions with  
+# non apex centered Radon Transform.
+# Data contain multiples of diffractions. 
+#
+# data preprocessing:
+# Althouth the data is a real data set, for this example we need to take a
+# window, and make the data to look symmetric 
+# from  kencmpsnonmo.su take cdp 5300 and window from 5.5s to end.
+# Data name kencmpwin0.su
+# then make the data symmetric by 
+# suchw key1=offset key2=offset b=-1 < kencmpwin0.su > pp
+# cat pp kencmpwin0.su > kencmpwin.su
+# sushw key=delrt a=0 < kencmpwin.su > pp
+# susort +offset < pp >  kencmpwin.su
+# Xsetntr kencmpwin.su
+######################################################################
+# Author: Daniel Trad- November 2001
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=94"
+suxx="suximage perc=98 hbox=900 wbox=700 xbox=$2   curve=curve1 npair=5 & "
+
+set -x
+
+METHOD='TX'
+METHOD='RFK' # Radon fk (equiv to LSFK so far)
+
+RADONFORW='y'
+
+sufix=${METHOD}
+sufix2="${METHOD}2"
+FILE=obcdata1c.su; clip=  #clip corresponding to perc=97
+
+FILEN=$FILE
+FILETEMP=pp
+FILETEMP2=ppp
+
+offsetfile=$FILE'off'
+
+FILERAD=${FILEN}'rad'${sufix}
+FILERAD0=${FILEN}'rad0'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILERES=$FILEN'res'${sufix}
+
+FILERAD2=${FILEN}'rad'${sufix2}
+FILEREC2=$FILEN'rec'${sufix2}
+FILEREC2=$FILEN'rec'${sufix2}
+FILERES2=$FILEN'res'${sufix2}
+
+# Options
+# None
+
+# RADON
+
+VERBOSE=1
+fold=1
+buffer=10; 
+iter_end=4
+sinc=0;
+parmute=3e-9
+parmute=22e-9
+nq=90
+under=0.999
+over=1.001
+qmin=-2e-9
+factor=1.1
+fmax=100
+
+if [ $METHOD = 'TX' ]; then
+    eps1=1e-3
+    eps2=1e-3
+    PROGRAM=suinterptx
+    eps=0.01
+    dperv=0.03;
+    dperv=0.03;
+    pervmin=0.5e-9;
+    centralq=30
+    nq=70
+    perc=100
+    step=0.9
+    itercg=5
+    iter_end=1
+    smoothf=0
+    smoothi=0
+    filtout=0
+    restart=1
+    LI=0
+    t0=0
+    clip= #clip corresponding to perc=100
+    norm=1
+    nw=21
+    fpeak=25
+    nw=0
+    dtres=0.008
+    ntres=875
+elif [ $METHOD = 'RFK' ]; then
+    eps1=1e-3
+    eps2=1e-3
+    PROGRAM=suradonfk0
+    eps=0.01
+    dperv=0.03;
+    dperv=0.03;
+    pervmin=0.5e-9;
+    centralq=30
+    nq=70
+    perc=100
+    step=0.9
+    itercg=5
+    iter_end=1
+    smoothf=0
+    smoothi=0
+    filtout=0
+    restart=1
+    LI=0
+    t0=0
+    clip= #clip corresponding to perc=100
+    norm=1
+    nw=21
+    fpeak=25
+    nw=0
+    dtres=0.008
+    ntres=875
+else 
+    PROGRAM=donothing
+fi
+
+scale=1.0
+CDPMIN=5300
+DXCDP=1
+CDPMAX=5300
+
+if [ $RADONFORW = 'n' ]; then
+    PROGRAM="skipforward"
+fi
+
+############################*****
+perc=100
+
+cp $FILE $FILETEMP
+
+case $PROGRAM in
+suinterptx*)
+    sufill  < $FILETEMP > pp1;  # Fill gaps with zero traces 
+    #extract offset range with possibly apex locations
+    suwind < pp1 key=offset abs=1 max=8000 | sugethw key=offset\
+    output=geom > $offsetfile 
+    #Use RT to collapse and mute multiples of diffractions
+    suradontx eps1=9e-1 eps2=9e-1 iter_end=1 itercg=5 eps=1e-3 \
+    step=0.97  smooth=0 verbose=1 par="stkvel.kencmp2.su" \
+    modelfile=$FILERAD offsetfile=$offsetfile norm=$norm \
+    LI=0 t0=0 nw=0 tmin_m=0.7 tmax_m=2 ihmin_m=130 \
+    ihmax_m=158 thres_m=0 slope_m=27 mute=1 < pp1 | suremovedead | susetntr > $FILEREC
+    cp migrated2.su $FILERAD0
+;;
+suradonfk*)
+    # FIrst pass:
+    if [ 1 -eq 1 ]; then
+
+    suradonfkcube < $FILETEMP vmig=300,300 tmig=0,6 plot=0  plot2=0 \
+    Wmthreshold=10000 threshold=0.20 smoothMute=1 nv=3 dv=100 \
+    itercg=4 iter_end=2 step=0.98 testadj=0 eps1=5.e-1 eps2=5.e-1 modelfile=$FILERAD \
+    ascale=1 fpeak=20 nw=0 typewav=2 option=3 tmin_m=3.7 tmax_m=6.5 ihmin_m=80 lstaper=30  \
+    ihmax_m=220 thres_m=0 slope_m=0 mute=1 norm=0 > $FILEREC
+    mv migrated.su $FILERAD0
+
+    fi
+;;
+skipforward*)
+echo "Skipping forward model.................................."
+echo "........................................................"
+;;
+esac
+PLOTXX="suximage perc=98 hbox=900 wbox=700 curve=curve1 npair=5 &"
+PLOTX="suximage perc=98 hbox=800 wbox=600 clip=2.4 legend=1 &"
+
+
+if [ 1 -eq 1 ]; then
+$PLOTX < $FILERAD title=$FILERAD xbox=0 &
+$PLOTX < $FILE title=$FILE xbox=620 &
+$PLOTX < $FILEREC title=$FILEREC xbox=1240 &
+suop2 $FILE $FILEREC > $FILERES
+$PLOTX < $FILERES  title=$FILERES xbox=1860&
+
+fi
+
+# Second pass:
+if [ 0 -eq 1 ]; then
+
+    suradonfk0 < $FILERES vmig=330,330 tmig=0,6 plot=0  plot2=0 \
+    Wmthreshold=10000 threshold=0.80 smoothMute=1 \
+    itercg=2 iter_end=1 step=0.98 testadj=0 eps1=9.e-1 eps2=9.e-1 modelfile=$FILERAD2 \
+    ascale=1 fpeak=20 nw=0 typewav=2 option=3 tmin_m=3.0 tmax_m=6.5 ihmin_m=140 lstaper=30  \
+    ihmax_m=230 thres_m=0 slope_m=0 mute=1 norm=0 > $FILEREC2
+
+    $PLOTX < $FILERAD2 title=$FILERAD2 xbox=0 &
+    $PLOTX < $FILERES title=$FILEREC xbox=620 &
+    $PLOTX < $FILEREC2 title=$FILEREC2 xbox=1240 &
+    suop2 $FILERES $FILEREC2 > $FILERES2
+    $PLOTX < $FILERES2  title=$FILERES2 xbox=1860&
+ 
+fi
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

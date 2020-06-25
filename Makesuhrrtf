@@ -1,0 +1,174 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+include $(CWPROOT)/src/Makefile.config
+
+IDIR=-I$(CWPROOT)/include -I./clibrary
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a $L/Complex.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=suhrrtf
+
+FLAG=-c -O 
+
+OBJ=  $(PROG).o hrrtf.o radon_param.o  norma.o interval.o \
+      matrix_2.o expc.o fftgo.o fftback.o Atimesx.o choldc.o cholsl.o \
+      AtimesBm.o maxmax.o testchol.o displayA.o modgrad.o xtimesy.o \
+      xminusy.o xplusy.o xequaly.o cdot.o  costfunc.o \
+      AtimesDiag.o ctoeplitz.o ctoephcg.o htmult.o rcdot.o cghrrt.o \
+      misfit.o modnorm.o Dcomplex.o Complex.o freqweight.o \
+      matrix_3.o chol_all.o conjgradrt3.o \
+      conjgradrt4.o circ_mult.o cholund.o cholover.o toepradon.o \
+      toepradoncg.o tred2.o nrutil.o svdcmp.o svbksb.o  svdover.o pythag.o \
+      conjgrad3r.o linbcg1.o asolve1.o atimes1.o snrm.o cgls0.o cgls.o \
+      wtcgls0.o wtcgls.o cgnl0.o cgnl.o lsqr0.o lsqrc.o testadj_rad_f.o \
+      rad_wpcgnr.o wpcgnr_cmplx.o modelweight.o radon_freq.o savesudata.o
+
+LIB=./flibrary
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+hrrtf.o: $(LIBC)/hrrtf.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/hrrtf.cpp $(IDIR)
+radon_param.o: $(LIBC)/radon_param.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/radon_param.cpp $(IDIR)
+norma.o: $(LIBC)/norma.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/norma.cpp $(IDIR)
+interval.o: $(LIBC)/interval.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/interval.cpp $(IDIR)
+matrix_2.o: $(LIBC)/matrix_2.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/matrix_2.cpp $(IDIR)
+expc.o: $(LIBC)/expc.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/expc.cpp $(IDIR)
+fftgo.o: $(LIBC)/fftgo.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/fftgo.cpp $(IDIR)
+fftback.o: $(LIBC)/fftback.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/fftback.cpp $(IDIR)
+Atimesx.o: $(LIBC)/Atimesx.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/Atimesx.cpp $(IDIR)
+choldc.o: $(LIBC)/choldc.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/choldc.cpp $(IDIR)
+cholsl.o: $(LIBC)/cholsl.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cholsl.cpp $(IDIR)
+AtimesBm.o: $(LIBC)/AtimesBm.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/AtimesBm.cpp $(IDIR)
+maxmax.o: $(LIBC)/maxmax.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/maxmax.cpp $(IDIR)
+testchol.o: $(LIBC)/testchol.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/testchol.cpp $(IDIR)
+displayA.o: $(LIBC)/displayA.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/displayA.cpp $(IDIR)
+modgrad.o: $(LIBC)/modgrad.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/modgrad.cpp $(IDIR)
+xtimesy.o: $(LIBC)/xtimesy.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/xtimesy.cpp $(IDIR)
+xminusy.o: $(LIBC)/xminusy.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/xminusy.cpp $(IDIR)
+xplusy.o: $(LIBC)/xplusy.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/xplusy.cpp $(IDIR)
+xequaly.o: $(LIBC)/xequaly.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/xequaly.cpp $(IDIR)
+cdot.o: $(LIBC)/cdot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cdot.cpp $(IDIR)
+costfunc.o: $(LIBC)/costfunc.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/costfunc.cpp $(IDIR)
+real.o: $(LIBC)/real.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/real.cpp $(IDIR)
+AtimesDiag.o: $(LIBC)/AtimesDiag.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/AtimesDiag.cpp $(IDIR)
+ctoeplitz.o: $(LIBC)/ctoeplitz.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/ctoeplitz.cpp $(IDIR)
+ctoephcg.o: $(LIBC)/ctoephcg.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/ctoephcg.cpp $(IDIR)
+htmult.o: $(LIBC)/htmult.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/htmult.cpp $(IDIR)
+rcdot.o: $(LIBC)/rcdot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/rcdot.cpp $(IDIR)
+cghrrt.o: $(LIBC)/cghrrt.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cghrrt.cpp $(IDIR)
+modnorm.o: $(LIBC)/modnorm.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/modnorm.cpp $(IDIR)
+misfit.o: $(LIBC)/misfit.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/misfit.cpp $(IDIR)
+Dcomplex.o: $(LIBC)/Dcomplex.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/Dcomplex.cpp $(IDIR)
+Complex.o: $(LIBC)/Complex.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/Complex.cpp $(IDIR)
+freqweight.o: $(LIBC)/freqweight.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/freqweight.cpp $(IDIR)
+matrix_3.o: $(LIBC)/matrix_3.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/matrix_3.cpp $(IDIR)
+chol_all.o: $(LIBC)/chol_all.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/chol_all.cpp $(IDIR)
+conjgradrt3.o: $(LIBC)/conjgradrt3.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/conjgradrt3.cpp $(IDIR)
+conjgradrt4.o: $(LIBC)/conjgradrt4.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/conjgradrt4.cpp $(IDIR)
+circ_mult.o: $(LIBC)/circ_mult.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/circ_mult.cpp $(IDIR)
+cholund.o: $(LIBC)/cholund.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cholund.cpp $(IDIR)
+cholover.o: $(LIBC)/cholover.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cholover.cpp $(IDIR)
+toepradon.o: $(LIBC)/toepradon.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/toepradon.cpp $(IDIR)
+toepradoncg.o: $(LIBC)/toepradoncg.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/toepradoncg.cpp $(IDIR)
+tred2.o: $(LIBC)/tred2.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/tred2.cpp $(IDIR)
+nrutil.o: $(LIBC)/nrutil.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/nrutil.c $(IDIR) 
+svdcmp.o: $(LIBC)/svdcmp.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/svdcmp.c $(IDIR) 
+svbksb.o: $(LIBC)/svbksb.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/svbksb.c $(IDIR) 
+svdover.o: $(LIBC)/svdover.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/svdover.cpp $(IDIR) 
+pythag.o: $(LIBC)/pythag.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/pythag.c $(IDIR) 
+conjgrad3r.o: $(LIBC)/conjgrad3r.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/conjgrad3r.cpp $(IDIR) 
+linbcg1.o: $(LIBC)/linbcg1.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/linbcg1.c $(IDIR) 
+atimes1.o: $(LIBC)/atimes1.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/atimes1.c $(IDIR) 
+asolve1.o: $(LIBC)/asolve1.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/asolve1.c $(IDIR) 
+snrm.o: $(LIBC)/snrm.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/snrm.c $(IDIR) 
+cgls0.o: $(LIBC)/cgls0.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cgls0.cpp $(IDIR) 
+cgls.o: $(LIBC)/cgls.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cgls.cpp $(IDIR) 
+wtcgls0.o: $(LIBC)/wtcgls0.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/wtcgls0.cpp $(IDIR) 
+wtcgls.o: $(LIBC)/wtcgls.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/wtcgls.cpp $(IDIR) 
+cgnl0.o: $(LIBC)/cgnl0.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cgnl0.cpp $(IDIR)
+cgnl.o: $(LIBC)/cgnl.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $(LIBC)/cgnl.cpp $(IDIR)
+lsqr0.o: $(LIBC)/lsqr0.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+lsqrc.o: $(LIBC)/lsqrc.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+testadj_rad_f.o: $(LIBC)/testadj_rad_f.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rad_wpcgnr.o: $(LIBC)/rad_wpcgnr.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+wpcgnr_cmplx.o: $(LIBC)/wpcgnr_cmplx.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon_freq.o: $(LIBC)/radon_freq.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+savesudata.o: $(LIBC)/savesudata.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+

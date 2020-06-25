@@ -1,0 +1,84 @@
+#! /bin/sh
+# Xradon --- Example of interpolation with high resolution radon.
+######################################################################
+# This example needs sudata1 generated with Xsusyn0
+# No extra files are needed.
+# method 1 and 2 stands for Usual Radon and High resolution RT.
+# First the header of full offset data are saved in file=headers 
+# and offset in sudata1.off
+# The sudata1.off file is  used by suhrrti to create data at given offsets 
+# from the model.
+# The headers file is used after suhrrti to put back the header.
+# The suwind is used to create gaps that are filled with suhrrtf and suhrrti
+# Main purpose of the program is to compare gap filling capabilities of
+# HRRT (method=2) with the usual RT (method=1).
+# If you change the data check the values at the beginning.
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+
+set -x
+NT=512 
+NH=64
+NHGAP=48
+NP=100
+DT=4000
+VNMO=7000,8000,9000
+TNMO=0.0,0.65,1.0
+NITER=3
+
+FP=0
+DQ=2
+HBOX=650
+WBOX=550
+MIN=500
+MAX=15000
+FILE=sudata2
+FILEGAP=sudata2gap
+FILERAD=sudata2rad
+FILEREC=sudata2rec
+FILEOFF=sudata2off
+REJECTT=775,800,825,850,875,900
+
+# Save offset and headers for inverse radon transform
+sugethw key=offset output=geom < $FILE > $FILEOFF
+suxwigb < $FILE   key=offset  hbox=650 mbox=550 &
+
+
+#Create Gaps
+suwind    key=offset min=200 max=5000 < $FILE > pp
+suwind key=offset reject=$REJECTT < pp > ppp
+#suwind    key=offset min=200 max=300 < pp > $FILEGAP 
+# Suwind delete the ntr word, so put it back. It is not necesary
+# for suhrrt2 but if it exists we save memory.
+sushw key=ntr a=$NHGAP < ppp > $FILEGAP 
+
+
+suxwigb < $FILEGAP  key=offset hbox=$HBOX wbox=$WBOX &
+
+#NMO in original data
+#sunmo tnmo=$TNMO vnmo=$VNMO < sudata1b > sudata1nmo
+#suxmovie title="NMO corrected data" < sudata1nmo &
+
+#Forward  Radon transform
+suhrrt2 method=4 eps1=3 eps=1e-7  iter_end=$NITER qmin=-2.e-8 nq=$NP freq=40 \
+< $FILEGAP  > $FILERAD
+
+suxwigb < $FILERAD   key=f2 hbox=650 mbox=550  &  
+
+#PLot Cost function
+
+a2b < Jcost > Jcostb n1=1 &
+xgraph   d1=1 style=normal n=$NITER < Jcostb &
+
+#Inverse Radon Transform
+suhrrti2 offsetfile=$FILEOFF  < $FILERAD  > $FILEREC
+
+#suxmovie title="RD Before NMO" < sudata1rec & 
+#sunmo tnmo=$TNMO vnmo=$VNMO invert=1 < sudata1rec > sudata1recf
+#suxwigb < sudata1recf n1=512 dt=0.004 n2=all  key=offset hbox=$HBOX wbox=$WBOX &  
+suxwigb < $FILEREC   key=offset  hbox=650 mbox=550  &  
+
+exit 0  
+
+

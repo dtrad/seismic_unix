@@ -1,0 +1,73 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+IDIR=-I$(CWPROOT)/include -I./clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a 
+
+LFLAGS= $(PRELFLAGS) -L$L -L../bin -lsu -lpar -lcwp -lm -ldan $(POSTLFLAGS)
+
+PROG=suinterpfk0
+
+FLAG=-c -O3 -Wall
+
+OBJ=  $(PROG).o  stoltz_wtcgls3.o stoltzop5.o stoltop_one_trace.o \
+	dftls.o FTmatrix.o adjteststoltz2.o get_wavelet.o  contran.o convgather.o \
+	fft2_zeropad.o stretching2.o save_gather_freq.o modelweight.o axbcomplex.o \
+	mutemask.o
+
+LIBC=./clibrary
+
+# dependence 
+../bin/$(PROG): $(OBJ) $(CWPROOT)/lib/libdan.a 
+	g++ -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp $(LIBC)/interpfk.h
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+stoltz_wtcgls3.o: $(LIBC)/stoltz_wtcgls3.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+stoltzop5.o: $(LIBC)/stoltzop5.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+stoltop_one_trace.o: $(LIBC)/stoltop_one_trace.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+adjteststoltz2.o: $(LIBC)/adjteststoltz2.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dftls.o: $(LIBC)/dftls.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+FTmatrix.o: $(LIBC)/FTmatrix.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+contran.o: $(LIBC)/contran.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+getvelocities.o: $(LIBC)/getvelocities.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+convgather.o: $(LIBC)/convgather.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fft2_zeropad.o: $(LIBC)/fft2_zeropad.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+stretching2.o: $(LIBC)/stretching2.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+get_wavelet.o: $(LIBC)/get_wavelet.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_gather_freq.o: $(LIBC)/save_gather_freq.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+modelweight.o: $(LIBC)/modelweight.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+axbcomplex.o: $(LIBC)/axbcomplex.cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+mutemask.o: $(LIBC)/mutemask.c
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

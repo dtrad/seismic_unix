@@ -1,0 +1,35 @@
+#! /bin/sh
+# Create data from linear velocity models 
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+
+susynlv  nt=512 dt=0.008 nxo=50 dxo=0.05 fxo=0  \
+	 nxs=50 dxs=0.05 fxs=3  ref="1:0,.5;10,1.5"  \
+	 v00=2.00 dvdz=0 dvdx=0 verbose=1 smooth=1 tmin=0.33  | 
+suchw key1=cdp key2=gx key3=sx b=1 c=1 d=2 | susort cdp offset > data.su 
+
+suwind key=offset min=0 max=0 < data.su > data.off0.su
+
+suwind key=cdp min=4500 max=4500 < data.su > data.cdp4500.su
+
+suwind key=offset min=0 max=0 < data.cdp4500.su > trace0
+suwind key=offset min=100 max=100 < data.cdp4500.su > trace1
+suwind key=offset min=1000 max=1000 < data.cdp4500.su > trace2
+suwind key=offset min=2100 max=2100 < data.cdp4500.su > trace3
+sukmig1 < data.su cdpmin=3000 cdpmax=4000 vel=2000 nx=100 > data.mig.su 
+
+$PLOTC < data.mig.su &
+
+sukmig1 < trace0 cdpmin=2000 cdpmax=7000 vel=2000 nx=100 | $PLOTC &
+sukmig1 < trace1 cdpmin=2000 cdpmax=7000 vel=2000 nx=100 | $PLOTC &
+sukmig1 < trace2 cdpmin=2000 cdpmax=7000 vel=2000 nx=100 | $PLOTC &
+sukmig1 < trace3 cdpmin=2000 cdpmax=7000 vel=2000 nx=100 | $PLOTC &
+
+
+
+
+

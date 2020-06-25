@@ -1,0 +1,370 @@
+#!/bin/sh
+# Figures for FKRT  paper (interpolation with migration operators)
+# Figures interpolation with FK (small window)
+
+# Figure 1: powerpoint 
+# Figure 2: model, shot gather, cdp gather
+
+set -x
+
+TITLE1="title=(a)" 
+TITLE2="title=(b)" 
+TITLE3="title=(c)" 
+TITLE4="title=(d)" 
+TITLE5="title=(e)" 
+TITLE6="title=(f)"
+TITLE7="title=(g)"
+TITLE8="title=(h)"
+TITLE9="title=(i)"
+
+
+if [ 0 = 1 ]; then
+
+#shot
+FILE1=shot1300_2.su 
+#cdp
+FILE2=cdp1300_2.su
+
+
+
+#################################################################
+# Sixty degree model and data
+file="datasyn.su"
+FILE=/prg/dtrad/ubc/ps/fig2b.ps
+
+nx=101 fx=0 dx=0.05
+nz=71 fz=0 dz=0.04
+unif2 <modelfkpaper ninf=4 nx=$nx nz=$nz dx=$dx dz=$dz \
+	v00=1.0,2.0,3.0,4.0,5.0 method=spline dvdz=0.5 |
+psimage  perc=99 $TITLE1 windowtitle="Model"\
+	label1="Depth (km)" label2="Distance (km)" \
+	 n1=$nz f1=$fz d1=$dz  n2=$nx f2=$fx d2=$dx > p1 
+
+unif2 <modelfkpaper ninf=0 nx=$nx nz=$nz dx=$dx dz=$dz \
+	v00=2000  method=spline dvdz=500 dvdx=200 |
+psimage  perc=99 $TITLE2 windowtitle="Model"\
+	label1="Depth (km)" label2="Distance (km)" \
+	 n1=$nz f1=$fz d1=$dz  n2=$nx f2=$fx d2=$dx legend=1 lstyle=vertright lwidth=0.5 units="vel (m/s)" > p1b cmap="hsv0"
+
+
+
+PLOTX="supswigp key=offset label1=Time (s) label2=Offset (m) x1beg=0.3 x1end=1.5"
+PLOTFK="supsimage label1=f(1/s) label2=kx(1/m)"
+
+$PLOTX < $FILE1 > p2 $TITLE3
+suspecfk dx=25 < $FILE1 | $PLOTFK  dx=25 > p3  $TITLE4
+$PLOTX < $FILE2 > p4 $TITLE5
+suspecfk dx=100 < $FILE2 | $PLOTFK  dx=100 > p5  $TITLE6
+
+supsmerge in=p1 in=p1b in=p2 in=p3 in=p4 in=p5  scale=0.34,0.37 scale=0.34,0.37 scale=0.37,0.37 scale=0.37,0.37 scale=0.37,0.37 scale=0.37,0.37 translate=1,7 translate=1,3.5 translate=4,7 translate=7,7 translate=4,3.5 translate=7,3.5 > $FILE
+ghostview $FILE
+
+cp p1 fig2b_a.ps
+cp p1b fig2b_b.ps
+cp p2 fig2b_c.p
+cp p3 fig2b_d.ps
+cp p4 fig2b_e.ps
+cp p5 fig2b_f.ps
+
+
+fi
+
+
+
+# Figure: interpolation with FK (whole figure)
+if [ 0 = 1 ]; then
+#shot
+filen=shot1300
+
+FILE0=${filen}".su"
+FILE1=${filen}".suzero"
+FILE2=${filen}".suradRFK"
+FILE3=${filen}".surecRFK"
+
+
+#################################################################
+# Sixty degree model and data
+file="datasyn.su"
+FILE=/prg/dtrad/ubc/ps/fig3.ps
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 x1beg=0.3 x1end=1.5 clip=1"
+PLOTFK="supsimage label1=f(1/s) label2=kx(1/m)"
+
+$PLOTX < $FILE1 > p1 $TITLE1
+suspecfk dx=25 < $FILE1 | $PLOTFK  dx=25 > p2  $TITLE2
+$PLOTX < $FILE2 > p3 $TITLE3
+suspecfk dx=25 < $FILE2 | $PLOTFK  dx=25 > p4  $TITLE4
+$PLOTX < $FILE3 > p5 $TITLE5
+suspecfk dx=25 < $FILE3 | $PLOTFK  dx=25 > p6  $TITLE6
+suadapdiff $FILE0 $FILE3 | $PLOTX > p7 $TITLE7
+
+
+supsmerge in=p1 in=p2 in=p3 in=p4 in=p5  in=p6 in=p7 scale=0.37,0.37 translate=1,7 translate=4,7 translate=1,3.5 translate=4,3.5 translate=1,0 translate=4,0 translate=7,0 > $FILE
+
+
+ghostview $FILE
+
+fi
+
+# Figure: interpolation with FK (whole figure)
+if [ 1 = 1 ]; then
+#shot
+file0=shot1300_2
+filen=shot1300_2ds
+
+
+
+FILE0=${file0}".su"
+FILE0b=${file0}"b.su"   
+FILE1=${filen}".sugap"
+FILE2=${filen}".suzero"
+FILE3=${filen}".suradRFK"
+FILE4a=${filen}".surecRFK"
+FILE4=${filen}".surecRFKtot"
+
+
+
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)" 
+
+#################################################################
+# Sixty degree model and data
+file="datasyn.su"
+FILE=/prg/dtrad/ubc/ps/fig4b.ps
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 x1beg=0.25 x1end=1.5 clip=1 "
+PLOTFK="supsimage label1=f(1/s) label2=kx(1/m)"
+
+$PLOTX < $FILE1 > p1 $TITLE1
+suspecfk dx=50 < $FILE1 | $PLOTFK > p2  $TITLE2
+$PLOTX < $FILE2 > p3 $TITLE3
+suspecfk dx=25 < $FILE2 | $PLOTFK > p4  $TITLE4
+$PLOTX < $FILE3 > p5 $TITLE5
+#suspecfk dx=25 < $FILE3 | $PLOTFK > p6  $TITLE6
+
+# Create residual gather for first and second pass
+suwind key=offset reject=-1250 < $FILE0 | susetntr > $FILE0b
+
+sutaperinv $FILE0b $FILE4a ntaper=5 > $FILE4a'rt' 
+sutaperinv $FILE0b $FILE4 ntaper=5 > $FILE4'rt' 
+suop2 $FILE0b $FILE4a'rt' | $PLOTX > p8 $TITLE8
+suop2 $FILE0b $FILE4'rt' | $PLOTX > p9 $TITLE9
+
+
+$PLOTX < $FILE4'rt' > p6 $TITLE6
+suspecfk dx=25 < $FILE4'rt' | $PLOTFK > p7  $TITLE7
+
+
+supsmerge in=p1 in=p2 in=p3 in=p4 in=p5  in=p6 in=p7 in=p8 in=p9 scale=0.37,0.37 translate=1,7 translate=4,7 translate=7,7 translate=1,3.5 translate=4,3.5 translate=7,3.5 translate=1,0 translate=4,0 translate=7,0 > $FILE
+
+cp p1 fig4b_a.ps
+cp p2 fig4b_b.ps
+cp p3 fig4b_c.ps
+cp p4 fig4b_d.ps
+cp p5 fig4b_e.ps
+cp p6 fig4b_f.ps
+cp p7 fig4b_g.ps
+cp p8 fig4b_h.ps
+cp p9 fig4b_i.ps
+
+
+ghostview $FILE
+
+fi
+
+if [ 0 = 1 ]; then
+
+# Sixty degree model and data
+file="datasyn.su"
+FILE=/prg/dtrad/ubc/ps/fig5b.ps
+
+FILEN=data_asym
+sufix="ds2b"
+
+FILE0=$FILEN'.su'
+FILE1=${FILEN}${sufix}'.su'
+FILE2=${FILEN}${sufix}'.suradRFK'
+FILE3=${FILEN}${sufix}'.surecRFK'
+FILE4=${FILEN}${sufix}'.suresRFK'
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)"
+LABELR2="Offset(m)"
+LABELR1="Tau(sec)"
+LABELRF1="f(Hz)"
+
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 "
+PLOTX2="supswigp key=offset x2beg=-1500 x2end=1500 label1=$LABEL1 label2=$LABEL2"
+PLOTX2="supswigp label1=$LABEL1 label2=traces d2num=1"
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=2.5 x2beg=-1550 x2end=1550"
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR"
+PLOTFK="supsimage label1=f(1/s) label2=kx(1/m)"
+
+$PLOTX < $FILE1  $TITLE1  > p1  clip=4.2
+$PLOTX < $FILE2  $TITLE2  > p2  
+$PLOTX < $FILE3  $TITLE3  > p3  clip=4.2
+$PLOTX < $FILE4  $TITLE4  > p4  clip=4.2
+#suwind < $FILE1 key=offset max=0 abs=1  > $FILE1"b"
+sustack < $FILE1 key=cdp > $FILE1"b"
+sustack < $FILE2 key=cdp > $FILE2"b"
+sustack < $FILE3 key=cdp > $FILE3"b"
+sustack < $FILE0 key=cdp > $FILE4"b"
+
+suspecfk dx=200 < $FILE1 | $PLOTFK  > p6  $TITLE6
+suspecfk dx=50 < $FILE3 | $PLOTFK  > p7 $TITLE7
+suspecfk dx=50 < $FILE0 | $PLOTFK  > p8 $TITLE8
+
+
+cat  $FILE1"b"  $FILE2"b" $FILE3"b" $FILE4"b"  | susetntr > $FILE5"c"
+
+$PLOTX2 < $FILE5"c" $TITLE5 perc=100 > p5
+
+supsmerge in=p1 in=p2 in=p3 in=p4  in=p5 in=p6 in=p7 in=p8  scale=0.37,0.37 scale=0.37,0.37 scale=0.37,0.37 scale=0.37,0.37  scale=0.3,0.37  scale=0.37,0.37 scale=0.37,0.37 translate=1,7 translate=4,7 translate=1,3.5 translate=4,3.5 translate=7,5 translate=1,0 translate=4,0 translate=7,0 > $FILE
+
+#psmerge in=p in=pp scale=0.5,0.5  translate=0,2 translate=4,2  > /prg/dtrad/ubc/ps/$FILE
+
+ghostview $FILE &
+
+fi
+
+
+# Figure: coherent noise removal (whole figure)
+if [ 0 = 1 ]; then
+
+suwind < $1 key=offset min=0 | susetntr > pp.su
+suximage d2=50 f2=213   < pp.su title=$1 
+
+supsimage f1=0  x2beg=213 d2=50 f2=213  perc=98 < pp.su title=$2  label1='Time(s)' label2='Offset(m)' > $1"imag.ps" curve=curveseg npair=5 
+
+ghostview $1"imag.ps"
+
+fi
+
+# Figure: coherent noise removal (small window)
+if [ 0 = 1 ]; then
+window="x2beg=500 x2end=3000  x1beg=1.1 x1end=1.5 clip=2 "
+
+suxwigb key=offset  < $1 title=$1 $window&
+
+
+window="x2beg=500 x2end=3000  x1beg=6.4 x1end=7 clip=3.0 "
+supswigb key=offset < $1 title=$2 $window label1='Time(s)' label2='Offset(m)' f1=5.5 interp=1 > $1".ps"
+ghostview $1".ps"
+
+fi
+
+# Figure: coherent noise removal (whole figure)
+if [ 0 = 1 ]; then
+
+
+suximage d2=50 f2=213   < $1 title=$1 
+suwind key=offset min=0 < $1 | susetntr > pp.su
+supsimage f1=5.5 f2=213   x2beg=213 d2=50   perc=98 < pp.su title=$2  label1='Time(s)' label2='Offset(m)' > $1"imag2.ps" #curve=curveseg npair=5 
+
+ghostview $1"imag2.ps"
+
+fi
+
+if [ 0 = 1 ]; then
+
+# Sixty degree model and data
+file="datasyn.su"
+FILE=/prg/dtrad/ubc/ps/fig5c.ps
+
+FILEN=data_asym
+sufix="ds2b"
+
+FILE0=$FILEN'c.su'
+FILE1=${FILEN}${sufix}'.su'
+FILE2=${FILEN}${sufix}'.suradRFK'
+FILE3=${FILEN}${sufix}'.surecRFKrt'
+FILE4=${FILEN}${sufix}'.suresRFK'
+FILE5=${FILEN}${sufix}'.dec.surecRFKrt'
+FILE6=${FILEN}${sufix}'.dec.suresRFKrt'
+FILE7=${FILEN}${sufix}'.dec.suradRFK'
+#decimate data gather
+sushw < $FILE3 key=tracl a=1 b=1 > pp
+mv pp $FILE3
+suwind j=2 s=1 < $FILE3 | susetntr > $FILE5
+
+sutaperinv $FILE0 $FILE5 > pp; mv pp $FILE5
+suop2 $FILE0 $FILE5 > $FILE6
+
+#decimate data gather
+sushw < $FILE2 key=tracl a=1 b=1 > pp
+mv pp $FILE2
+suwind j=2 s=1 < $FILE2 | susetntr > $FILE7
+
+# Decimate data gather to calculate residuals 
+# for given data only
+#decimate data gather
+sushw < $FILE3 key=tracl a=1 b=1 > pp
+mv pp $FILE3
+suwind j=8 s=1 accept=113 < $FILE3 | susetntr > $FILE5
+
+sutaperinv $FILE1 $FILE5 > pp; mv pp $FILE5
+suop2 $FILE1 $FILE5 > $FILE6
+
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)"
+LABELR2="Offset(m)"
+LABELR1="Tau(sec)"
+LABELRF1="f(Hz)"
+
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 "
+PLOTX2="supswigp key=offset x2beg=-1500 x2end=1500 label1=$LABEL1 label2=$LABEL2"
+PLOTX2="supswigp label1=$LABEL1 label2=traces d2num=1"
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABEL2 clip=2.5 x2beg=-1550 x2end=1550"
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR"
+PLOTFK="supsimage label1=f(1/s) label2=kx(1/m)"
+
+
+if [ 0 -eq 1 ]; then
+# Decimated version
+$PLOTX < $FILE1  $TITLE1  > p1  clip=4.2
+$PLOTX < $FILE7  $TITLE2  > p2  
+$PLOTX < $FILE5  $TITLE3  > p3  clip=4.2
+$PLOTX < $FILE6  $TITLE4  > p4  clip=4.2
+elif [ 0 -eq 1 ];then
+#Non decimated version
+$PLOTX < $FILE1  $TITLE1  > p1  clip=4.2
+$PLOTX < $FILE2  $TITLE2  > p2  
+$PLOTX < $FILE3  $TITLE3  > p3  clip=4.2
+$PLOTX < $FILE4  $TITLE4  > p4  clip=4.2
+else
+#Non decimated version
+$PLOTX < $FILE1  $TITLE1  > p1  clip=4.2
+$PLOTX < $FILE2  $TITLE2  > p2  
+$PLOTX < $FILE3  $TITLE3  > p3  clip=4.2
+suaddnoise sn=10 < $FILE3 | $PLOTX  $TITLE3  > p3  
+$PLOTX < $FILE6  $TITLE4  > p4  clip=4.2
+
+fi
+
+#suwind < $FILE1 key=offset max=0 abs=1  > $FILE1"b"
+sustack < $FILE1 key=cdp > $FILE1"b"
+sustack < $FILE2 key=cdp > $FILE2"b"
+sustack < $FILE3 key=cdp > $FILE3"b"
+sustack < $FILE0 key=cdp > $FILE4"b"
+
+#suspecfk dx=200 < $FILE1 | $PLOTFK  > p6  $TITLE6
+#suspecfk dx=50 < $FILE3 | $PLOTFK  > p7 $TITLE7
+#suspecfk dx=50 < $FILE0 | $PLOTFK  > p8 $TITLE8
+
+
+cat  $FILE4"b" $FILE1"b"  $FILE2"b" $FILE3"b"   | susetntr > $FILE5"c"
+
+$PLOTX2 < $FILE5"c" $TITLE5 perc=100 > p5
+
+
+supsmerge in=p1 in=p2 in=p3 in=p4  in=p5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  scale=0.35,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 translate=8,2> $FILE
+
+#psmerge in=p in=pp scale=0.5,0.5  translate=0,2 translate=4,2  > /prg/dtrad/ubc/ps/$FILE
+
+ghostview $FILE &
+
+fi
+
+
+
+

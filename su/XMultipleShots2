@@ -1,0 +1,76 @@
+#! /bin/sh
+# Examples of producing multiple shot records with susynlv
+# Note that we label by shot record and since there are 50 offsets,
+# use d2=0.02 (1/50).  We add some noise to make data a bit more
+# realistic, in particular, velocity analyses (with suvelan) seem very
+# "blocky" without a little noise.
+WIDTH1=300
+WIDTH2=600
+HEIGHT=400
+WIDTHOFF1=0
+WIDTHOFF2=315
+HEIGHTOFF1=100
+HEIGHTOFF2=550
+
+set -x
+
+#################################################################
+# Sixty degree model and data
+file="datasyn.su"
+
+nx=101 fx=0 dx=0.05
+nz=101 fz=0 dz=0.04
+unif2 <modelfkpaper ninf=4 nx=$nx nz=$nz dx=$dx dz=$dz \
+	v00=1.0,2.0,3.0,4.0 method=spline |
+ximage  perc=99 title="Model" windowtitle="Model"\
+	label1="Depth (km)" label2="Distance (km)" \
+	 n1=$nz f1=$fz d1=$dz  n2=$nx f2=$fx d2=$dx \
+	-geometry ${WIDTH1}x${HEIGHT}+${WIDTHOFF1}+${HEIGHTOFF2} &
+
+#exit 0
+######Work in km (synlv puts 10^3 in header fields)######
+#  ref="1:1,2;4,2"      reflector(s):  "amplitude:x1,z1;x2,z2;x3,z3;..."
+REF1="1.0:0.0,0.3;1.9,0.4,2.0,0.38;2.5,0.38;3.0,0.6;5.0,1.2"
+REF2="1.0:0.0,0.5;1.9,0.65,2.0,0.60;2.5,0.60;3.0,0.9;5.0,1.6"
+REF3="1.0:0.0,0.65;1.9,0.8,2.0,0.75;2.5,0.77;3.0,1.25;5.0,2.1"
+REF4="1.0:0.0,0.8;5.0,2.4"
+
+
+n1=512 ft=0.0 dt=0.004     # time information: number, first, spacing
+nxs=40 fxs=1.0 dxs=0.05    # shot information: number, first, spacing
+nxo=100 fxo=-1.250 dxo=0.025   # offset information: number, first, spacing
+dvdz=0.5    # velocity gradient (dv/dz)
+dvdx=0.0    # velocity gradient (dv/dx)
+v00=2.0     # P-wave velocity at surface in km/s
+ob=1        # include obliquity (both sides of interface are reflecting)
+er=1        # use exploding reflector amps
+smooth=1    # connect picks on reflectors linearly
+
+susynlv	nt=$n1 ft=$ft dt=$dt \
+	nxo=$nxo fxo=$fxo dxo=$dxo \
+	nxs=$nxs fxs=$fxs dxs=$dxs \
+	v00=$v00 dvdx=$dvdx dvdz=$dvdz \
+	ob=$ob er=$er smooth=$smooth  \
+	ref=$REF1 ref=$REF2 ref=$REF3 ref=$REF4 fpeak=25 > ${file}
+
+suchw key1=cdp key2=gx key3=sx b=1 c=1 d=2 < ${file} > pp;
+suaddnoise sn=20 < pp >  ${file}; rm pp 
+sugethw < ${file} key=cdp output=geom | sort -g | uniq > cdpnum
+suwind key=cdp  < ${file} min=1300 max=1310 > cdp1300.su ;
+suxwigb key=offset < cdp1300.su title=cdp1300 &
+
+suwind key=sx < ${file} > shot1300.su min=1300 max=1300
+suxwigb key=offset < shot1300.su title=shot1300 &
+
+
+
+suaddnoise sn=20 < ${file} |
+suxmovie perc=99 title="Shot Record" windowtitle="Shot"\
+	label1="Time (sec)" label2="Shot Gather" \
+	f2=1 d2=0.02 \
+	-geometry ${WIDTH2}x${HEIGHT}+${WIDTHOFF2}+${HEIGHTOFF2} &
+
+exit 0
+
+
+

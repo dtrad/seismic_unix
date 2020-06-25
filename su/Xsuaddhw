@@ -1,0 +1,22 @@
+#! /bin/sh
+# Xsuaddh1: converts matalab data from synth0 in sudata
+#####################################################################
+#######################################################################
+# Author: Daniel Trad- March 10/99
+
+set -x 
+FILE=marmmig.TRACE
+FILEXLINE=marmmig.CROSSLINE
+FILEOUT=marmmig.su
+ns=1501
+dt=2000
+d2=12.5
+f2=1712.5
+ntr=
+#a2b n1=1 < synth0.dat > pp
+#a2b n1=1 < synth0.off > p
+suaddhead < $FILE  ns=$ns | \
+sushw key=dt,d2,f2 a=$dt,$d2,$f2 | \
+sushw key=cdp infile=$FILEXLINE > $FILEOUT
+suxwigb key=cdp wbox=800 hbox=500 < $FILEOUT  &
+ 

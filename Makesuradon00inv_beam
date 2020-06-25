@@ -1,0 +1,73 @@
+SHELL= /bin/sh
+OPTC= -O -Wall
+
+IDIR=-I$(CWPROOT)/include  -I$(HOME)/seismic/clibrary
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a 
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG=suradon00inv_beam
+
+FLAG=-c -O -Wall -g
+
+OBJ=  $(PROG).o Complex.o interpovv.o dot.o save_vector.o nmo.o fftgo.o fftback.o \
+	matrix_3.o freqweight.o radfinv.o rcdot.o taper.o radon00inv_beam.o \
+	radoninv_beam_loop.o  Atimesx.o matrix.o polygonalFilter.o
+
+LIBC=./clibrary
+
+# dependence 
+$(PROG): $(OBJ)
+	g++ -g -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).cpp
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Complex.o: $(LIBC)/Complex.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+interpovv.o: $(LIBC)/interpovv.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+dot.o: $(LIBC)/dot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+save_vector.o: $(LIBC)/save_vector.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+nmo.o: $(LIBC)/nmo.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fftgo.o: $(LIBC)/fftgo.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+fftback.o: $(LIBC)/fftback.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+matrix_3.o: $(LIBC)/matrix_3.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+matrix.o: $(LIBC)/matrix.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+freqweight.o: $(LIBC)/freqweight.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radfinv.o: $(LIBC)/radfinv.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+rcdot.o: $(LIBC)/rcdot.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+taper.o: $(LIBC)/taper.c
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radoninv_beam_loop.o: $(LIBC)/radoninv_beam_loop.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+Atimesx.o: $(LIBC)/Atimesx.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+polygonalFilter.o: $(LIBC)/polygonalFilter.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+radon00inv_beam.o: $(LIBC)/radon00inv_beam.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
+
+
+
+
+
+
+
+
+
+
+
+

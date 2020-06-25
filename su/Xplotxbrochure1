@@ -1,0 +1,53 @@
+#! /bin/sh
+
+supswigp < sucdps2 f1=0 f2=0 key=offset title="a" label1="time (sec)" label2="offset(m)" > p perc=99 
+
+#supswigp < sucdps2recbCGLS2 f1=0 f2=0 key=offset title="(b)" label1="time (sec)" label2="offset(m)" > pp perc=99
+
+
+#supswigp < surio2Trec f1=0 f2=0 key=offset title="(b)" label1="time (sec)" label2="offset(m)" > pp
+
+#supswigp < surio1brec f1=0 f2=0 key=offset title="(d)" label1="time (sec)" label2="offset(m)" > pppp
+
+#supswigp < surio2brec f1=0 f2=0 key=offset title="(d)" label1="time (sec)" label2="offset(m)" > pppp
+
+supswigp < sucdps2radcgcm f1=0 f2=0 key=f2 title="(c)" label1="tau (sec)" label2="q(s/m^2)" perc=99 > ppp
+
+supswigp < sucdps2radT f1=0 f2=0 key=f2 title="(b)" label1="tau (sec)" label2="q(s/m^2)" perc=99 > pp
+
+
+supswigp < sucdps2radCG f1=0 f2=0 key=f2 title="(d)" label1="tau (sec)" label2="q(s/m)" perc=97 > pppp
+
+#supswigp < surio12Trad f1=0 f2=0 key=offset title="(c)" label1="time (sec)" label2="offset(m)" > pp
+
+#supswigp < surio3 f1=0 f2=0 key=f2 title="(b)" label1="tau (sec)" label2="p(s/m)" perc=95 > pp
+
+#sufft < suoz251iCGrad | suamp | supsimage f1=0 f2=0 key=f2 title="(c)" label1="freq (Hz) " label2="p(s/m)" perc=99 > ppp
+
+#sufft < sucdps2radCG | suamp | supsimage f1=0 f2=0 key=f2 title="(d)" label1="freq (Hz) " label2="q(s/m^2)" perc=99 > pppp
+
+#supswigp < sucdps2radfreq f1=0 f2=0 key=f2 title="(a)" label1="freq (Hz) " label2="q(s/m^2)" perc=99 > p
+
+#supswigp < surio2Tradfreq f1=0 f2=0 key=f2 title="(b)" label1="freq (Hz) " label2="q(s/m^2)" perc=99  > pp
+
+#supswigp < surio1bradfreq f1=0 f2=0 key=f2 title="(b)" label1="freq (Hz) " label2="q(s/m^2)" perc=99 > pp
+
+#supswigp < surio2bradfreq f1=0 f2=0 key=f2 title="(d)" label1="freq (Hz) " label2="q(s/m^2)" perc=99  > pppp
+
+#supswigp < suoz251iCGrec f1=0 f2=0 key=offset title="(d)" label1="time (sec)" label2="offset(m)" > pppp
+
+FILE=fig1radoncomp.ps
+
+psmerge in=p  in=pp in=ppp in=pppp scale=0.5,0.5 translate=2,5  translate=0,0 translate=4,0 > ~/ps/$FILE
+
+#psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+

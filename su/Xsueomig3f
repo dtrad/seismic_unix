@@ -1,0 +1,285 @@
+#! /bin/sh
+# shell for EOM migration for misscn1.su
+# June 06 -2001
+# Daniel Trad - UBC
+
+set -x
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=90"
+
+#OPTION='RAD'
+OPTION='CSP';label="csp";output=4
+#OPTION='MIG';label="EOM stk0";output=1
+#OPTION='KIR';label="Kirchhoff stk1"
+#OPTION='GAZ';lavel="GAZDAG mig"
+OPTION='LSM';label="LSM stk0";output=3
+#OPTION='VEL';label="VEL stk2"
+
+#NAME=misscn_red_gain_cdp # reduced data set with all cdps
+NAME=misscn_gain_cdp_mute # Complete data
+
+
+#PAR=stkvel.misscn.su
+PAR=stkvel.misscn.su
+FILE=../data/$NAME'.su'
+FILEOUT=$NAME'.eom.su'
+FILEOUT2=$NAME'.lsm.su'
+FILEOUT3=$NAME'.mig.su'
+FILEOUT4=$NAME'.vel.su'
+FILEGAZ=$NAME'.gaz.su'
+FILECSP=$NAME'.csp.su'
+FILEOFF=$NAME'.eom.off'
+
+######################################
+# If CSP analysis then define limits
+CSPMIN=1000
+DXCSP=250
+CSPMAX=3000
+FILECSPAUX="cdp${CSPMAX}.csp.test2.su"
+FILECSPAUX2="cdp${CSPMAX}.rmcsp.test2.su"
+#CDPMIN=1000
+#CDPMAX=1000
+
+######################################
+# If Migration, then define limits
+CDPMIN=818
+CDPMAX=3000
+
+#CDPMIN=2000
+
+
+
+#CDPMAX=917
+dxcdp=2
+#ntrmax=1000000 
+ntrmax=100000000   # For fast tests.
+#ntrmax=10000
+######################################
+# migration parameters
+# The sx keyword are wrong but cdp (nominal) and offset are OK.
+# The sx can be computed from the cdp number and offset 
+# suchw key1=sx key2=cdp key3=offset b=43.75 c=-0.5 d=1 <misscn1.su>misscn_test.su
+# Two contiguous CMPs have different sets of offsets. 
+# cdpspace=87.5 # This is the field cdp space
+
+cdpspace=43.75 # When cdp=800 to 3000 cdpspace/=2
+t0=1.5;
+aper=100
+scalefold=0
+BETA=60;
+TESTHE=2; # equivalent offset computing method
+HEMAX=7996.5  # CSP geometry equal to original geometry
+HEMIN=34      # 
+#nhcsp=60 # better sampled geometry for reduced data set
+nhcsp=92 # Original geometry
+VERBOSE=1
+fold=1
+buffer=10;    # Size of filter along time for velocity correction
+mute=1        
+ncsp=50        # Number of CSPs computed simultaneously
+
+
+
+if [ $output -eq 5 ]; then
+    FILECSP=$FILECSP'rad'
+fi
+
+###################################
+
+PLOTOPT='XPLOT2'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+case $OPTION in
+MIG*)
+sueomig7f < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp  output=1 hemin=$HEMIN hemax=$HEMAX  nhcsp=$nhcsp ncsp=$ncsp par=$PAR beta=$BETA testhe=$TESTHE   verbose=$VERBOSE fold=$fold  ntrmax=$ntrmax cdpspace=$cdpspace ncsp=$ncsp tmpdir='./' > $FILEOUT
+#supswigp key=cdp < $FILEOUT | gv - &
+suxwigb perc=90  < $FILEOUT title=$label &
+;;
+
+KIR*)
+sukmig4 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=1 par=$PAR verbose=$VERBOSE dfold=$dfold cdpspace=44 ntrmax=500000  > $FILEOUT3
+#supswigp key=cdp < $FILEOUT | gv - &
+suximage perc=90 < $FILEOUT3  title=$label  &
+;;
+
+GAZ*)
+sugazmig < $FILE  d2=44 dx=44 par=$PAR2 > $FILEGAZ
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEGAZ  title=$label  &
+;;
+
+VEL*)
+sueomig7f < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=6  beta=$BETA hemin=$HEMIN hemax=$HEMAX nhcsp=$nhcsp par=$PAR itercg=2 itervel=1 iter_end=2 testhe=$TESTHE   eps2=1e-2 eps1=1e-2  testadj=0 smooth=0 nq=41 verbose=$VERBOSE fold=$fold  ncsp=$ncsp cdpspace=$cdpspace ntrmax=$ntrmax tmpdir='./' pervmin=15 dperv=0.05 norm=0 buffer=$buffer t0=$t0 sinc=0 keepwm=0 > $FILEOUT4
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEOUT4  title=$label  &
+;;
+
+LSM*)
+sueomig7f < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=3  beta=$BETA hemin=$HEMIN hemax=$HEMAX nhcsp=$nhcsp par=$PAR itercg=30 iter_end=3 testhe=$TESTHE   eps2=1e-1 eps1=1e-1  testadj=0 smooth=0 nq=110 verbose=$VERBOSE fold=$fold  ncsp=$ncsp cdpspace=$cdpspace ntrmax=$ntrmax tmpdir='./' norm=0 buffer=$buffer t0=$t0  mute1=1 mute2=1 parmute1=-1e-8 parmute2=0.5e-8 aper=$aper scalefold=$scalefold qmin=-2.5e-8 factor=2 fmax=80 solver="wtcgls"  > $FILEOUT2
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEOUT2  title=$label  &
+;;
+
+
+# PLOT CSP gathers#################################################
+
+CSP*) 
+sueomig7f < $FILE  cdpmin=$CSPMIN cdpmax=$CSPMAX dxcdp=$DXCSP  output=$output verbose=1 hemax=$HEMAX hemin=$HEMIN nhcsp=$nhcsp ncsp=1 fold=$fold par=$PAR itercg=30 iter_end=3 beta=$BETA eps2=1e-1 eps1=1e-1  smooth=0 nq=110 testhe=$TESTHE  ncsp=9 cdpspace=$cdpspace ntrmax=$ntrmax  norm=0 buffer=$buffer t0=$t0 mute1=1 mute2=1 parmute1=-1e-8 parmute2=0.5e-8 modelfile="model.su" aper=$aper scalefold=$scalefold qmin=-2.5e-8 factor=2 fmax=80 solver="wtcgls" > $FILECSP
+
+#exit 0
+
+$PLOTR < model.su perc=90 &
+
+
+if [ $TESTHE -eq 2 ] && ([ $output -eq 4 ] || [ $output -eq 2 ]); then
+    suchw key1=offset key2=offset b=-1 <  cspfile.su >   $FILECSPAUX
+    suchw key1=offset key2=offset b=-1 <  $FILECSP >  $FILECSPAUX2
+    susort offset < $FILECSPAUX > pp;    mv pp  $FILECSPAUX
+    susort offset < $FILECSPAUX2 > pp;    mv pp  $FILECSPAUX2
+elif [ $output -eq 5 ] ; then 
+    cp $FILECSP $FILECSPAUX2
+fi
+;;
+
+esac
+################################################################
+case $OPTION in
+CSP*)
+case $PLOTOPT in
+    PSPLOT*)
+    ;;
+
+    XPLOT2*)
+    
+    csp=$CSPMIN
+      
+    while [ $csp -le $CSPMAX ]
+    do
+    title=$csp' CSP'
+    suwind key=cdp min=$csp max=$csp  < $FILECSP | $PLOTX  title=$title &
+    suwind key=cdp min=$csp max=$csp  < model.su | $PLOTR  title=$title &
+
+csp=`bc -l <<END
+		$csp + $DXCSP
+END`
+
+
+    done
+    ;;
+esac
+;;
+CSP*)
+$PLOTX < $FILECSPAUX title="CSP" &
+$PLOTX < $FILECSPAUX2 title="Radon-EOM CSP" &
+;;
+esac
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

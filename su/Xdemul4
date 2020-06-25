@@ -1,0 +1,235 @@
+#! /bin/sh
+# Xradon --- Example of multiple removal with high resolution radon.
+######################################################################
+# This script allows  multiple removal via 
+# Radon model filtering generated with suhrrt.
+# It is first necesary to compute a velocity file
+# using (for example) Velan.
+# The generated file vpicks is required to apply NMO in this program
+# Be aware that vpicks must be applied for the same range of cdps 
+# and intervals as this program. 
+# All cdps from cdpmin to cdpmax with step dcdp are Radon transformed,
+# and a radon panel appears in the screen. Look at the terminal as 
+# a question appears to choose mute above
+# or below the picks. After each pick the process is repeated until
+# you are happy ith the muted panel. Then the inverse Radon transform
+# gives you the offset-time data. Inverse NMO is applied also
+# and finally all recovers cdps are copied to FILEFINAL
+# 
+#######################################################################
+# Author: Daniel Trad- November 1999
+# Based in wonderful examples from John Stockwell
+# Thanks John !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+set -x
+
+# Some shortcuts for plots
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650"
+HBOX=400
+WBOX=350
+##############
+# The input and output files
+VNMOFILE=stkvel.miss1
+FILE0=sumiss2
+FILEFINAL=sumiss2demul
+rm $FILEFINAL
+# Range of CDPS 
+CDPMIN=1100
+CDPMAX=1200
+DCDP=50
+
+# Options
+OPTIONNMOALL='n'
+OPTIONCDP='y'
+OPTIONAGC='y'
+OPTIONFILT='y'
+OPTIONNMO='y'
+OPTIONRAD='y'
+OPTIONMUTE='y'
+OPTIONREC='y'
+OPTIONRES='y'
+# NMO
+SMUTE=3;
+# PASS BAND FILTER
+F=1,10,70,80
+AMPS=0,1,1,0
+# RADON (see suhrrtf for more details)
+METHOD=1 # 1 LEVINSON 2 WTCGLS 3 CHOLESKY 4 CHOLESKY
+EPS1=.5  # Variance of the noise
+ITER_END=5; # External iterations 
+QMIN=-1E-8  # Min q
+NQ=50       # NP traces
+FMAX=80     # max freq to compute
+RTMETHOD=2 # 1=LRT 2=PRT
+COSTFLAG=0 # =1 PLOT COST FUNCTIONS (SLOWER)
+ITERCG=35  # CG ITERATIONS
+EPS=0      # =0 FOR METHOD 2 
+NORM=1     # L1 NORM
+STEP=0.4   # Step less 1
+
+# Here is where the life begin!!!!!!!!!!!!!
+
+CDP=$CDPMIN
+while [ $CDP -le $CDPMAX ]
+do
+
+FILE=$FILE0.$CDP
+FILENMO=$FILE'nmo'
+FILEGAP=$FILE'gap'
+FILERAD=$FILE'rad'
+FILEREC=$FILE'rec'
+FILEOFF=$FILE'off'
+FILERADOFF=$FILE'radoff'
+FILERAD2=$FILE'radb'
+FILEREC2=$FILE'recb'
+FILERES=$FILE'res'
+FILEOFF2=$FILEOFF   # Final offset in which data will be resampled 
+
+case $OPTIONCDP in
+y*)
+suwind < $FILE0 key=cdp min=$CDP max=$CDP > $FILE
+ntr=`surange < $FILE | sed 1q | sed 's/traces://'`
+cp $FILE pp
+sushw key=ntr a=$ntr < pp > $FILE 
+;;
+esac
+
+
+case $OPTIONAGC in
+y*)
+sugain tpow=2 < $FILE > pp; cp pp $FILE
+;;
+esac
+
+case $OPTIONNMO in
+y*)
+#NMO in original data
+sunmo  smute=$SMUTE par=$VNMOFILE  < $FILE > $FILENMO
+;;
+esac
+
+case $OPTIONFILT in
+y*)
+sufilter f=$F amps=$AMPS < $FILE > pp; cp pp $FILE
+;;
+esac
+
+# Save offset  for inverse radon transform
+sugethw key=offset output=geom < $FILE > $FILEOFF
+$PLOTX < $FILE    & 
+$PLOTX < $FILENMO &
+case $OPTIONRAD in
+y*)
+
+#Forward  Radon transform
+suhrrtf method=$METHOD  eps1=$EPS1 iter_end=$ITER_END qmin=$QMIN nq=$NQ freq=$FMAX rtmethod=$RTMETHOD costflag=$COSTFLAG itercg=$ITERCG eps=$EPS norm=$NORM step=$STEP < $FILENMO  > $FILERAD 
+
+;;
+esac
+
+case $OPTIONMUTE in
+    y*)
+    cp $FILERAD $FILERAD2
+    ok=false
+    while [ $ok = false ]
+	 do
+         cp $FILERAD2 temp
+         echo "Starting Muting in Radon domain"
+
+         echo  "Would you prefer above or below muting? (a/b)" | tr -d "\012" >/dev/tty
+	 read response1
+         case $response1 in
+	     a*) BELOW=0 ;;
+             b*) BELOW=1 ;;
+         esac
+    #****************************************************
+    # The following steps are for muting in two steps. 
+    # Press s on the output of suxwigb to generate the file ppp with the
+    # x and t coordinates to mute
+    # The program readmute reads ppp and produces the two binary files
+    # xfileb and tfileb, and the number of points.
+    #****************************************************
+		    
+    # First window to mute
+
+	suxwigb < temp perc=98  key=f2 wbox=550 hbox=650 title="Radon domain" \
+	mpicks=/home/dtrad/work/ppp 
+	NMUTE=`readmute << END`
+
+	sumute < temp key=f2 xfile=xfileb tfile=tfileb nmute=$NMUTE below=$BELOW > $FILERAD2
+        suxwigb < $FILERAD2  perc=98  key=f2 wbox=550 hbox=650 title="Filtered Radon domain"&
+	   
+        echo  "MUTE OK? (y/n) "  | tr -d "\012" >/dev/tty
+		read response
+		case $response in
+		n*) ok=false ;;
+		*) ok=true ;;
+		esac
+
+
+	done </dev/tty
+
+
+
+;;
+esac
+
+case $OPTIONREC in
+y*)
+#Inverse Radon Transform
+suhrrti rtmethod=$RTMETHOD fmax=$FMAX offsetfile=$FILEOFF2 < $FILERAD > pp
+sunmo smute=$SMUTE par=$VNMOFILE invert=1 < pp > $FILEREC 
+
+
+suhrrti rtmethod=2 fmax=70 offsetfile=$FILEOFF2 < $FILERAD2 > pp
+sunmo smute=$SMUTE par=$VNMOFILE  invert=1 < pp > $FILEREC2 
+
+suxwigb < $FILEREC key=offset wbox=550 hbox=650 \
+title="Resampled NO Filtered data" &
+
+$PLOTX < $FILEREC2 title="Resampled Filtered data" &
+
+;;
+esac
+
+case $OPTIONRES in
+y*)
+suop2 $FILE $FILEREC2 op=diff > $FILERES 
+$PLOTX < $FILERES perc=100 &
+;;
+esac
+
+cat $FILEREC2 >> $FILEFINAL
+
+CDP=`bc -l <<END
+    $CDP + $DCDP
+END`
+
+done
+exit 0
+############################################################################
+EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

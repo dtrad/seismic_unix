@@ -1,0 +1,130 @@
+#! /bin/sh
+# shell for Radon filtering
+# Daniel Trad - UBC
+set -x
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650 perc=99"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=99"
+
+OPTION="${1}"
+#OPTION=solver
+
+NAME=shot111_ng
+FILE=$NAME'.su'
+FILEREC=$NAME'.surec'; 
+FILEREC2=$NAME'.surec2'; 
+FILERAD=$NAME'.surad'
+
+offsetfile="${NAME}.suoff"
+par="stkvel.misscn.su"
+
+if ! [ -f $offsetfile ]; then 
+ sugethw key=offset < $NAME1 output=geom  > $offsetfile   
+fi
+
+verbose=0
+iter_end=3
+itercg=50
+sinc=0;
+nq=100
+
+modelfile=$FILERAD
+eps1=3e-3
+eps2=3e-3
+
+CDPMIN=1
+DXCDP=1
+CDPMAX=1
+nmofactor=0
+qmin=-2e-8
+factor=4
+pseudohyp=0
+rtmethod=3
+qmin1=-8e-3
+qmin2=1.0e-4
+#qmin2=-5e-8
+rtmethod1=1
+rtmethod2=3
+depth1=1000
+depth2=1000
+nq1=200
+nq2=60
+amps=0,0,1,1
+ffilter=0,20,30,80
+factor1=4
+factor2=1
+filter=2 
+fmax1=40;
+fmax2=90;
+nq=`expr $nq1 + $nq2`
+echo "nq=${nq}"
+
+###################################
+
+PLOTOPT='XPLOT2'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+case $OPTION in
+HYBRID*|hybrid*)
+
+suradonhybrid < $FILE verbose=$verbose par=$par itercg=$itercg iter_end=$iter_end eps2=$eps2 eps1=$eps1  testadj=0 smooth=0 nq=$nq  tmpdir='.' norm=0  nmofactor=$nmofactor smute=3.0 step=0.95  modelfile=$modelfile  quantil=0.7  qmin1=$qmin1 qmin2=$qmin2 nq1=$nq1 nq2=$nq2 factor1=$factor1 factor2=$factor2 rtmethod1=$rtmethod1 rtmethod2=$rtmethod2 depth1=$depth1 depth2=$depth2 fmax1=$fmax1 fmax2=$fmax2 amps=$amps ffilter=$ffilter symmetric=1 filter=0 > $FILEREC
+
+suradonhybridinv  $FILE $modelfile par=$par nq=$nq  tmpdir='.'  nmofactor=$nmofactor smute=3.0  pseudohyp=$pseudohyp depth=$depth  qmin1=$qmin1 qmin2=$qmin2 nq1=$nq1 nq2=$nq2 factor1=$factor1 factor2=$factor2 rtmethod1=$rtmethod1 rtmethod2=$rtmethod2 depth1=$depth1 depth2=$depth2 fmax1=$fmax1 fmax2=$fmax2 amps=$amps ffilter=$ffilter filter=2 > $FILEREC2
+
+;;
+SOLVER*|solver*)
+solver=wtcgls
+itercg=25
+iter_end=2
+nmo_factor=0
+norm=0
+qmin=-1e-4
+depth=1000
+factor=2
+fmax=70
+nq=100
+suradonsolver < $FILE verbose=$verbose par=$par itercg=$itercg \
+	iter_end=$iter_end solver=$solver rtmethod=$rtmethod  depth=$depth \
+	eps2=$eps2 eps1=$eps1 eps=$eps testadj=0  nq=$nq qmin=$qmin norm=$norm nmofactor=0 \
+	smute=3.0  fmax=$fmax \
+	step=0.99 factor=$factor modelfile=$FILERAD  quantil=1 > $FILEREC
+	$PLOTX clip=$clip < $FILEREC title="Reconstructed data from suradonsolver " &
+esac
+
+
+$PLOTX < $FILEREC perc=99 title="recovered from suradonhybrid" &
+#$PLOTX < $FILEREC2 perc=99 title="recovered from suradonhybridinv" &
+
+suximage < $modelfile perc=99 &
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

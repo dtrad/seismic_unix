@@ -1,0 +1,4 @@
+#!/bin/sh
+FILE=${1}
+#segyhdrs < ./results/${FILE}'.su' 
+segywrite < ./results/${FILE}'.su' endian=0  tape=$FILE

@@ -1,0 +1,21 @@
+#!/bin/sh
+set -x
+
+NAME=$1
+
+FILEIN=$NAME'.su'
+FILENMO=$NAME'nmo.su'
+FILEOUT=$NAME'stack.su'
+
+# Stack without NMO for multiple removal interpolation test
+sunmo < $FILEIN vnmo=$2,$3 tnmo=0,2 > $FILENMO
+suximage < $FILENMO perc=98 xbox=0 &
+
+sustack < $FILENMO > pp; 
+cat pp pp pp pp pp pp > ppp; 
+cat ppp ppp ppp ppp ppp > pppp; 
+cat pppp pppp pppp | susetntr > $FILEOUT
+
+
+
+suximage < $FILEOUT perc=98 xbox=600 

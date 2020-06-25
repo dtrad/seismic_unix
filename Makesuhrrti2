@@ -1,0 +1,46 @@
+SHELL= /bin/sh
+OPTC= -O
+
+include $(CWPROOT)/src/Makefile.config
+
+D = $L/libcwp.a $L/libpar.a $L/libsu.a
+
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+
+PROG= suhrrti2
+
+FLAG=-c -O 
+
+OBJ=  $(PROG).o  hrrti.o h_stack.o fx_go.o fx_symmetry.o \
+      fft.o  matrix_2.o  matrix_1.o norma.o s_stacki.o 
+
+LIB=/home/dtrad/radon/flibrary
+
+# dependence 
+$(PROG):$(OBJ)
+	g77 -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG).o: $(PROG).c
+	gcc -c $(OPTC) $(ENDIANFLAG) $(PROG).c -Wall
+hrrti.o: hrrti.f 
+	g77 $(FLAG) hrrti.f -Wall
+cholesky2.o:   $(LIB)/cholesky2.for
+	g77 $(FLAG) $(LIB)/cholesky2.for
+h_stack.o:  $(LIB)/h_stack.for
+	g77 $(FLAG) $(LIB)/h_stack.for
+fx_go.o:  $(LIB)/fx_go.for
+	g77 $(FLAG) $(LIB)/fx_go.for
+fx_symmetry.o:  $(LIB)/fx_symmetry.for
+	g77 $(FLAG)  $(LIB)/fx_symmetry.for 
+fft.o:  $(LIB)/fft.for
+	g77 $(FLAG)  $(LIB)/fft.for
+matrix_2.o:  $(LIB)/matrix_2.for
+	g77 $(FLAG)  $(LIB)/matrix_2.for
+matrix_1.o: $(LIB)/matrix_1.for
+	g77 $(FLAG) $(LIB)/matrix_1.for
+sum_slope.o:  $(LIB)/sum_slope.for
+	g77 $(FLAG)  $(LIB)/sum_slope.for
+norma.o: $(LIB)/norma.for
+	g77 $(FLAG) $(LIB)/norma.for
+s_stacki.o: $(LIB)/s_stacki.f
+	g77 $(FLAG) $(LIB)/s_stacki.f
+

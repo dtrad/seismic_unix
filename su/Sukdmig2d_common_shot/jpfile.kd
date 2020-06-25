@@ -1,0 +1,36 @@
+ fxt=0.000000 fxo=0.000000 
+ ext=3500.000000 exo=3500.000000 
+ fzt=0.000000 fzo=0.000000 
+ ezt=2500.000000 ezo=2500.000000 
+ es=3500.000000 
+ 
+
+ Migration parameters
+ ================
+ infile=stdin 
+ outfile=stdout 
+ ttfile=tfile 
+ 
+ nzt=51 fzt=0 dzt=50
+ nxt=71 fxt=0 dxt=50
+ ns=36 fs=0 ds=100
+ 
+ nzo=251 fzo=0 dzo=10
+ nxo=141 fxo=0 dxo=25
+ 
+ nt=725 ft=0 dt=0.004 
+ dxm=12.5 fmax=55
+ noff=1 off0=0 doff=200
+ v0=1500 dvz=0 
+ aperx=2000 offmax=4000 angmax=60
+ ntr=1000 mtr=100 ls=1 npv=0
+ absoff=0 limoff=0
+ ================
+ input traveltime tables 
+ start migration ... 
+ 
+ fs=0 es=3500 offmax=4000
+ migrated trace 1
+ migrated 60 traces in total
+ 
+ output done

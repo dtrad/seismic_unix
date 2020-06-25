@@ -1,0 +1,21 @@
+#!/bin/sh
+
+FILEN=$1
+FILE=$FILEN
+FILEPS="../ps/${FILE}.ps"
+FILEJPG="../jpg/${FILE}.jpg"
+label1="time(s)"
+#label2="offset(feet)"
+label2="cdp"
+title="HRT-EOM"
+title="$2"
+f2=800
+d2=$3
+
+perc=95
+key=offset
+
+#supswigp key=$key perc=$perc < $FILE title=$title label1=$label1 label2=$label2 > $FILEPS
+suximage perc=$perc d2=$d2 f2=$f2 < $FILE title=$title label1=$label1 label2=$label2 &
+xwd -out data1.xwd
+convert data1.xwd $FILEJPG

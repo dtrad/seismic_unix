@@ -1,0 +1,159 @@
+#! /bin/sh
+# shell for EOM migration for moddata2.filt.su
+set -x
+
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650 perc=98 "
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=98 "
+
+#OPTION='NONE'
+OPTION='CSP'
+#OPTION='MIG';label="EOM stk0"
+#OPTION='KIR';label="Kirchhoff stk1"
+#OPTION='LSM';label="LSM stk0"
+#OPTION='NOI';label="NOI stk0"
+#OPTION='VEL';label="VEL stk2"
+
+NAME=moddata2
+
+NAME1=$NAME'.filt.su'
+NAME2=$NAME'.csp.su'
+#PAR=stkvel0.$NAME2  # Right velocities
+#PAR=stkvel2.$NAME2; NAME3=$NAME'.stkvel2' # Wrong velocities
+#PAR=rmsvel.moddata ; NAME3=$NAME # RMS velocity obtained with Xvelconv
+PAR=stkvel.moddata2.filt.su ; NAME3=$NAME'.stkvel'
+
+FILE=$NAME'.filt.su'
+FILEOUT=$NAME3'.eom.su'
+FILEOUT2=$NAME3'.lsm.su'
+FILEOUT3=$NAME3'.mig.su'
+FILEOUT4=$NAME3'.vel.su'
+FILECSP=$NAME3'.csp.su'
+FILERAD=$NAME'.rad.su'
+FILEREC=$NAME'.rec.su'
+FILEOFF=$NAME'.eom.off'
+FILECSP1=$NAME'.csp1.su'
+FILECSP2=$NAME'.csp2.su'
+FILECSP3=$NAME'.csp3.su'
+FILECSP4=$NAME'.csp4.su'
+
+CDPMIN=1
+CDPMAX=1000
+dxcdp=40
+OUTPUT=$3
+BETA=90;
+TESTHE=0;
+HEMIN=-400;
+HEMAX=400;
+VERBOSE=1
+fold=1;
+mute=1;
+parmute=2e-6;
+#if [ $OPTION = "VEL" ]; then 
+#    fold=0 
+#fi 
+buffer=10; 
+nhcsp=100;
+output=$3
+ncsp=20
+itercg=$5
+iter_end=$6
+itervel=1
+nq=$4
+lsmethod=$7
+sinc=0;
+
+# If CSP define limits 
+CSPMIN=$1
+DXCSP=100
+CSPMAX=$2
+###################################
+
+PLOTOPT='XPLOT2'
+LABELT="time(sec)" 
+LABELO="Offset(m)"
+
+case $OPTION in
+MIG*)
+sueomig6f < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp  output=1 hemin=$HEMIN hemax=$HEMAX  nhcsp=$nhcsp par=$PAR beta=$BETA testhe=$TESTHE  beta=$BETA verbose=$VERBOSE fold=$fold  ncsp=$ncsp cdpspace=1 tmpdir=$HOME"/work/." > $FILEOUT
+#supswigp key=cdp < $FILEOUT | gv - &
+$PLOTC < $FILEOUT title=$label &
+;;
+
+KIR*)
+sukmig4 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=1 par=$PAR verbose=$VERBOSE dfold=$dfold ncsp=$ncsp  cdpspace=1 aper=1000  ntrmax=100000 > $FILEOUT3
+#supswigp key=cdp < $FILEOUT | gv - &
+suximage perc=98 < $FILEOUT3  title=$label  &
+;;
+
+VEL*)
+sueomig6f < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=6  beta=$BETA hemin=$HEMIN hemax=$HEMAX nhcsp=$nhcsp par=$PAR itercg=2 iter_end=1 testhe=$TESTHE  eps2=1e-1 eps1=1e-1  testadj=0 smooth=0 nq=31 qmin=-250 qmax=450 verbose=$VERBOSE fold=$fold buffer=$buffer ncsp=$ncsp cdpspace=1 pervmin=10 dperv=0.05 norm=0 itervel=2 > $FILEOUT4
+#supswigp key=cdp < $FILEOUT | gv - &
+suximage perc=99 < $FILEOUT4  title=$label  &
+;;
+
+LSM*)
+sueomig6f < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=3  beta=$BETA hemin=$HEMIN hemax=$HEMAX nhcsp=$nhcsp par=$PAR itercg=$itercg iter_end=1 testhe=$TESTHE  eps2=1e-1 eps1=.05  eps=1e-3 testadj=0 smooth=0 nq=$nq  verbose=$VERBOSE fold=$fold buffer=$buffer ncsp=1  cdpspace=1 tmpdir=$HOME"/work/." ntrmax=100000 norm=0 mute=$mute parmute=$parmute keepwm=0 qmin=-15e-7 lsmethod=$lsmethod factor=2 smute=2 nmofactor=1.9 > $FILEOUT2
+#supswigp key=cdp < $FILEOUT | gv - &
+suximage perc=90  < $FILEOUT2  title=$label  &
+;;
+
+NOI*)
+sueomig6 < $FILE  cdpmin=$CDPMIN cdpmax=$CDPMAX dxcdp=$dxcdp output=3  beta=$BETA hemin=$HEMIN hemax=$HEMAX nhcsp=$nhcsp par=$PAR itercg=$itercg iter_end=$iter_end testhe=$TESTHE  eps2=1e-3 eps1=1e-3  testadj=0 smooth=0 nq=$nq qmin=-150 qmax=150 verbose=$VERBOSE fold=$fold buffer=$buffer ncsp=$ncsp  cdpspace=1 tmpdir=$HOME"/work/." ntrmax=100000 pervmin=$pervmin dperv=$dperv norm=0 mute=$mute parmute=$parmute > $FILEOUT2
+#supswigp key=cdp < $FILEOUT | gv - &
+suximage perc=90  < $FILEOUT2  title=$label  &
+;;
+
+# PLOT CSP gathers
+CSP*) 
+sueomig6f < $FILE  cdpmin=$CSPMIN cdpmax=$CSPMAX dxcdp=$DXCSP norm=0 output=$OUTPUT verbose=1 hemax=$HEMAX hemin=$HEMIN nhcsp=$nhcsp par=$PAR itercg=$itercg iter_end=$iter_end beta=$BETA eps2=1 eps1=.05 eps=1e-3  testadj=1 smooth=0 nq=$nq testhe=$TESTHE ncsp=1 cdpspace=1  tmpdir=$HOME"/work/." fold=$fold mute=$mute parmute=$parmute itervel=$itervel ntrmax=100000 t0=0 sinc=$sinc qmin=-15e-7 lsmethod=$lsmethod factor=2 smute=2 nmofactor=1.9 > $FILECSP
+;;
+
+esac
+
+case $OPTION in
+CSP*)
+case $PLOTOPT in
+    PSPLOT*)
+    PLOTPS="supswigp key=offset label1=$LABELT label2=$LABELO perc=100"
+    csp=$CSPMIN
+    while [ $csp -le $CSPMAX ]
+    do
+	title=$csp' CSP'
+	suwind key=cdp min=$csp  max=$csp  < $FILECSP | $PLOTPS \
+	title=$title > $FILECSP".$csp.ps" 
+csp=`bc -l <<END
+	 $csp + $DXCSP
+END`
+    done
+    ;;
+
+
+    XPLOT2*)
+    
+    csp=$CSPMIN
+      
+    while [ $csp -le $CSPMAX ]
+    do
+	title=$csp' CSP'
+	suwind key=cdp min=$csp max=$csp  < $FILECSP | $PLOTR  title=$title &
+csp=`bc -l <<END
+		$csp + $DXCSP
+END`
+    done
+    ;;
+esac
+
+;;
+esac
+
+
+
+
+ 
+
+
+
+
+

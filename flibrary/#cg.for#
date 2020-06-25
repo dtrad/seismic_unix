@@ -1,0 +1,177 @@
+      subroutine conjgrad(L,LH,d,u,nx,np,eps,iter_end,dh,dq,freq,Jtot)
+      implicit none   
+      integer i,j,k,kk, iter_end, iter, nnx, nnp, np, nx, freq,laststep
+      parameter (nnx=228, nnp= 228) 
+ 
+      complex*16 u(nnp),d(nnx),L(nnx,nnp),LH(nnp,nnx), uold(nnp)
+      complex*16 g1(nnp),g1old(nnp),g2(nnp),g2temp(nnp), Qp(nnp)
+      complex*16 gtemp(nnp),gtemp2(nnp),gtemp3(nnp), gtemp4(nnp)
+      complex*16 alfanum, alfaden, alfa, dtemp(nnp), cdot, dc(nnx)
+      complex*16 betanum, betaden, beta
+
+      real*8  eps, sigma, dh(nnx), dq, value, bb
+      real*8 costfunc, Jtot(*), noise, power, resid, power2(nnp)
+      real*8 pmax, pmin, eps2, pmaxold, residold, Jtotlast, Jtotprev
+      integer norm, flag
+    
+c     In this routine d=Lu and u=LHd to keep Thorson convention
+c     Based in the Thorson'thesis  algorithm
+c     Look that the rest of program is opposite
+      !eps=1d-6
+      sigma=1d-5
+c      norm=1  ! Huber
+      norm=10 ! Cauchy
+c%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+c     Unconstrained gradient step
+c-----     LHL=LH*L 
+c      write(0,*) eps, iter_end, nx, np, dh(2), freq
+
+c-----Apply weights to L and LH
+
+      do j=1,nx
+         do i=1,np
+           LH(i,j)=LH(i,j)*dh(j)
+         enddo
+      enddo 
+  
+
+c---------------------------------
+c----       dtemp=LH*d
+      call cAtimesx(gtemp2,LH,d,np,nx,nnp,nnx)  
+      call cxequaly(u,gtemp2,np)
+      
+c----       Minimum for u=(eps,eps)
+      bb=0.d0
+      do i=1,np
+            power2(i)=dreal(dconjg(u(i))*u(i))
+            if(power2(i).lt.eps) then
+            u(i)=dcmplx(eps,eps)
+            power2(i)=dreal(dconjg(u(i))*u(i))
+            endif
+            bb=bb+dreal(power2(i))
+      enddo
+      
+c----       Sigma=min(u(i)**2)
+
+      pmin=power2(1)
+      do i=1,np
+              if (power2(i).lt.pmin) pmin=power2(i)
+      enddo
+      pmin=pmin*1d-3
+      if (pmin.gt.1.d-6) then 
+         eps2=pmin
+      else 
+         eps2=1d-6
+      endif
+      eps2=pmin
+       
+c      write(0,*) eps2, freq
+c-------------------------------------------------
+c------     gtemp=LH*L*u
+      call cAtimesx(dtemp,L,u,nx,np,nnx,nnp)
+      call cAtimesx(gtemp,LH,dtemp,np,nx,nnp,nnx)      
+
+c-----      g1=LH*d-LH*L*u
+      call cxminusy(g1,gtemp2,gtemp,np)
+     
+c----Estimate Qp
+      iter=1
+      Jtotlast=0
+      Jtotprev=10
+      flag=0 !This flag is set to 1 when J increases
+      do while ((iter.le.iter_end).and.(flag.eq.0))  !.and.(Jtotlast.le.Jtotprev))
+      call modgrad(u,eps2,np,sigma,norm,eps,Qp,nnp)
+         do i=1,np
+            uold(i)=u(i)
+         enddo
+c---- Gradient steps
+
+c---- NP loop
+
+         resid=dreal(cdot(g1,g1,np))
+         k=0
+         power=1.d0
+
+         laststep=30
+         if (iter.gt.4) laststep=30
+         if (iter.gt.8) laststep=30
+         if (iter.eq.iter_end) laststep=30
+
+         do while ((k.ne.np).and.(dsqrt(resid).gt.(eps*bb))
+     #        .and.(k.lt.laststep))
+            k=k+1
+            if (k.eq.1) then
+               call cxequaly(g2,g1,np)
+            else
+               betanum=cdot(g1,g1,np)
+               betaden=cdot(g1old,g1old,np)
+               if (zabs(betaden).lt.eps) betaden=dcmplx(eps,0.d0)
+               beta=betanum/betaden
+c               write(0,*) 'beta=',beta
+               do i=1,np
+                  g2(i)=g1(i)+beta*g2(i)
+               enddo
+            endif
+            alfanum=cdot(g1,g1,np)
+
+            call cAtimesx(dtemp,L,g2,nx,np,nnx,nnp) 
+            call cAtimesx(gtemp,LH,dtemp,np,nx,nnp,nnx)
+            call cxtimesy(gtemp4,Qp,g2,np)
+            call cxplusy(g2temp,gtemp,gtemp4,np)
+            alfaden=cdot(g2,g2temp,np)
+            if (zabs(alfaden).lt.eps) alfaden=dcmplx(eps,0.d0)
+            alfa=alfanum/alfaden
+             
+            do i=1,np
+                u(i)=u(i)+alfa*g2(i)
+                g1old(i)=g1(i)
+                g1(i)=g1(i)-alfa*g2temp(i)
+            enddo
+   
+
+            residold=resid
+            resid=dsqrt(dreal(alfanum))
+            power=dreal(cdot(u,u,np))
+            
+         enddo                  !loop for k
+ 
+         call cAtimesx(dc,L,u,nx,np,nnx,nnp)
+
+         Jtot(iter)=costfunc(d,dc,u,nx,np,eps2,norm)
+c         write(0,*) 'Jiter', Jtot(iter), iter,k, freq
+         Jtotlast=Jtot(iter)
+         if (iter.eq.1) then
+                 Jtotprev=Jtot(iter)+10
+         else
+                 Jtotprev=Jtot(iter-1)
+         endif 
+
+         do i=iter+1,iter_end
+            Jtot(i)=Jtot(iter) !In case of stop iterating keep the last J
+         enddo
+c         if ((Jtotlast.gt.(1.1*Jtotprev)).and.(iter.ne.1)) then   
+c            do i=1,np
+c               u(i)=0.3*u(i)+0.7*uold(i)
+c            enddo   
+c            write(0,*) 'cost function increases',freq,iter
+c         endif
+         if ((Jtotlast.gt.(1.0*Jtotprev)).and.(iter.ne.1)) then
+             flag=1
+             do i=1,np
+               u(i)=uold(i)
+             enddo
+         endif
+
+         iter=iter+1
+         
+      enddo  !loop for niter 
+
+      return
+      end
+
+
+
+
+
+
+

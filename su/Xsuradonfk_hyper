@@ -1,0 +1,91 @@
+#! /bin/sh
+# PLOTS 
+# Plot for interpolation of simple hyperbola using suradonfkcube
+# and fk spectra.
+# Daniel Trad- UBC Oct 2002
+############################################################################
+
+
+set -x 
+echo "Log file: Xplotsuradonfk_hyper"
+
+date 1>&2
+FIGURE=1
+
+FILEN=hyper
+
+sufix='TX'
+sufix='FK'
+
+#data
+FILE1=${FILEN}'b.su' 
+#downsampled and gapped data
+FILE2=${FILEN}'ds.sugapzero'
+#RT transform
+FILE3=${FILEN}'ds.surad'${sufix}
+#reconstructed data 
+FILE4=${FILEN}'ds.surec'${sufix}
+#reconstructed data 
+FILE5=${FILEN}'dsb.sures'${sufix}
+###################################
+
+TITLE1="title=(a)" 
+TITLE2="title=(b)" 
+TITLE3="title=(c)" 
+TITLE4="title=(d)" 
+TITLE5="title=(e)" 
+TITLE6="title=(f)" 
+TITLE7="title=(g)" 
+TITLE8="title=(h)" 
+TITLE9="title=(i)" 
+
+LABEL1="Time(s)" 
+LABEL2="Offset(m)"
+
+parimage="f2=213 d2=50  clip=1. "
+parimageb="f2=213 d2=50  perc=99.5 "
+parwigle="clip=2"
+
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 "
+PLOTFK="supsimage label1=f(1/s) label2=kx(1/m)"
+
+$PLOTX < $FILE1 > p1 $TITLE1
+suspecfk dx=25 < $FILE1 | $PLOTFK  > p2  $TITLE2
+$PLOTX < $FILE2 > p3 $TITLE3
+suspecfk dx=50 < $FILE2 | $PLOTFK  > p4  $TITLE4
+$PLOTX < $FILE3 > p5 $TITLE5
+suspecfk dx=25 < $FILE3 | $PLOTFK  > p6  $TITLE6
+$PLOTX < $FILE4 > p7 $TITLE7
+suspecfk dx=25 < $FILE4 | $PLOTFK  > p8  $TITLE8
+suspecfk dx=25 < $FILE5 | $PLOTFK  > p9  $TITLE9
+
+ 
+FILE="suradon${sufix}_hyper.ps"  
+
+supsmerge in=p1 in=p2 in=p3 in=p4 in=p5 in=p6 in=p7  in=p8 in=p9 scale=0.3,0.3 translate=0,6 translate=2.5,6 translate=5,6 translate=0,3 translate=2.5,3 translate=5,3  translate=0,0 translate=2.5,0 translate=5,0  > ~/ps/$FILE
+
+
+
+
+gv ~/ps/$FILE &
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

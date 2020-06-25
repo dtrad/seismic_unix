@@ -1,0 +1,81 @@
+#! /bin/sh
+# PLOTS 
+
+FILE=fig7radoncomp.ps
+
+FILEN=sumiss2.1100
+FILE1=$FILEN'Trad'
+FILE2=$FILEN'CGrad'
+FILE3=$FILEN'C3rad'
+FILE4=$FILEN'CGCMrad'
+
+OPTIONNORM='n'
+OPTIONNUM='4'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+
+LABELT="time (sec)" 
+LABELO="offset(m)"
+LABELR="q(s/m^2)"
+LABELTAU="tau (sec)"
+
+case $OPTIONNORM in
+y*)
+PLOTX="supswigp f1=0 f2=0 key=offset label1=$LABELT label2=$LABELO clip=1.1"
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELTAU label2=$LABELR clip=1.1"
+;;
+n*)
+PLOTX="supswigp f1=0 f2=0 key=offset label1=$LABELT label2=$LABELO perc=99.9"
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABELTAU label2=$LABELR perc=99.9"
+;;
+esac
+
+echo $PLOTX
+
+
+case $OPTIONNORM in
+y*)
+suop op=norm < $FILE1 > aux1
+suop op=norm < $FILE2 > aux2
+suop op=norm < $FILE3 > aux3
+suop op=norm < $FILE4 > aux4
+
+$PLOTR < aux1 title=$TITLE1  > p  
+$PLOTR < aux2  title=$TITLE2  > pp
+$PLOTR < aux3  title=$TITLE3  > ppp  
+$PLOTR < aux4  title=$TITLE4  > pppp
+;;
+
+n*)
+$PLOTR < $FILE1  title=$TITLE1  > p  
+$PLOTR < $FILE2  title=$TITLE2  > pp
+$PLOTR < $FILE3  title=$TITLE3  > ppp  
+$PLOTR < $FILE4  title=$TITLE4  > pppp
+;;
+esac
+
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILE
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0  > ~/ps/$FILE
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > ~/ps/$FILE
+;;
+esac
+
+gv ~/ps/$FILE &
+
+
+
+
+
+
+
+

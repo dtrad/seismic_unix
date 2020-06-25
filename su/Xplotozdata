@@ -1,0 +1,33 @@
+#!/bin/sh
+set -x
+
+FILE="/home/dtrad/ps/curveoz25.ps"
+
+path="/home/dtrad/Groundroll/curveozdata/"
+
+
+file1=${path}"oz25.su"
+file2=${path}"oz25.den.su"
+file3=${path}"oz25.noise.su"
+file4="ridgelettransfoz25"
+
+PLOTX="supswigp key=offset label1=Time(s) label2=Offset(m) clip=0.1"
+
+suaddhead < ${file4}".bin" ns=256 | sushw key=dt a=4000 | susetntr > ${file4}".su"
+
+suop2 $file1 $file3 > $file2
+
+sugain agc=0 <  $file1 | $PLOTX  > p1 title='(a)'
+sugain agc=0 <  $file3 | $PLOTX  > p2 title='(b)'
+sugain agc=0 <  $file2 | $PLOTX  > p3 title='(c)'
+
+
+#$PLOTX < $file1 > p1 title='(a)'
+#$PLOTX < $file3 > p2 title='(b)'
+#$PLOTX < $file2 > p3 title='(c)'
+
+supsimage < ${file4}".su" > p4 title='(d)' clip=0.0001   
+
+
+supsmerge in=p1 in=p2 in=p3 in=p4  scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5 scale=0.5,0.5  translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $FILE
+

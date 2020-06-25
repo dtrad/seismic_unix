@@ -1,0 +1,24 @@
+#!/bin/sh
+
+file=data.su
+
+suradonlinetd < $file par="stkvel.${file}" itercg=1 iter_end=1 modelfile=adjoint.su outputmodel=1 LI=1 > /dev/null
+
+suradonlinetd < $file par="stkvel.${file}" itercg=25 iter_end=2 modelfile=modells.su outputmodel=1 LI=1 > /dev/null
+
+
+
+sustrip < adjoint.su head=header1 > adjoint.bin
+sustrip < modells.su head=header2 > modells.bin
+
+#Call matlab for the filtering
+
+
+
+exit 0
+
+
+
+
+
+

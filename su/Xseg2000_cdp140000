@@ -1,0 +1,102 @@
+#! /bin/sh
+# PLOTS 
+# Plot for data, primaries and multiples.
+# Daniel Trad- UBC Nov 1999
+set -x   
+FILE=cdp140000_velan.radf.CG
+FILEPS=$FILE'.ps'
+FILEJPG=$FILE'.jpg'
+
+# PLot model
+
+FILEN=../work2/cdp140000
+
+
+FILE1=$FILEN'.su'
+FILE2=$FILEN'.radf.CG.surecb'
+FILE3=$FILEN'.su.140000.ps'
+FILE4=$FILEN'.radf.CG.surecb.140000.ps'
+
+OPTIONPLOT='w'
+OPTIONNUM='4'
+
+TITLE1="(a)"
+TITLE2="(b)"
+TITLE3="(c)"
+TITLE4="(d)"
+
+LABEL1="time(sec)" 
+LABEL2="offset(m)"
+LABELR="q(s/m^2)"
+LABELD="dV(m^2/s^2)"
+
+case $OPTIONPLOT in
+y*)
+PLOTR="supswigp f1=0 f2=0 key=f2 label1=$LABEL1 label2=$LABELR"
+PLOTI="supswigp f1=0 f2=0 key=offset label1=$LABEL1 label2=$LABELR"
+PLOTX="supswigp f1=0 f2=0 key=offset label1=$LABEL1 label2=$LABEL2 perc=99"
+GAIN="sugain agc=1 wagc=2"
+;;
+w*|x*)
+PLOTF="supswigp x2beg=-15993 x2end=0 key=offset label1=$LABEL1 label2=$LABELR perc=99"
+PLOTR="supswigp key=f2 label1=$LABEL1 label2=$LABELR perc=99.9"
+PLOTX="supswigp key=offset label1=$LABEL1 label2=$LABEL2 perc=99.9"
+PLOTI="supswigp key=offset label1=$LABEL1 label2=$LABELR clip=208"
+PLOTD="supswigp key=offset label1=$LABEL1 label2=$LABELD perc=99.9"
+;;
+esac
+
+
+case $OPTIONPLOT in
+a*)
+#$PLOTM < $FILE1  title=$TITLE1  > p  
+$GAIN < $FILE1 | $PLOTX  title=$TITLE1  > p
+$GAIN < $FILE2 | $PLOTR perc=99.5  title=$TITLE2  > pp
+#$PLOTR < $FILE2  title=$TITLE2  > pp
+$GAIN < $FILE3 | $PLOTX  title=$TITLE3  > ppp 
+$GAIN < $FILE4 | $PLOTR perc=99.5 title=$TITLE4  > pppp
+#$PLOTR < $FILE4  title=$TITLE4  > pppp
+
+;;
+x*) 
+$PLOTR < $FILE1  title=$TITLE1  > p  
+$PLOTR < $FILE2  title=$TITLE2  > pp
+$PLOTD < $FILE3  title=$TITLE3  > ppp 
+$PLOTD < $FILE4  title=$TITLE4  > pppp
+;;
+w*) # read from workstation and plot in pc
+suswapbytes < $FILE1 | $PLOTX  title=$TITLE1  > p  
+suswapbytes < $FILE2 | $PLOTX  title=$TITLE2  > pp
+cp $FILE3 ppp
+cp $FILE4 pppp
+
+#suswapbytes < $FILE3 | $PLOTR  title=$TITLE3  > ppp 
+#suswapbytes < $FILE4 | $PLOTR  title=$TITLE4  > pppp
+;;
+
+
+esac
+
+case $OPTIONNUM in
+2*)
+psmerge in=p in=pp scale=0.6,0.6 translate=-1,5 translate=4,5 > ~/ps/$FILEPS
+;;
+3*)
+psmerge in=p in=pp in=ppp  scale=0.42,0.42 translate=0,3 translate=3,3 translate=6,3  > ~/ps/$FILEPS
+;;
+4*)
+psmerge in=p in=pp in=ppp in=pppp scale=0.5,0.5 translate=0,5 translate=4,5 translate=0,0 translate=4,0 > $HOME'/ps/'$FILEPS
+;;
+esac
+
+ghostview $HOME'/ps/'$FILEPS &
+convert $HOME'/ps/'$FILEPS  $HOME'/jpg/'$FILEJPG
+
+
+
+
+
+
+
+
+

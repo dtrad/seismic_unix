@@ -1,0 +1,36 @@
+#! /bin/sh
+# Synthetic lines, parabolas or hyperbolas, with avo and different midpoint 
+# coordinates.
+# Example for interpolation
+# Daniel Trad. UBC March 2001
+
+
+
+FILE=data1.su
+vel=2100,2900,2100,3100,2100,3200,2100
+tau=0.4,0.8,0.8,1.2,1.2,1.6,1.6
+
+dh=50
+nh=63
+#avo=1,2,3,4
+avo=""
+#avof=2
+#avop=0
+coef=1,1,-1,1,1,1,-1
+nx=1
+fpeak=20
+nt=512
+midpoint=0
+dx=250
+sn=100
+wave=0
+shape=3
+hnear=1550
+
+set -x
+susynth nh=$nh nx=$nx dh=$dh dx=$dx fpeak=$fpeak nt=$nt midpoint=$midpoint vel=$vel shape=$shape  tau=$tau coef=$coef wave=$wave avo=$avo avof=$avof avop=$avop  | suaddnoise sn=$sn > $FILE
+sushw key=cdp a=1 < $FILE > pp; mv pp $FILE
+suxwigb key=offset < $FILE perc=99  &
+
+#Velan0 $FILE 1 1 1 0.7
+sunmo < $FILE par=stkvel.$FILE smute=3 | suxwigb key=offset

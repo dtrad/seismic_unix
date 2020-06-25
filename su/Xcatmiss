@@ -1,0 +1,4 @@
+#! /bin/sh
+
+cat misscn_fm_818_1207.su misscn_1208_1328.su misscn_1329_1349.su misscn_1350_1599.su misscn_1600_1699.su misscn_1700_1799.su misscn_fm_1800_1899.su misscn_fm_1900_1999.su misscn_fm_2000_2020.su misscn_fm_2021_2399.su misscn_2400_2499.su misscn_2500_2508.su misscn_2508_3000.su > misscn3_fm.lsm.su
+

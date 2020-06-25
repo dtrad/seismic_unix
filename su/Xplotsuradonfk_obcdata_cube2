@@ -1,0 +1,103 @@
+#!/bin/sh
+# Plot result from suradonfk_cube with obc data
+######################################################################
+# Author: Daniel Trad- November 2001
+
+# Some shortcuts for plots
+set -x
+
+
+METHOD='RFK' # Radon fk (equiv to LSFK so far)
+sufix=${METHOD}
+sufix2="${METHOD}2"
+FILE=obcdata1c.su; clip=  #clip corresponding to perc=97
+
+FILEN=$FILE
+
+FILERAD=${FILEN}'rad'${sufix}
+FILERAD0=${FILEN}'rad0'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILERES=$FILEN'res'${sufix}
+
+FILERAD2=${FILEN}'rad'${sufix2}
+FILEREC2=$FILEN'rec'${sufix2}
+FILEREC2=$FILEN'rec'${sufix2}
+FILERES2=$FILEN'res'${sufix2}
+
+
+#Wiggle 
+if [ 0 -eq 1 ]; then
+    PLOTX="supswigp clip=5.0 label2=Trace label1=Time blockinterp=1 x1beg=3.5 x2beg=25 x2end=100 & "
+    PLOTR="supswigp clip=2.0 label2=Trace label1=Time blockinterp=1 x1beg=3.5  & "
+
+    cp xiter.su $FILERAD
+    suwind key=tracl j=2 < $FILE |  $PLOTX   title=Data xbox=0 > asrt1.ps 
+    $PLOTR < $FILERAD title=ASRT xbox=620 > asrt2.ps 
+    suwind key=tracl j=2  < $FILEREC | $PLOTX title="Predicted Noise" xbox=1240 > asrt3.ps 
+    suadapdiff $FILE $FILEREC > $FILERES
+    suwind key=tracl j=2 < $FILERES |  $PLOTX  title="Signal" xbox=1860  > asrt4.ps
+
+    
+fi
+if [ 1 -eq 1 ]; then
+    PLOTX="supsimage clip=5.0 label2=Trace label1=Time blockinterp=1 x1beg=3.5 x2beg=50 x2end=200 & "
+    PLOTR="supsimage clip=2.0 label2=Trace label1=Time blockinterp=1 x1beg=3.5  & "
+    
+    cp xiter.su $FILERAD
+    suwind key=tracl j=1 < $FILE |  $PLOTX   title=Data  > asrt1xx.ps 
+    $PLOTR < $FILERAD title=ASRT > asrt2xx.ps 
+    suwind key=tracl j=1  < $FILEREC | $PLOTX title="Predicted Noise"  > asrt3xx.ps 
+    suadapdiff $FILE $FILEREC > $FILERES
+    suwind key=tracl j=1 < $FILERES |  $PLOTX  title="Signal"   > asrt4xx.ps
+    $PLOTX < WmthresSmooth.su title="Weights" clip=1 > asrt5xx.ps
+    
+fi
+# Second pass:
+if [ 0 -eq 1 ]; then
+
+    $PLOTX < $FILERAD2 title=$FILERAD2 xbox=0 &
+    $PLOTX < $FILERES title=$FILEREC xbox=620 &
+    $PLOTX < $FILEREC2 title=$FILEREC2 xbox=1240 &
+    suop2 $FILERES $FILEREC2 > $FILERES2
+    $PLOTX < $FILERES2  title=$FILERES2 xbox=1860&
+ 
+fi
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
