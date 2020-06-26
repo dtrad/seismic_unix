@@ -1,2 +1,0 @@
-g++ -c -O -Wall -O  -Wall -pedantic -Wno-long-long  -DCWP_LITTLE_ENDIAN clibrary/Dcomplex.cpp -I/home/dtrad/cwp/include  -I/home/dtrad/seismic/clibrary
-g++  -O  -Wall -pedantic -Wno-long-long  -DCWP_LITTLE_ENDIAN clibrary/radonhybrid.cpp -I/home/dtrad/cwp/include  -I./clibrary

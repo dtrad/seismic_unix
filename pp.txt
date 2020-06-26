@@ -1,2 +1,0 @@
-Separation of signal and noise and Velocity analysis by Radon - Migration techniques
-Hyperbolic and Elliptical Time domain Radon transforms. Improving Slant Stack   
