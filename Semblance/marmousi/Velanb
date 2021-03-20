@@ -103,12 +103,12 @@ do
 	#suxwigb < panel.$cdp title="CDP gather for cdp=$cdp" \
 	#		xbox=50 mpicks=mpicks.$cdp \
 	#		perc=$perc xcur=$xcur wbox=300 &
-	sugain tpow=2 < panel.$cdp |
+	sugain tpow=0 < panel.$cdp |
 	sufilter f=$f amps=$amps > panel_proc.$cdp
 	sustrip < panel_proc.$cdp > cdp.$cdp
 	suvelan nv=$nv dv=$dv fv=$fv > semb.$cdp < panel_proc.$cdp
 	sustrip < semb.$cdp > sembbin.$cdp
-
+	sugethw key=offset < panel.$cdp output=geom > offset$cdp
 	#suxcontour < semb.$cdp nc=$nc f2=$fv d2=$dv xbox=450 wbox=600 \
 	#units="semblance" fc=$fc ccolor=$ccolor \
 	#label1="Time (sec)" label2="Velocity (m/sec)" \
