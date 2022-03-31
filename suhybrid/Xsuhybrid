@@ -1,0 +1,50 @@
+#! /bin/sh
+# shell for deblending
+# Daniel Trad - UofC
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650 perc=99"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=99"
+
+NAME=data
+NAME1=$NAME'.su'
+FILE=$NAME'.su'
+FILEOUT=$NAME'out.su'; 
+FILERAD=$NAME'.rad.su'
+par="stkvel.${NAME}"
+
+verbose=0
+modelfile="${NAME}.hybrid.su"
+eps1=3e-3
+eps2=3e-3
+nmofactor=0
+qmin1=-1e-2
+qmin2=0
+
+mute1=0
+mute2=0
+fmax1=30;
+fmax2=50;
+amps=1,1,1,1
+ffilter=1,55,70,80
+
+nh=80
+
+susynth nh=$nh nx=1 dh=25 fpeak=5 hnear=1000 nt=1024 midpoint=0 vel=250,300,330  tau=0,0,0 coef=1,1,1 wave=0 avof=1.1 avop=1 avo=2,1,0 shape=1 > p1
+susynth nh=$nh nx=1 dh=25 fpeak=20 hnear=1000 nt=1024 midpoint=0 vel=1500,2000,3000  tau=0.5,1,2 coef=1,-0.5,1 wave=0 avof=1.1 avop=1 avo=2,1,0 shape=3 > p2
+
+suop2 p1 p2 op=sum > $FILE
+
+suradonhybrid < $FILE verbose=$verbose par=$par itercg=25 iter_end=3 eps2=$eps2 eps1=$eps1  tmpdir='.' norm=0  modelfile=$modelfile  quantil=0.7  qmin1=$qmin1 qmin2=$qmin2 nq1=100 nq2=100 rtmethod1=1 rtmethod2=2 nmofactor=$nmofactor mute1=$mute1 mute2=$mute2 fmax1=$fmax1 fmax2=$fmax2 amps=$amps ffilter=$ffilter > $FILEOUT
+
+#$PLOTX < $FILEOUT perc=99 title="Filtered" &
+#$PLOTR < $modelfile perc=99 title="RADON" &
+suximage < $FILE &
+suximage < $modelfile ybox=1000 hbox=650 &
+suximage < $FILEOUT xbox=550 &
+
+exit

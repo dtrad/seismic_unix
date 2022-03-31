@@ -1,0 +1,12 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Xradonhybrid",
+            "type": "shell",
+            "command": "suradonhybrid verbose=0 par=stkvel.shot9000.su itercg=25 iter_end=2 eps2=30e-2 eps1=30e-2 testadj=0 smooth=0 nq=150 tmpdir=. norm=0 nmofactor=1 smute=3.0 step=0.95 modelfile=shot9000.hybrid.su quantil=0.7 qmin1=3e-4 qmin2=0e-4 nq1=0 nq2=150 factor1=4.5 factor2=1 rtmethod1=1 rtmethod2=3 depth1=1000 depth2=1000 mute1=0 mute2=0 fmax1=70 fmax2=70 amps=1,1,1,1 ffilter=1,55,70,80 < shot9000.su > p "
+        }
+    ]
+}

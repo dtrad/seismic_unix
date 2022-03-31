@@ -1,0 +1,110 @@
+#! /bin/sh
+# shell for Radon filtering
+# Daniel Trad - UBC
+set -x
+
+HBOX=400
+WBOX=350
+PLOTC="suxwigb key=cdp wbox=550 hbox=650"
+PLOTR="suxwigb key=f2 wbox=550 hbox=650 perc=99"
+PLOTT="suxwigb wbox=550 hbox=650"
+PLOTX="suxwigb key=offset wbox=550 hbox=650 perc=99"
+PLOTI="suximage wbox=550 hbox=650 perc=99"
+
+OPTION="hybrid"
+
+NAME=shot9000
+NAME1=$NAME'.su'
+NAME2=$NAME'.su'
+NAME3=$NAME'.stack.su'
+FILE=$NAME'.su'
+FILECDP=$NAME'.cdp.su'; 
+FILERAD=$NAME'.rad.su'
+offsetfile="${NAME}.suoff"
+par="stkvel.shot9000.su"
+
+if ! [ -f $offsetfile ]; then 
+ sugethw key=offset < $NAME1 output=geom  > $offsetfile   
+fi
+# to change a shift on the offset do for example
+#suchw key1=offset key2=offset a=-140 < shot9000.su > p
+#mv p shot9000.su
+verbose=0
+fold=1
+buffer=10; 
+nhe=130;
+ncmp=2
+ntrmax=900000 
+iter_end=1
+sinc=0;
+parmute=15e-8
+parmute=25e-8
+nq=100
+under=0.999
+over=1.001
+
+modelfile="${NAME}.hybrid.su"
+
+eps1=30e-2
+eps2=30e-2
+
+CDPMIN=1
+DXCDP=1
+CDPMAX=1
+nmofactor=0
+qmin1=3e-4
+qmin2=0e-8
+factor1=1
+factor2=1
+rtmethod1=1
+rtmethod2=2
+depth1=1000
+depth2=1000
+nq1=100
+nq2=100
+mute1=0
+mute2=0
+fmax1=20;
+fmax2=70;
+amps=1,1,1,1
+ffilter=1,55,70,80
+nq=`expr $nq1 + $nq2`
+echo "nq=${nq}"
+
+#suradonhybrid < $FILE verbose=$verbose par=$par itercg=1 iter_end=$iter_end eps2=$eps2 eps1=$eps1  testadj=0 smooth=0 nq=$nq  tmpdir='.' norm=0  nmofactor=$nmofactor smute=3.0 step=0.95  modelfile=$modelfile  quantil=0.7  qmin1=$qmin1 qmin2=$qmin2 nq1=$nq1 nq2=$nq2 factor1=$factor1 factor2=$factor2 rtmethod1=$rtmethod1 rtmethod2=$rtmethod2 mute1=$mute1 mute2=$mute2 fmax1=$fmax1 fmax2=$fmax2 amps=$amps ffilter=$ffilter > $FILECDP
+
+suradonhybrid verbose=0 par=stkvel.shot9000.su itercg=10 iter_end=1 eps2=3e-3 eps1=3e-3 tmpdir=. norm=0  modelfile=shot9000.hybrid.su quantil=0.7 qmin1=-3e-3 qmin2=-2e-8 nq1=500 nq2=100 rtmethod1=1 rtmethod2=2 filter=0 factor1=5 factor2=4 < $FILE > $FILECDP
+
+#suradonhybrid  verbose=0 par=stkvel.shot9000.su itercg=25 iter_end=1 eps2=3e-3 eps1=3e-3 nq=100 tmpdir=. norm=0 modelfile=shot9000.hybridb.su quantil=0.7 qmin1=-3e-3 qmin2=-2e-8 nq1=100 nq2=100 rtmethod1=1 rtmethod2=2 < shot9000.su > p.su
+
+$PLOTI < $FILECDP &
+$PLOTI < $modelfile &
+$PLOTR < $modelfile &
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
