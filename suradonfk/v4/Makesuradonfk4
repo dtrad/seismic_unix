@@ -14,45 +14,46 @@ FLAG=-c -O3 -Wall
 OBJ=  $(PROG).o  radonfk1_wtcgls.o radonstolt.o radonstolt_one_trace2.o \
 	adjtestradonfk.o stretching2.o save_gather_freq.o modelweight.o \
 	axbcomplex.o mutemask.o smoothing.o ploting.o dot.o save_vector.o \
-	cleansegy.o xtimesy.o
+	cleansegy.o xtimesy.o 
+CC=g++
 
 LIBC=.
 
 # dependence 
 $(HOME)/bin/$(PROG): $(OBJ) 
-	${C++} -o $(HOME)/bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+	g++ -o $(HOME)/bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
 $(PROG).o: $(PROG).cpp $(LIBC)/radonfk.h
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $(PROG).cpp $(IDIR)
 radonfk1_wtcgls.o: $(LIBC)/radonfk1_wtcgls.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 radonstolt.o: $(LIBC)/radonstolt.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 radonstolt_one_trace2.o: $(LIBC)/radonstolt_one_trace2.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 adjtestradonfk.o: $(LIBC)/adjtestradonfk.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 stretching2.o: $(LIBC)/stretching2.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 save_gather_freq.o: $(LIBC)/save_gather_freq.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 modelweight.o: $(LIBC)/modelweight.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 axbcomplex.o: $(LIBC)/axbcomplex.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 mutemask.o: $(LIBC)/mutemask.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)	
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)	
 smoothing.o: $(LIBC)/smoothing.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)	
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)	
 ploting.o: $(LIBC)/ploting.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 dot.o: $(LIBC)/dot.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 save_vector.o: $(LIBC)/save_vector.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 cleansegy.o: $(LIBC)/cleansegy.c
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 xtimesy.o: $(LIBC)/xtimesy.cpp
-	${C++} $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+	g++ $(FLAG) $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 
 
 
