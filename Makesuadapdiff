@@ -13,7 +13,7 @@ PROG=suadapdiff
 
 FLAG=-c -O -Wall
 
-OBJ=  $(PROG).o dot.o save_vector.o cleansegy.o
+OBJ=  $(PROG).o dot.o save_vector.o 
 
 LIBC=./clibrary
 
@@ -25,6 +25,4 @@ $(PROG).o: $(PROG).cpp
 dot.o: $(LIBC)/dot.cpp
 	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 save_vector.o: $(LIBC)/save_vector.cpp
-	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
-cleansegy.o: $(LIBC)/cleansegy.c
 	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
