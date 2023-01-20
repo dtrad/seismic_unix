@@ -6,21 +6,21 @@ IDIR=-I$(CWPROOT)/include  -I.
 
 include $(CWPROOT)/src/Makefile.config
 
-D = $L/libcwp.a $L/libpar.a $L/libsu.a 
+D = $L/libcwp.a $L/libpar.a $L/libsu.a  $L/libdan.a
 
-LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
+LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS) 
 
 PROG=suadapdiff
 
 FLAG=-c -O3 -Wall
 
-OBJ=  $(PROG).o dot.o save_vector.o cleansegy.o smoothing.o fftgo.o fftback.o cdot.o
+OBJ=  $(PROG).o dot.o save_vector.o cleansegy.o smoothing.o fftgo.o fftback.o cdot.o convolution.o
 
 LIBC=.
 
 # dependence 
-$(HOME)/bin/$(PROG): $(OBJ)
-	g++ -o $(HOME)/bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+$(PROG): $(OBJ)
+	g++ -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
 $(PROG).o: $(PROG).cpp
 	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 dot.o: $(LIBC)/dot.cpp
@@ -37,5 +37,8 @@ fftback.o: $(LIBC)/fftback.cpp
 	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
 cdot.o: $(LIBC)/cdot.cpp
 	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+convolution.o: $(LIBC)/convolution.cpp
+	g++ -c $(OPTC) $(ENDIANFLAG) $? $(IDIR)
+
 clean:
 	rm $(PROG) *~ *.o

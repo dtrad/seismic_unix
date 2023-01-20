@@ -1,5 +1,9 @@
 #include "su.h"
+#include "cwp.h"
 #include "Complex.h"
+void conv (int lx, int ifx, float *x,
+	   int ly, int ify, float *y,
+	   int lz, int ifz, float *z);
 
 void smoothing(float *d,int nt,int nx,int nl,int nr,int flag)
 {

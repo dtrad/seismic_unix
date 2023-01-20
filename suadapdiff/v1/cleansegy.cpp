@@ -1,5 +1,6 @@
 #include "su.h"
 #include "segy.h"
+#include "cwp.h"
 segy cleansegy(segy tr)
 {
   fprintf(stderr,"cleaning segy..\n");
