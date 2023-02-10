@@ -286,7 +286,7 @@ int main(int argc, char **argv)
   makeut(vstolt,fmax,v,nt,dt,&ut,&nu,&du,&tu);
   free1float(v);
   fprintf(stderr,"nu=%d du=%f \n",nu,du);
-  return 1;
+  //return 1;
   if (verbose)
     fprintf(stderr,"New time axis after stretching: nt=%d ,dt=%f \n",nu,du);  
 

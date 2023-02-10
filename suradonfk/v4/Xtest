@@ -1,0 +1,126 @@
+#! /bin/sh
+# Xdeblending
+# Deblending using Stotl Radon (non apex centered Radon Transform).
+# Data contain two shots. 
+# USAGE: Xsuradonfkpaper 2> file.log 
+# OR   : Xsuradonfkpaper 
+#       
+# data preprocessing:
+# data saved from matlab
+# wrutesu
+# Althouth the data is a real data set, for this example we need to take a
+# window, and make the data to look symmetric 
+# from  kencmpsnonmo.su take cdp 5300 and window from 5.5s to end.
+# Data name kencmpwin0.su
+# then make the data symmetric by 
+# suchw key1=offset key2=offset b=-1 < kencmpwin0.su > pp
+# cat pp kencmpwin0.su > kencmpwin.su
+# sushw key=delrt a=0 < kencmpwin.su > pp
+# susort +offset < pp >  kencmpwin.su
+# Xsetntr kencmpwin.su
+######################################################################
+# Author: Daniel Trad- Last update: July 2002
+
+# Some shortcuts for plots
+set -x
+
+
+METHOD='RFK' # Radon fk (equiv to LSFK so far)
+itercg=5
+iter_end=1
+step=0.5
+twoPasses=1
+sufix=
+
+FILE=shotmarm.su; 
+FILEN=$FILE
+FILETEMP=pp
+FILETEMP2=ppp
+
+offsetfile=$FILE'off'
+
+FILERAD=${FILEN}'rad'${sufix}
+FILERAD0=${FILEN}'rad0'${sufix}
+FILEREC=$FILEN'rec'${sufix}
+FILERES=$FILEN'res'${sufix}
+
+if [ $METHOD = 'TX' ]; then
+    PROGRAM=suinterptx
+elif [ $METHOD = 'RFK' ]; then
+    PROGRAM=suradonfk
+else 
+    PROGRAM=donothing
+fi
+
+cp $FILE $FILETEMP
+
+
+#suradonfk0 vmig=3000,4500 tmig=1,6 plot=1 plot2=1 ihmin_m=1 ihmax_m=200 thres_m=0 modelfile=mod.su mute=1 itercg=5 testadj=1 step=0.1 < datasumc.su > out.su
+
+case $PROGRAM in
+suradonfk*)
+    mutepar="ihmin_m=0 ihmax_m=200 tmin_m=0 thres_m=0 slope_m=0 mute=1 lstaper=0 lbtaper=0 "
+
+    #sufill  < $FILETEMP > pp1;  # Fill gaps with zero traces 
+    suwind nt=1024  < $FILETEMP | susetntr > pp1;#| suaddnoise amps=0,0,0,0 f=1,5,80,90 > pp1; # preprocessing
+    
+    # Zero traces are identified with tr.trid=2
+    # After suradonfk0 we need remove dead traces and set ntr to the original
+    suradonfk4 < pp1 vmig=3300,3900 tmig=1.5,6 plot=0 plot2=1 $mutepar \
+    itercg=${itercg} iter_end=${iter_end} step=${step} testadj=0 eps1=9.8e-1 eps2=9.8e-1 modelfile=$FILERAD \
+    ascale=1 fpeak=20 nw=0 typewav=2 option=3 verbose=1 twoPasses=${twoPasses} \
+    norm=0 smoothMute=1 | suremovedead hmax=800 | susetntr > $FILEREC
+    #suwind nt=1024  < $FILEREC | susetntr > pp1; # pad zeros
+    #mv pp1 $FILEREC
+
+
+EOF
+;;
+esac
+
+PLOTXX="suximage perc=98 hbox=600 wbox=500 curve=curve1 npair=5  &"
+
+$PLOTXX < $FILERAD xbox=0 &
+$PLOTXX < $FILEREC xbox=600 &
+
+suadapdiff $FILE $FILEREC > $FILERES
+$PLOTXX < $FILE xbox=0 x2beg=120 &
+$PLOTXX < $FILERES xbox=600 x2beg=120 &
+
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
