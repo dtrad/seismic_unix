@@ -1,0 +1,6 @@
+#! /bin/sh
+maxoffset=4000
+FILE='/data/rsf/marmshotsr.rsf'
+FILEOUT='/data/su/marmshotsr.su'
+sfin $FILE > rsfinfo
+rsftosu rsfinfo $FILEOUT $maxoffset
