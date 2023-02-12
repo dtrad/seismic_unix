@@ -32,7 +32,7 @@ step=0.5
 twoPasses=1
 sufix=
 
-FILE=shotmarm.su; 
+FILE=marmshot.su; 
 FILEN=$FILE
 FILETEMP=pp
 FILETEMP2=ppp

@@ -4,7 +4,7 @@
 # NOTE: Comment lines preceeding user input start with  ##
 #set -x
 # proprocessing from shots
-suchw key1=cdp key2=gx key3=sx b=1 c=1 d=2 < /data/su/marmshots.su > temp.su
+suchw key1=cdp key2=gx key3=sx b=1 c=1 d=2 < /data/su/marmshots2.su > temp.su
 susort +cdp +offset < temp.su > marmcmps2.su
 ## Set parameters
 
@@ -226,5 +226,7 @@ echo "V(t,x) Interval velocity file: $vintt is ready"
 echo "V(z,x) Interval velocity file: $vintzx is ready"
 echo "sunmo par file: $vpicks is ready"
 
-
+cp sembbin.2020 /home/dtrad/pythonexamples/MLprojects/semblance/.
+cp offset2020 /home/dtrad/pythonexamples/MLprojects/semblance/.
+cp cdp.2020 /home/dtrad/pythonexamples/MLprojects/semblance/.
 exit 0
