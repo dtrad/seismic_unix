@@ -2,10 +2,8 @@
 # This script is used to read das and geo data in sgy format and convert them to su format. 
 # then strip the seismic unix header from the su file to bin file to read in matlab
 # das data is much denser than the geo data, so a decimation by 40 is applied to das data
+# information required to read the binaries in matlab is written in readme.txt
 
-# write an if condition to check if the variable a is equal to 1
-# if it is equal to 1, then execute the following commands
-# echo the command that is being executed
 set -x
 
 geosgy="Geoph_Vcomp_downgoing.sgy"
