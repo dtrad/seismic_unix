@@ -1,0 +1,25 @@
+#!/bin/sh
+set -x
+a=0
+if [ a == 1 ]; then
+    segyread tape=Geoph_Vcomp_downgoing.sgy > Geoph_Vcomp_downgoing.su
+    segyread tape=HWCDAS_Downg_WAVSP.sgy > HWCDAS_Downg_WAVSP.su
+    sushw key=d1 a=1 < Geoph_Vcomp_downgoing.su > geod.su
+    sushw key=d1 a=1 < HWCDAS_Downg_WAVSP.su > dasd.su
+fi
+# write an if statement
+
+
+if [ a == 1 ]; then
+    sugethw < geod.su key=sx,sy,gx,gy,offset output=geom > geodgeom.txt
+    sugethw < dasd.su key=sx,sy,gx,gy,offset output=geom > dasdgeom.txt
+    suwind < dasd.su j=40 > dasdd.su
+    sugethw < dasd.su key=sx,sy,gx,gy,offset output=geom > dasddgeom.txt
+fi
+
+# remove the seismic unix header from the file geod.su
+sustrip < geod.su > geod.bin
+sustrip < dasdd.su > dasdd.bin
+
+ximage < geod.bin n1=550 perc=99 title=geo &
+ximage < dasdd.bin n1=501 perc=99 title=das &
