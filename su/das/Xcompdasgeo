@@ -1,16 +1,33 @@
 #!/bin/sh
+# This script is used to read das and geo data in sgy format and convert them to su format. 
+# then strip the seismic unix header from the su file to bin file to read in matlab
+# das data is much denser than the geo data, so a decimation by 40 is applied to das data
+
+# write an if condition to check if the variable a is equal to 1
+# if it is equal to 1, then execute the following commands
+# echo the command that is being executed
 set -x
-a=0
-if [ a == 1 ]; then
-    segyread tape=Geoph_Vcomp_downgoing.sgy > Geoph_Vcomp_downgoing.su
-    segyread tape=HWCDAS_Downg_WAVSP.sgy > HWCDAS_Downg_WAVSP.su
-    sushw key=d1 a=1 < Geoph_Vcomp_downgoing.su > geod.su
-    sushw key=d1 a=1 < HWCDAS_Downg_WAVSP.su > dasd.su
+
+geosgy="Geoph_Vcomp_downgoing.sgy"
+dassgy="HWCDAS_Downg_WAVSP.sgy"
+
+# create a new variable originalgeosu by changing the extension sgy to su in originalgeo
+geosu=${geosgy%.sgy}.su
+dassu=${dassgy%.sgy}.su
+
+echo "new files" > readme.txt
+echo $geosgy $geosu >> readme.txt
+echo $dassgy $dassu >> readme.txt
+
+a=1
+if [ $a == 1 ]; then
+    segyread tape=$geosgy > $geosu
+    segyread tape=$dassgy > $dassu
+    sushw key=d1 a=1 < $geosu > temp;cp temp $geosu
+    sushw key=d1 a=2 < $dassu > temp;cp temp $dassu
 fi
-# write an if statement
 
-
-if [ a == 1 ]; then
+if [ $a == 1 ]; then
     sugethw < geod.su key=sx,sy,gx,gy,offset output=geom > geodgeom.txt
     sugethw < dasd.su key=sx,sy,gx,gy,offset output=geom > dasdgeom.txt
     suwind < dasd.su j=40 > dasdd.su
@@ -18,8 +35,15 @@ if [ a == 1 ]; then
 fi
 
 # remove the seismic unix header from the file geod.su
-sustrip < geod.su > geod.bin
-sustrip < dasdd.su > dasdd.bin
+if [ $a == 1 ]; then
+    sustrip < geod.su > geod.bin
+    sustrip < dasdd.su > dasdd.bin
+fi
 
 ximage < geod.bin n1=550 perc=99 title=geo &
 ximage < dasdd.bin n1=501 perc=99 title=das &
+
+echo "Das use n1=501 n2=428" >> readme.txt
+echo "Geo use n1=550 n2=408" >> readme.txt
+
+# write the previous message to a text file
