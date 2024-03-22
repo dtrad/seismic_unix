@@ -3,6 +3,8 @@
 # then strip the seismic unix header from the su file to bin file to read in matlab
 # das data is much denser than the geo data, so a decimation by 40 is applied to das data
 # information required to read the binaries in matlab is written in readme.txt
+# the geometry information sx, sy, gx, gy, offset is written in geodgeom.txt and dasdgeom.txt
+# the geometry information of the decimated das data is written in dasddgeom.txt
 
 set -x
 
