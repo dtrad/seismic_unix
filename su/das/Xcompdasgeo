@@ -6,44 +6,60 @@
 # the geometry information sx, sy, gx, gy, offset is written in geodgeom.txt and dasdgeom.txt
 # the geometry information of the decimated das data is written in dasddgeom.txt
 
+# notes: 
+# for DAS use interval between traces =dz=0.025m from surface.
+# for Geo use the values in gelev (depth in dcm)
+# Shots are on the surface, DAS and GEOn the wellbore
+# Decimating DAS every 40 traces gives ~ 40*0.25=10m between traces which
+# is the gauge length of the DAS system
+# Geophones spacing in depth is around 5m. 
+
+
 set -x
 
-geosgy="Geoph_Vcomp_downgoing.sgy"
-dassgy="HWCDAS_Downg_WAVSP.sgy"
+geosgy="Geoph_Vcomp_upgoing.sgy"
+dassgy="StraightDAS-INT_Upg_WAVSP.sgy"
 
 # create a new variable originalgeosu by changing the extension sgy to su in originalgeo
 geosu=${geosgy%.sgy}.su
 dassu=${dassgy%.sgy}.su
+dassu2=${dassgy%.sgy}_dec.su
 
 echo "new files" > readme.txt
 echo $geosgy $geosu >> readme.txt
 echo $dassgy $dassu >> readme.txt
 
-a=1
-if [ $a == 1 ]; then
+a = 1
+echo $a
+if [ 1 = 1 ]; then
     segyread tape=$geosgy > $geosu
     segyread tape=$dassgy > $dassu
     sushw key=d1 a=1 < $geosu > temp;cp temp $geosu
     sushw key=d1 a=2 < $dassu > temp;cp temp $dassu
 fi
 
-if [ $a == 1 ]; then
-    sugethw < geod.su key=sx,sy,gx,gy,offset output=geom > geodgeom.txt
-    sugethw < dasd.su key=sx,sy,gx,gy,offset output=geom > dasdgeom.txt
-    suwind < dasd.su j=40 > dasdd.su
-    sugethw < dasd.su key=sx,sy,gx,gy,offset output=geom > dasddgeom.txt
+if [ 1 = 1 ]; then
+    sugethw < $geosu key=sx,sy,gx,gy,offset,selev,gelev output=geom > geogeom.txt
+    sugethw < $dassu key=sx,sy,gx,gy,offset,selev output=geom > dasgeom.txt
+    suwind < $dassu j=40 > $dassu2
+    sugethw < $dassu2 key=sx,sy,gx,gy,offset,selev output=geom > dasudgeom.txt
 fi
 
 # remove the seismic unix header from the file geod.su
-if [ $a == 1 ]; then
-    sustrip < geod.su > geod.bin
-    sustrip < dasdd.su > dasdd.bin
+if [ 1 = 1 ]; then
+    sustrip < $geosu > geou.bin
+    sustrip < $dassu > dasu.bin
+    sustrip < $dassu2 > dasud.bin
 fi
 
-ximage < geod.bin n1=550 perc=99 title=geo &
-ximage < dasdd.bin n1=501 perc=99 title=das &
+ximage < geou.bin n1=550 perc=99 title=geo &
+ximage < dasu.bin n1=501 perc=99 title=das &
+ximage < dasud.bin n1=501 perc=99 title=dasdec &
 
-echo "Das use n1=501 n2=428" >> readme.txt
 echo "Geo use n1=550 n2=408" >> readme.txt
+echo "Das use n1=501 n2=18758" >> readme.txt
+echo "Das decimated use n1=501 n2=428" >> readme.txt
+
+
 
 # write the previous message to a text file
