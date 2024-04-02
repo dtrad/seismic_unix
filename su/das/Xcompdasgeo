@@ -38,17 +38,18 @@ if [ 1 = 1 ]; then
     sushw key=d1 a=2 < $dassu > temp;cp temp $dassu
 fi
 
-if [ $a == 1 ]; then
-    sugethw < geod.su key=sx,sy,gx,gy,offset output=geom > geodgeom.txt
-    sugethw < dasd.su key=sx,sy,gx,gy,offset output=geom > dasdgeom.txt
-    suwind < dasd.su j=40 > dasdd.su
-    sugethw < dasd.su key=sx,sy,gx,gy,offset output=geom > dasddgeom.txt
+if [ 1 = 1 ]; then
+    sugethw < $geosu key=sx,sy,gx,gy,offset,selev,gelev output=geom > geogeom.txt
+    sugethw < $dassu key=sx,sy,gx,gy,offset,selev output=geom > dasgeom.txt
+    suwind < $dassu j=40 > $dassu2
+    sugethw < $dassu2 key=sx,sy,gx,gy,offset,selev output=geom > dasudgeom.txt
 fi
 
 # remove the seismic unix header from the file geod.su
-if [ $a == 1 ]; then
-    sustrip < geod.su > geod.bin
-    sustrip < dasdd.su > dasdd.bin
+if [ 1 = 1 ]; then
+    sustrip < $geosu > geou.bin
+    sustrip < $dassu > dasu.bin
+    sustrip < $dassu2 > dasud.bin
 fi
 
 ximage < geou.bin n1=550 perc=99 title=geo &
