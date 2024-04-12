@@ -1,0 +1,65 @@
+#!/bin/sh
+# This script is used to read das and geo data in sgy format and convert them to su format. 
+# then strip the seismic unix header from the su file to bin file to read in matlab
+# das data is much denser than the geo data, so a decimation by 40 is applied to das data
+# information required to read the binaries in matlab is written in readme.txt
+# the geometry information sx, sy, gx, gy, offset is written in geodgeom.txt and dasdgeom.txt
+# the geometry information of the decimated das data is written in dasddgeom.txt
+
+# notes: 
+# for DAS use interval between traces =dz=0.025m from surface.
+# for Geo use the values in gelev (depth in dcm)
+# Shots are on the surface, DAS and GEOn the wellbore
+# Decimating DAS every 40 traces gives ~ 40*0.25=10m between traces which
+# is the gauge length of the DAS system
+# Geophones spacing in depth is around 5m. 
+
+
+set -x
+
+geosgy="Geoph_Vcomp_downgoing.sgy"
+dassgy="StraightDAS-INT_Downg_WAVSP.sgy"
+
+# create a new variable originalgeosu by changing the extension sgy to su in originalgeo
+geosu=${geosgy%.sgy}.su
+dassu=${dassgy%.sgy}.su
+dassu2=${dassgy%.sgy}_dec.su
+
+echo "new files" > readmeDown.txt
+echo $geosgy $geosu >> readmeDown.txt
+echo $dassgy $dassu >> readmeDown.txt
+
+a = 1
+echo $a
+if [ 1 = 1 ]; then
+    segyread tape=$geosgy > $geosu
+    segyread tape=$dassgy > $dassu
+    sushw key=d1 a=1 < $geosu > temp;cp temp $geosu
+    sushw key=d1 a=2 < $dassu > temp;cp temp $dassu
+fi
+
+if [ 1 = 1 ]; then
+    sugethw < $geosu key=sx,sy,gx,gy,offset,selev,gelev output=geom > geogeomdown.txt
+    sugethw < $dassu key=sx,sy,gx,gy,offset,selev output=geom > dasgeomdown.txt
+    suwind < $dassu j=40 > $dassu2
+    sugethw < $dassu2 key=sx,sy,gx,gy,offset,selev output=geom > dasudgeomdown.txt
+fi
+
+# remove the seismic unix header from the file geod.su
+if [ 1 = 1 ]; then
+    sustrip < $geosu > geod.bin
+    sustrip < $dassu > dasd.bin
+    sustrip < $dassu2 > dasdd.bin
+fi
+
+ximage < geod.bin n1=550 perc=99 title=geo &
+ximage < dasd.bin n1=501 perc=99 title=das &
+ximage < dasdd.bin n1=501 perc=99 title=dasdec &
+
+echo "Geo use n1=550 n2=408" >> readmeDown.txt
+echo "Das use n1=501 n2=18758" >> readmeDown.txt
+echo "Das decimated use n1=501 n2=428" >> readmeDown.txt
+
+
+
+# write the previous message to a text file
