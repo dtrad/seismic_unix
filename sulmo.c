@@ -236,7 +236,7 @@ main(int argc, char **argv)
 	if (!getparint("sscale",&sscale)) sscale = 1;
 	if (!getparint("invert",&invert)) invert = 0;
 	if (!getparint("upward",&upward)) upward = 0;
-	if (!getparint("linear",&linear)) linear=0;
+	if (!getparint("linear",&linear)) linear=1;
         checkpars();
 
 	/* allocate workspace */
@@ -295,8 +295,8 @@ main(int argc, char **argv)
 			for (it=0,tn=ft/dt; it<nt; ++it,tn+=1.0) {
 				tsq = temp*ovvt[it];
 				ttn[it] = sqrt (tn*tn + tsq);
-				if (linear) ttn[it] = tn+sqrt(tsq);
-
+				if (linear==1) ttn[it] = tn+sqrt(tsq);
+				if (linear==-1) ttn[it] = tn-sqrt(tsq);
 	
 			}
 			/* compute inverse of stretch factor a(tn) */

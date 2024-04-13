@@ -1,0 +1,16 @@
+#! /bin/sh
+# Script to create a shot gather with a given offset and apply LMO
+# Usage: ./Xlmodown offset velocity
+# Example: ./Xlmodown 1000 2000
+set -x
+file1="StraightDAS-INT_Downg_WAVSP.su"
+file2="shot_das9_down.su"
+file3="shot_das9_down_lmo.su"
+offset=$1
+vel=$2
+suwind < $file1 key=offset min=$offset max=$offset > $file2
+sushw < $file2 key=offset a=9 b=0.025 > tmp.su
+mv tmp.su $file2
+sulmo < $file2 linear=1 vnmo=$vel > $file3
+suximage < $file2 title="INPUT" perc=97 &
+suximage < $file3 title="LMO" perc=97 &
