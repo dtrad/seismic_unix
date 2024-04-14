@@ -8,9 +8,10 @@ file2="shot_das9_down.su"
 file3="shot_das9_down_lmo.su"
 offset=$1
 vel=$2
-dx=0.025 # DAS sampling interval 25cm, starting at the surface.
+dx=25 # DAS sampling interval 25cm, starting at the surface.
+offset2=$offset*100 # offset in cm
 suwind < $file1 key=offset min=$offset max=$offset > $file2
-sushw < $file2 key=offset a=$offset b=$dx > tmp.su
+sushw < $file2 key=offset a=$offset2 b=$dx > tmp.su
 mv tmp.su $file2
 sulmo < $file2 linear=1 vnmo=$vel > $file3
 suximage < $file2 title="INPUT" perc=97 &
