@@ -1,16 +1,17 @@
 #! /bin/sh
-# Script to create a shot gather with a given offset and apply LMO
-# Usage: ./create_shot.sh offset velocity
-# Example: ./create_shot.sh 1000 2000
+# Script to select a shot in a VSP (upgoing), set the depth axis and apply LMO
+# Usage: ./Xlmoup offset velocity
+# Example: ./Xlmoup.sh 1000 2000
 set -x
 file1="StraightDAS-INT_Upg_WAVSP.su"
 file2="shot_das9_up.su"
 file3="shot_das9_up_lmo.su"
 offset=$1
 vel=$2
+dx=0.025 # DAS sampling interval 25cm, starting at the surface.
 suwind < $file1 key=offset min=$offset max=$offset > $file2
-sushw < $file2 key=offset a=9 b=0.025 > tmp.su
+sushw < $file2 key=offset a=$offset b=$dx > tmp.su
 mv tmp.su $file2
 sulmo < $file2 linear=-1 vnmo=$vel > $file3
 suximage < $file2 title="INPUT" perc=97 &
-suximage < $file3 title="LMO" perc=97 &
+suximage < $file3 title="LMO" perc=97 xbox=600 &
