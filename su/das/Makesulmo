@@ -20,7 +20,7 @@ LIBC=./clibrary
 
 # dependence 
 $(PROG): $(OBJ)
-	gcc -o ../bin/$(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
+	gcc -o $(PROG) $(OBJ) $(CFLAGS) $(LFLAGS) 
 $(PROG).o: $(PROG).c
 	gcc -c $(OPTC) $(ENDIANFLAG) $(PROG).c $(IDIR)
 

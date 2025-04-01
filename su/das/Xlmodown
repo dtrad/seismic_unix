@@ -1,7 +1,7 @@
 #! /bin/sh
 # Script to select a shot in a VSP (dowgoing), set the depth axis and apply LMO
 # Usage: ./Xlmodown offset velocity
-# Example: ./Xlmodown 1000 2000
+# Example: ./Xlmodown 9 2000
 set -x
 file1="StraightDAS-INT_Downg_WAVSP.su"
 file2="shot_das9_down.su"

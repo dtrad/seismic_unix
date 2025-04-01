@@ -1,0 +1,5 @@
+#! /bin/sh
+file3="shot_das9_up_lmo.su"
+
+#sustrip < $geosu > geod.bin
+sustrip < $dassu2 > dasddlmo.bin

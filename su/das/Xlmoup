@@ -16,3 +16,5 @@ mv tmp.su $file2
 sulmo < $file2 linear=-1 vnmo=$vel > $file3
 suximage < $file2 title="INPUT" perc=97 &
 suximage < $file3 title="LMO" perc=97 xbox=600 &
+
+
