@@ -1,18 +1,17 @@
 #! /bin/sh
-# Script to select a shot in a VSP (dowgoing), set the depth axis and apply LMO
+# Script to select a shot in a VSP (upgoing), set the depth axis and apply LMO
 # Usage: ./Xlmodown offset velocity
-# Example: ./Xlmodown 9 270000
+# Example: ./Xlmodowngeo 9 2800
 set -x
-file1="StraightDAS-INT_Downg_WAVSP.su"
-file2="shot_das9_down.su"
-file3="shot_das9_down_lmo.su"
-file4="das9downlmo.bin"
+file1="Geoph_Vcomp_downgoing.su"
+file2="shot_geo9_down.su"
+file3="shot_geo9_down_lmo.su"
+file4="geo9downlmo.bin"
 offset=$1
 vel=$2
-dx=25 # DAS sampling interval 25cm, starting at the surface.
-offset2=$offset*100 # offset in cm
+dx=5 # Geo sampling interval 5cm, starting at the surface (use vel in cm)
 suwind < $file1 key=offset min=$offset max=$offset > $file2
-sushw < $file2 key=offset a=$offset2 b=$dx > tmp.su
+sushw < $file2 key=offset a=$offset b=$dx > tmp.su
 mv tmp.su $file2
 sulmo < $file2 linear=1 vnmo=$vel > $file3
 suximage < $file2 title="INPUT" perc=97 &
@@ -22,8 +21,8 @@ if [ 1 = 1 ]; then
     sustrip < $file3 > $file4
 fi
 
-#ximage < $file4 n1=550 perc=99 title=geo &
-ximage < $file4 n1=501 perc=99 title=dasbinary &
+ximage < $file4 n1=550 perc=99 title=geo &
+#ximage < $file4 n1=501 perc=99 title=geobinary &
 #ximage < dasud.bin n1=501 perc=99 title=dasdec &
 
 echo "Geo use n1=550 n2=408" >> readme.txt
