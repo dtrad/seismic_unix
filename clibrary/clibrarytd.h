@@ -1,10 +1,13 @@
 #ifndef CLIBRARYTD_H
 #define CLIBRARYTD_H
 //#include "inversion_par.h"
-
 #define floatprint(expr) fprintf(stderr,#expr " = %f\n", expr)
 #define expfprint(expr) fprintf(stderr,#expr " = %g\n", expr)
 #define intprint(expr) fprintf(stderr,#expr " = %d\n", expr)
+
+#include "su.h"
+#include "segy.h"
+
 // Hyperbolic Radon Transform in time domain
 void radtd(float *t, float *q, float *h, float *x,float *y,float eps, 
 	   float qmin, float qmax, float fmax);

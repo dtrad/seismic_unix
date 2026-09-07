@@ -1,0 +1,129 @@
+#=======================================================================
+#                 Makefile.config for Gnu/Linux 
+#=======================================================================
+#-----------------------------------------------------------------------
+# pick up the Make rules (Gnu make required)
+#-----------------------------------------------------------------------
+
+include $(CWPROOT)/src/Rules/gnumake.rules
+include $(CWPROOT)/src/Rules/abbrev.rules
+include $(CWPROOT)/src/Rules/cflags.rules
+include $(CWPROOT)/src/Rules/suffix.rules
+include $(CWPROOT)/src/Rules/misc.rules
+include $(CWPROOT)/src/Rules/opengl.rules
+
+#-----------------------------------------------------------------------
+#                      CWP feature options
+#-----------------------------------------------------------------------
+#
+# LINEHDRFLAG=SU_LINEHEADER  - adds 3200 byte text & 400 byte SEG-Y 
+#                              style line headers to output. CWP/SU
+#                              always reads either format unless SUXDR
+#                              has been selected.
+#
+# XDRFLAG=-DSUXDR            - forces all SU data to be big endian
+#                              independent of processor architecture
+#
+# LARGE_FILE_FLAG            - controls access to files > 2 GB on
+#                              some systems.
+#
+# -DSLTSU_SEGY_H             - if defined selects SLT/SU trace header
+#                              layout so both packages are compatible
+#-----------------------------------------------------------------------
+
+LINEHDRFLAG = 
+
+# if the include files  are under  /usr/include/rpc use this for XDR
+# whether or not you had to install libtrpc.a
+# make sure
+XDRFLAG =  -DSUXDR
+XDRLFLAGS =
+XDRIFLAGS =
+
+# else if you had to install libtirpc and the rpc include files are under
+# /usr/include/tirpc/rpc or if you get an error about <types.h> not found,
+#  and you want to use XDR, then make sure the next three lines are uncommented
+XDRFLAG = -DSUXDR -DSUTIRPC
+XDRIFLAGS = -I/usr/include/tirpc/rpc -I/usr/include/tirpc
+XDRLFLAGS = -ltirpc
+
+# else if you do not want to use XDR, uncomment the next three lines 
+#XDRFLAG =
+#XDRLFLAGS =
+#XDRIFLAGS =
+
+
+# Most systems are LITTLE_ENDIAN these days
+ENDIANFLAG = -DCWP_LITTLE_ENDIAN
+LARGE_FILE_FLAG = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
+
+CWP_FLAGS = $(LARGE_FILE_FLAG) $(ENDIANFLAG) $(XDRFLAG) $(XDRIFLAGS) $(LINEHDRFLAG)
+
+#-----------------------------------------------------------------------
+# system stuff
+#-----------------------------------------------------------------------
+
+SHELL = /bin/sh
+ROOT = $(CWPROOT)
+
+LN = ln # this needs to be changed to cp for FAT32 filesystems
+AR = ar
+ARFLAGS = rv
+RANLIB = ranlib
+RANFLAGS = 
+ICHMODLINE = chmod 644 $@
+MCHMODLINE = chmod 755 $@
+
+POSTLFLAGS = $(XDRLFLAGS) 
+
+#-----------------------------------------------------------------------
+# use both X11 path conventions
+#-----------------------------------------------------------------------
+
+IX11 = /usr/X11/include
+LX11 = /usr/X11/lib
+IMOTIF = /usr/X11R6/include
+LMOTIF = /usr/X11R6/lib
+
+LD_LIBRARY_PATH += $(CWPROOT)/lib:${LX11}:${LMOTIF}
+
+#-----------------------------------------------------------------------
+# Sun/Oracle compilers  comment out the Gnu compiler section to use
+#-----------------------------------------------------------------------
+
+CPP = cpp
+
+CC = cc
+#OPTC = -g -Xc  -xc99 
+OPTC = -O -Xc  -xc99 
+#CFLAGS = -I$I $(OPTC) $(CWP_FLAGS) -D_BSD_SOURCE -D_POSIX_SOURCE
+#CFLAGS = -I$I $(OPTC) $(CWP_FLAGS) -D_DEFAULT_SOURCE -D_POSIX_SOURCE
+CFLAGS = -I$I $(OPTC) $(CWP_FLAGS) -D_GNU_SOURCE 
+
+FC = f90 -f77
+OPTF = -g
+FFLAGS =
+
+C++FLAGS = -I$I $(OPTC) $(CWP_FLAGS)
+
+#-----------------------------------------------------------------------
+# Gnu compilers by default just because they are the most common
+#-----------------------------------------------------------------------
+
+CPP = cpp
+
+#CC = clang
+CC = gcc
+#OPTC = -g  -std=c99 -Wall -pedantic -Wno-long-long 
+OPTC = -O  -std=c99 -Wall -pedantic -Wno-long-long 
+#CFLAGS = -I$I $(OPTC) $(CWP_FLAGS) -D_BSD_SOURCE -D_POSIX_SOURCE
+CFLAGS = -I$I $(OPTC) $(CWP_FLAGS) -D_GNU_SOURCE 
+
+FC = gfortran
+FOPTS = -g 
+FFLAGS = $(FOPTS) -ffixed-line-length-none -std=legacy
+
+
+C++FLAGS = -I$I $(OPTC) $(CWP_FLAGS)
+XCFLAGS += -D_GNU_SOURCE
+
